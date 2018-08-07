@@ -17,6 +17,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(metafor)
 library(dplyr)
+library(car)
+library(lsmeans)
+
 ```
 
 # VIABILITY ASSAY ANALYSIS 
@@ -61,64 +64,11 @@ VI_PLOT12_P1_PerCP_BAD_REMOVED <- VI_PLOT12_P1_PerCP[!VI_PLOT12_P1_PerCP$SAMPLE_
 ```{r percent_total_hemocytes, echo=FALSE}
  
 VI_Percent_total_hemocytes_BAD_NOT_REMOVED <- ggplot(data= VI_PLOT2_hemocytes, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \n Low Quality Not Removed") +
-    xlab("Family") + ylab("Percent of Hemocyte Events")
+    xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 VI_Percent_total_hemocytes_BAD_NOT_REMOVED
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events")
+  xlab("Family") + ylab("Percent of Hemocyte Events") ylim(0,100)
 VI_Percent_total_hemocytes_BAD_REMOVED
-```
-
-## Percent Granular Hemocytes out of all hemocytes
-```{r percent_granular_hemocytes, echo=FALSE}
-VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Not Removed") +xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes")
-VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED
-
-VI_Percent_Granular_Hemocytes_BAD_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Removed") +
-  xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes")
-VI_Percent_Granular_Hemocytes_BAD_REMOVED
-```
-
-## Percent Agranular Hemocytes out of all hemocytes
-```{r percent_agranular_hemocytes, echo=FALSE}
-VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events \n Low Quality Not Removed") +
-  xlab("Family") + ylab("Percent of Live and Dead Agranular Hemocytes")
-VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED
-VI_Percent_Agranular_Hemocytes_BAD_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events") +
-  xlab("Family") + ylab("Percent of Live and Dead \n Agranular Hemocytes Low Quality Removed")
-VI_Percent_Agranular_Hemocytes_BAD_REMOVED
-```
-
-## Percent Live Granular Hemocytes out of all Granular hemocytes
-```{r percent, echo=FALSE}
-# Take cells here and make a percentage out of GRANULAR hemocyte count from VI_PLOT3_P1_GATE P1_COUNT
-VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT)
-VI_PLOT3_P1_GATE$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE$P1_COUNT)
-VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E1_COUNT)*100
-
-VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte Events \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes")
-VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH                               
-
-VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
-VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT)
-VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)*100 
-
-VI_Percent_Live_Granular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") 
-VI_Percent_Live_Granular_BAD_REMOVED_GRAPH                          
-```
-
-# Percent Live Agranular Hemocytes
-```{r percent_live_agranular_hemocytes, echo=FALSE}
-VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT)
-VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E3_COUNT)*100
-
-VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Not Removed") + xlab("Family") +   ylab("Percent of Live Agranular Hemocytes")             
-VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH                                             
-
-VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
-VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)*100 
-
-VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Agranular Hemocytes") 
-VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH                                                          
 ```
 
 # Arc sine Percentage data
@@ -144,9 +94,17 @@ VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_R_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP_
 
 ```
 
-# One-Way ANOVA and Two-Way AOV #
-
 NOTE: Families with significant differences within or between groups have been highlighted in yellow
+
+## Percent Granular Hemocytes out of all hemocytes
+```{r percent_granular_hemocytes, echo=FALSE}
+VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Not Removed") +xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
+VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED
+
+VI_Percent_Granular_Hemocytes_BAD_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Removed") +
+  xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
+VI_Percent_Granular_Hemocytes_BAD_REMOVED
+```
 
 ## Percent of granular hemocytes (E1)
 
@@ -219,9 +177,31 @@ summary(VI_PLOT4_Granular_hemocytes_AOV)
 VI_PLOT4_Granular_hemocytes_AOV_BAD_REMOVED <- aov(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
 summary(VI_PLOT4_Granular_hemocytes_AOV_BAD_REMOVED)
 
+# INTERACTION TERM ADDED  (using lm model)
+VI_PLOT4_Granular_hemocytes_INTERACTION_lm <- lm(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY:VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP)
+Anova(VI_PLOT4_Granular_hemocytes_INTERACTION_lm, type= "II")
+```
+
+### One Way ANOVA of Differences between Families
+
+```{r oneway_granular, include=FALSe}
+
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED[!grepl("control", VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP),]
+VI_PLOT4_Granular_hemocytes_oneway_lm <- lm(VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT4_Granular_hemocytes_oneway_lm)
 ```
 
 # Percent of Agranular hemocytes (E3) #
+
+## Percent Agranular Hemocytes out of all hemocytes
+```{r percent_agranular_hemocytes, echo=FALSE}
+VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events \n Low Quality Not Removed") +
+  xlab("Family") + ylab("Percent of Live and Dead Agranular Hemocytes") + ylim(0,100)
+VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED
+VI_Percent_Agranular_Hemocytes_BAD_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events") +
+  xlab("Family") + ylab("Percent of Live and Dead \n Agranular Hemocytes Low Quality Removed") + ylim(0,100)
+VI_Percent_Agranular_Hemocytes_BAD_REMOVED
+```
 
 ### FAMILY A
 ```{r agranular_A, echo=FALSE}
@@ -287,10 +267,43 @@ summary(VI_PLOT4_E3_AOV_FAMILY_L_BAD_REMOVED)
 ```{r agrnaular_AOV, echo=FALSE}
 VI_PLOT4_Agranular_hemocytes_AOV <- aov(VI_PLOT4_E1_E3_GATE$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE$GROUP + VI_PLOT4_E1_E3_GATE$FAMILY, data=VI_PLOT4_E1_E3_GATE)
 summary(VI_PLOT4_Agranular_hemocytes_AOV)
+VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED <- aov(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
+summary(VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED)
+
+# INTERACTION TERM ADDED  (using lm model)
+VI_PLOT4_Agranular_hemocytes_INTERACTION_lm <- lm(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY:VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP)
+Anova(VI_PLOT4_Agranular_hemocytes_INTERACTION_lm, type= "II")
 
 ```
 
+### One Way ANOVA of Differences between Families
+
+```{r oneway_Agranular, include=FALSe}
+
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED[!grepl("control", VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP),]
+VI_PLOT4_Agranular_hemocytes_oneway_lm <- lm(VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT4_Agranular_hemocytes_oneway_lm)
+```
+
 # Percent of Live Granular Hemocytes #
+
+## Percent Live Granular Hemocytes out of all Granular hemocytes
+```{r percent, echo=FALSE}
+# Take cells here and make a percentage out of GRANULAR hemocyte count from VI_PLOT3_P1_GATE P1_COUNT
+VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT)
+VI_PLOT3_P1_GATE$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE$P1_COUNT)
+VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E1_COUNT)*100
+
+VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte Events \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
+VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH                               
+
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT)
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)*100 
+
+VI_Percent_Live_Granular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
+VI_Percent_Live_Granular_BAD_REMOVED_GRAPH                          
+```
 
 ### FAMILY A
 ```{r live_granular_A, echo=FALSE}
@@ -359,9 +372,41 @@ summary(VI_PLOT9_LIVE_granular_hemocytes_AOV)
 VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY, data=VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
 summary(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED)
 TukeyHSD(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED)
+
+# INTERACTION TERM ADDED  (using lm model)
+VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_lm <- lm(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY:VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP)
+Anova(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_lm, type= "II")
+
+# Post-hoc mean separation test 
+lsmeans(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_lm, pairwise ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY, adjust="tukey")
+lsmeans(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_lm, pairwise ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP, adjust="tukey")
+
 ```
 
+### One Way ANOVA of Differences between Families
+
+```{r oneway_live-granular, include=FALSE}
+
+VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED[!grepl("control", VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP),]
+VI_PLOT9_LIVE_granular_hemocytes_oneway_lm <- lm(VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$Arcsine ~ VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT9_LIVE_granular_hemocytes_oneway_lm)
+```
 # Percent of Live Agranular Hemocytes (E3) #
+
+# Percent Live Agranular Hemocytes
+```{r percent_live_agranular_hemocytes, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT)
+VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E3_COUNT)*100
+
+VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Not Removed") + xlab("Family") +   ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)          
+VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH                                             
+
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)*100 
+
+VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)
+VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH                                                          
+```
 
 ### FAMILY A
 ```{r live_agranular_A, echo=FALSE}
@@ -430,6 +475,24 @@ summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV)
 VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY, data=VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
 summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED)
 TukeyHSD(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED)
+
+# INTERACTION TERM ADDED  (using lm model)
+VI_PLOT10_LIVE_AGranular_hemocytes_INTERACTION_lm <- lm(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsin ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY + VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY:VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP)
+Anova(VI_PLOT10_LIVE_AGranular_hemocytes_INTERACTION_lm , type= "II")
+
+# Post-hoc mean separation test 
+lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_INTERACTION_lm, pairwise ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY, adjust="tukey")
+lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_INTERACTION_lm, pairwise ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP, adjust="tukey")
+
+```
+
+### One Way ANOVA of Differences between Families
+
+```{r oneway_live-agranular, include=FALSE}
+
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED[!grepl("control", VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP),]
+VI_PLOT10_LIVE_AGranular_hemocytes_oneway_lm <- lm(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT10_LIVE_AGranular_hemocytes_oneway_lm)
 ```
 
 # VIABILITY ASSAY OBSERVATIONS AND CONCLUSIONS 
@@ -474,84 +537,6 @@ APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED <- APOP_PLOT7_AGRANULAR_QUAD_PLOT[!AP
 
 # Basic plots showing the data by Family and then across families
 
-## Percent LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
-```{r LIVE_apoptotic_Granular, include=TRUE, echo=FALSE}
- 
-APOP_live_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \n Low Quality Not Removed") +
-    xlab("Family") + ylab("Percent of Hemocyte Events")
-
-APOP_live_apoptotic_granular_BAD_NOT_REMOVED
-
-APOP_live_apoptotic_granular_BAD_REMOVED <- ggplot(data= APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events")
-APOP_live_apoptotic_granular_BAD_REMOVED
-```
-
-## Percent LIVE apoptotic agranular hemocytes (PLOT7, Q1-LR)
-
-```{r live_apoptotic_agranular, echo=FALSE}
-
-APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
-
-APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED
-
-APOP_live_apoptotic_Agranular_BAD_REMOVED <- ggplot(data= APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events")
-APOP_live_apoptotic_Agranular_BAD_REMOVED
-
-```
-
-## Percent DEAD apoptotic granular hemocytes (PLOT4, Q1-UR)
-
-```{r dead_apoptotic_granular, echo=FALSE}
-APOP_dead_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
-
-APOP_dead_apoptotic_granular_BAD_NOT_REMOVED
-
-APOP_dead_apoptotic_granular_BAD_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events")
-APOP_dead_apoptotic_granular_BAD_REMOVED
-
-```
-
-## Percent DEAD apoptotic agranular hemocytes (PLOT 7, Q1-UR)
-
-```{r dead apoptotic_agranular, echo=FALSE}
-
-APOP_dead_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
-
-APOP_dead_apoptotic_Agranular_BAD_NOT_REMOVED
-
-APOP_dead_apoptotic_Agranular_BAD_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Agranular Hemocytes \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events")
-APOP_dead_apoptotic_Agranular_BAD_REMOVED
-
-```
-
-## Percent Necrotic granular hemocytes (PLOT 4, Q2-UL)
-
-```{r necrotic_apoptosis_granular, echo=FALSE}
-APOP_necrotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
-
-APOP_necrotic_granular_BAD_NOT_REMOVED
-
-APOP_necrotic_granular_BAD_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Granular Hemocytes \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events")
-APOP_necrotic_granular_BAD_REMOVED
-
-```
-
-## Percent necrotic agranular hemocytes (PLOT 7, Q1-UL)
-```{r necrotic_apoptotic_agranular, echo=FALSE}
-APOP_necrotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
-
-APOP_necrotic_Agranular_BAD_NOT_REMOVED
-
-APOP_necrotic_Agranular_BAD_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Agranular Hemocytes \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events")
-APOP_necrotic_Agranular_BAD_REMOVED
-```
-
 
 # Arc sine Percentage data
 ```{r arcsine_percentages, echo=FALSE}
@@ -588,6 +573,20 @@ APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LR_Arcsine <- transf.arcsin(APOP_P
 ```
 
 # % LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
+
+## Percent LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
+```{r LIVE_apoptotic_Granular, include=TRUE, echo=FALSE}
+ 
+APOP_live_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \n Low Quality Not Removed") +
+    xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+
+APOP_live_apoptotic_granular_BAD_NOT_REMOVED
+
+APOP_live_apoptotic_granular_BAD_REMOVED <- ggplot(data= APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+APOP_live_apoptotic_granular_BAD_REMOVED
+```
+
 
 ### FAMILY A
 
@@ -681,6 +680,21 @@ TukeyHSD(APOP_PLOT_4_granular_TWO_WAY_AOV_BAD_REMOVED)
 ```
 
 # % LIVE apoptotic agranular hemocytes (PLOT 7, Q1-LR)
+
+## Percent LIVE apoptotic agranular hemocytes (PLOT7, Q1-LR)
+
+```{r live_apoptotic_agranular, echo=FALSE}
+
+APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+
+APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED
+
+APOP_live_apoptotic_Agranular_BAD_REMOVED <- ggplot(data= APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+APOP_live_apoptotic_Agranular_BAD_REMOVED
+
+```
+
 
 ### FAMILY A
 ```{r live_apoptotic_agranular_aov_A, echo=FALSE}
@@ -777,6 +791,21 @@ summary(APOP_PLOT_7_agranular_TWO_WAY_AOV_BAD_REMOVED)
 
 ## % DEAD apoptotic granular hemocytes (PLOT4, Q2-UR)
 
+
+## Percent DEAD apoptotic granular hemocytes (PLOT4, Q1-UR)
+
+```{r dead_apoptotic_granular, echo=FALSE}
+APOP_dead_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+
+APOP_dead_apoptotic_granular_BAD_NOT_REMOVED
+
+APOP_dead_apoptotic_granular_BAD_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+APOP_dead_apoptotic_granular_BAD_REMOVED
+
+```
+
+
 ### FAMILY A
 ```{r dead_apoptotic_granular_aov_A, echo=FALSE}
 
@@ -859,6 +888,21 @@ TukeyHSD(APOP_PLOT_4_dead_granular_TWO_WAY_AOV_BAD_REMOVED)
 
 ## % DEAD apoptotic agranular hemocytes (PLOT 7, Q1-UR)
 
+## Percent DEAD apoptotic agranular hemocytes (PLOT 7, Q1-UR)
+
+```{r dead apoptotic_agranular, echo=FALSE}
+
+APOP_dead_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+
+APOP_dead_apoptotic_Agranular_BAD_NOT_REMOVED
+
+APOP_dead_apoptotic_Agranular_BAD_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Agranular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+APOP_dead_apoptotic_Agranular_BAD_REMOVED
+
+```
+
+
 ### FAMILY A
 ```{r dead_apoptotic_agranular_aov_A, echo=FALSE}
 
@@ -938,6 +982,19 @@ TukeyHSD(APOP_PLOT_7_dead_agranular_TWO_WAY_AOV_BAD_REMOVED)
 ```
 
 ## Percent necrotic granular hemocytes (PLOT 4, Q2-UL)
+
+## Percent Necrotic granular hemocytes (PLOT 4, Q2-UL)
+
+```{r necrotic_apoptosis_granular, echo=FALSE}
+APOP_necrotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+
+APOP_necrotic_granular_BAD_NOT_REMOVED
+
+APOP_necrotic_granular_BAD_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Granular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+APOP_necrotic_granular_BAD_REMOVED
+
+```
 
 ### FAMILY A
 ```{r necrotic_granular_aov_A, echo=FALSE}
@@ -1019,6 +1076,20 @@ summary(APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV_BAD_REMOVED)
 ```
 
 ## Percent necrotic agranular hemocytes (PLOT 7, Q1-UL)
+
+
+## Percent necrotic agranular hemocytes (PLOT 7, Q1-UL)
+```{r necrotic_apoptotic_agranular, echo=FALSE}
+APOP_necrotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+
+APOP_necrotic_Agranular_BAD_NOT_REMOVED
+
+APOP_necrotic_Agranular_BAD_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Agranular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+APOP_necrotic_Agranular_BAD_REMOVED
+```
+
+
 
 ### FAMILY A
 ```{r necrotic_agranular_aov_A, echo=FALSE}
