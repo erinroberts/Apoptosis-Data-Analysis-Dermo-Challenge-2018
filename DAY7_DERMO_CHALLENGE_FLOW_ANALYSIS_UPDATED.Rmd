@@ -1,0 +1,1102 @@
+---
+title: "DAY7_DERMO_CHALLENGE_FLOW_ANALYSIS"
+author: "Erin Roberts"
+date: "7/27/2018"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+
+```{r packages, echo=FALSE}
+library(ggplot2)
+library(metafor)
+library(dplyr)
+```
+
+# VIABILITY ASSAY ANALYSIS 
+
+## Load in data for each plot
+
+```{r load, echo=TRUE}
+#Load in the Data for each plot on a separate spreadsheet
+
+VI_PLOT2_hemocytes <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT2.csv", header=TRUE)
+VI_PLOT3_P1_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT3.csv", header=TRUE)
+VI_PLOT4_E1_E3_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT4.csv", header=TRUE)
+VI_PLOT5_P1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT5.csv", header=TRUE)
+VI_PLOT9_E1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT9.csv", header=TRUE)
+VI_PLOT10_E3_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT10.csv", header=TRUE)
+VI_PLOT12_P1_PerCP <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT12.csv", header=TRUE)
+
+## Remove percent symbol from columns 
+VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT))
+VI_PLOT3_P1_GATE$P1_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT3_P1_GATE$P1_PERCENT_OF_THIS_PLOT))
+VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT))
+VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT))
+VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT))
+VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT))
+
+# Load in Data for the samples to remove 
+Viability_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/VIABILITY_SAMPLES_REMOVE.csv", header=TRUE)
+
+# Data Frame with bad samples removed
+VI_PLOT2_hemocytes_BAD_REMOVED <- VI_PLOT2_hemocytes[!VI_PLOT2_hemocytes$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT3_P1_GATE_BAD_REMOVED <- VI_PLOT3_P1_GATE[!VI_PLOT3_P1_GATE$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE[!VI_PLOT4_E1_E3_GATE$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT5_P1_MINUS_V1R_BAD_REMOVED <- VI_PLOT5_P1_MINUS_V1R[!VI_PLOT5_P1_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R[!VI_PLOT9_E1_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R[!VI_PLOT10_E3_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT12_P1_PerCP_BAD_REMOVED <- VI_PLOT12_P1_PerCP[!VI_PLOT12_P1_PerCP$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+```
+
+## Basic plots showing the data by Family and then across families
+
+## Percent Total Hemocytes out of all events
+```{r percent_total_hemocytes, echo=FALSE}
+ 
+VI_Percent_total_hemocytes_BAD_NOT_REMOVED <- ggplot(data= VI_PLOT2_hemocytes, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \n Low Quality Not Removed") +
+    xlab("Family") + ylab("Percent of Hemocyte Events")
+VI_Percent_total_hemocytes_BAD_NOT_REMOVED
+VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events")
+VI_Percent_total_hemocytes_BAD_REMOVED
+```
+
+## Percent Granular Hemocytes out of all hemocytes
+```{r percent_granular_hemocytes, echo=FALSE}
+VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Not Removed") +xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes")
+VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED
+
+VI_Percent_Granular_Hemocytes_BAD_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Removed") +
+  xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes")
+VI_Percent_Granular_Hemocytes_BAD_REMOVED
+```
+
+## Percent Agranular Hemocytes out of all hemocytes
+```{r percent_agranular_hemocytes, echo=FALSE}
+VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events \n Low Quality Not Removed") +
+  xlab("Family") + ylab("Percent of Live and Dead Agranular Hemocytes")
+VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED
+VI_Percent_Agranular_Hemocytes_BAD_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events") +
+  xlab("Family") + ylab("Percent of Live and Dead \n Agranular Hemocytes Low Quality Removed")
+VI_Percent_Agranular_Hemocytes_BAD_REMOVED
+```
+
+## Percent Live Granular Hemocytes out of all Granular hemocytes
+```{r percent, echo=FALSE}
+# Take cells here and make a percentage out of GRANULAR hemocyte count from VI_PLOT3_P1_GATE P1_COUNT
+VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT)
+VI_PLOT3_P1_GATE$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE$P1_COUNT)
+VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E1_COUNT)*100
+
+VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte Events \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes")
+VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH                               
+
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT)
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)*100 
+
+VI_Percent_Live_Granular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") 
+VI_Percent_Live_Granular_BAD_REMOVED_GRAPH                          
+```
+
+# Percent Live Agranular Hemocytes
+```{r percent_live_agranular_hemocytes, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT)
+VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E3_COUNT)*100
+
+VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Not Removed") + xlab("Family") +   ylab("Percent of Live Agranular Hemocytes")             
+VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH                                             
+
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)*100 
+
+VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Agranular Hemocytes") 
+VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH                                                          
+```
+
+# Arc sine Percentage data
+
+```{r arcsine, echo=TRUE}
+# NOTE: NA's produced whenever the percentages were above 100%
+VI_PLOT2_hemocytes$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT*.01)
+VI_PLOT4_E1_E3_GATE$E1_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT4_E1_E3_GATE$E3_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT9_E1_MINUS_V1R$Arcsine <- transf.arcsin(VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE*0.01)
+VI_PLOT10_E3_MINUS_V1R$Arcsine <- transf.arcsin(VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE*0.01)
+VI_PLOT12_P1_PerCP$V1_L_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT12_P1_PerCP$V1_R_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT*0.01)
+
+# NOTE: NA's produced whenever the percentages were above 100%
+VI_PLOT2_hemocytes_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes_BAD_REMOVED$M4_PERCENT_OF_THIS_PLOT*.01)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE*0.01)
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE*0.01)
+VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_L_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_L_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_R_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_R_PERCENT_OF_THIS_PLOT*0.01)
+
+```
+
+# One-Way ANOVA and Two-Way AOV #
+
+NOTE: Families with significant differences within or between groups have been highlighted in yellow
+
+## Percent of granular hemocytes (E1)
+
+### FAMILY A
+```{r granular_A, echo=FALSE}
+VI_PLOT4_FAMILY_A <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
+VI_PLOT4_E1_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A$E1_Arcsine ~ VI_PLOT4_FAMILY_A$GROUP, data=VI_PLOT4_FAMILY_A)
+summary(VI_PLOT4_E1_AOV_FAMILY_A)
+VI_PLOT4_FAMILY_A_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="A")
+VI_PLOT4_E1_AOV_FAMILY_A_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_A_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_A_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_A_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_A_BAD_REMOVED)
+```
+
+### FAMILY B
+
+```{r granular_B, echo=FALSE}
+V1_PLOT4_FAMILY_B <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="B")
+VI_PLOT4_E1_AOV_FAMILY_B <- aov(V1_PLOT4_FAMILY_B$E1_Arcsine ~ V1_PLOT4_FAMILY_B$GROUP, data=V1_PLOT4_FAMILY_B)
+summary(VI_PLOT4_E1_AOV_FAMILY_B)
+V1_PLOT4_FAMILY_B_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="B")
+VI_PLOT4_E1_AOV_FAMILY_B_BAD_REMOVED <- aov(V1_PLOT4_FAMILY_B_BAD_REMOVED$E1_Arcsine ~ V1_PLOT4_FAMILY_B_BAD_REMOVED$GROUP, data=V1_PLOT4_FAMILY_B_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_B_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r granular_D, echo=FALSE}
+VI_PLOT4_FAMILY_D <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="D")
+VI_PLOT4_E1_AOV_FAMILY_D <- aov(VI_PLOT4_FAMILY_D$E1_Arcsine ~ VI_PLOT4_FAMILY_D$GROUP, data=VI_PLOT4_FAMILY_D)
+summary(VI_PLOT4_E1_AOV_FAMILY_D)
+VI_PLOT4_FAMILY_D_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="D")
+VI_PLOT4_E1_AOV_FAMILY_D_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_D_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_D_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_D_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_D_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r granular_E, echo=FALSE}
+VI_PLOT4_FAMILY_E <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="E")
+VI_PLOT4_E1_AOV_FAMILY_E <- aov(VI_PLOT4_FAMILY_E$E1_Arcsine ~ VI_PLOT4_FAMILY_E$GROUP, data=VI_PLOT4_FAMILY_E)
+summary(VI_PLOT4_E1_AOV_FAMILY_E)
+VI_PLOT4_FAMILY_E_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="E")
+VI_PLOT4_E1_AOV_FAMILY_E_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_E_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_E_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_E_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r granular_J, echo=FALSE}
+VI_PLOT4_FAMILY_J <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="J")
+VI_PLOT4_E1_AOV_FAMILY_J <- aov(VI_PLOT4_FAMILY_J$E1_Arcsine ~ VI_PLOT4_FAMILY_J$GROUP, data=VI_PLOT4_FAMILY_J)
+summary(VI_PLOT4_E1_AOV_FAMILY_J)
+VI_PLOT4_FAMILY_J_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="J")
+VI_PLOT4_E1_AOV_FAMILY_J_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_J_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_J_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_J_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_J_BAD_REMOVED)
+```
+
+### FAMILY L
+```{r granular_L, echo=FALSE}
+VI_PLOT4_FAMILY_L <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="L")
+VI_PLOT4_E1_AOV_FAMILY_L <- aov(VI_PLOT4_FAMILY_L$E1_Arcsine ~ VI_PLOT4_FAMILY_L$GROUP, data=VI_PLOT4_FAMILY_L)
+summary(VI_PLOT4_E1_AOV_FAMILY_L)
+VI_PLOT4_FAMILY_L_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="L")
+VI_PLOT4_E1_AOV_FAMILY_L_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_L_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_L_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_L_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_E_BAD_REMOVED)
+```
+
+### Two Way ANOVA of Granular Hemocytes
+
+```{r granular_aov, echo=FALSE}
+VI_PLOT4_Granular_hemocytes_AOV <- aov(VI_PLOT4_E1_E3_GATE$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE$GROUP + VI_PLOT4_E1_E3_GATE$FAMILY, data=VI_PLOT4_E1_E3_GATE)
+summary(VI_PLOT4_Granular_hemocytes_AOV)
+VI_PLOT4_Granular_hemocytes_AOV_BAD_REMOVED <- aov(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
+summary(VI_PLOT4_Granular_hemocytes_AOV_BAD_REMOVED)
+
+```
+
+# Percent of Agranular hemocytes (E3) #
+
+### FAMILY A
+```{r agranular_A, echo=FALSE}
+VI_PLOT4_FAMILY_A_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
+VI_PLOT4_E3_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_A_E3$GROUP, data=VI_PLOT4_FAMILY_A_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_A)
+VI_PLOT4_FAMILY_A_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="A")
+VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_A_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_A_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_A_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED)
+```
+
+### FAMILY B
+```{r agranular_B, echo=FALSE}
+VI_PLOT4_FAMILY_B_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="B")
+VI_PLOT4_E3_AOV_FAMILY_B <- aov(VI_PLOT4_FAMILY_B_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_B_E3$GROUP, data=VI_PLOT4_FAMILY_B_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_B)
+VI_PLOT4_FAMILY_B_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="B")
+VI_PLOT4_E3_AOV_FAMILY_B_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_B_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_B_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_B_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_B_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r agranular D, echo=FALSE}
+VI_PLOT4_FAMILY_D_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="D")
+VI_PLOT4_E3_AOV_FAMILY_D <- aov(VI_PLOT4_FAMILY_D_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_D_E3$GROUP, data=VI_PLOT4_FAMILY_D_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_D)
+VI_PLOT4_FAMILY_D_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="D")
+VI_PLOT4_E3_AOV_FAMILY_D_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_D_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_D_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_D_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_D_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r agranular_E, echo=FALSE}
+VI_PLOT4_FAMILY_E_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="E")
+VI_PLOT4_E3_AOV_FAMILY_E <- aov(VI_PLOT4_FAMILY_E_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_E_E3$GROUP, data=VI_PLOT4_FAMILY_E_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_E)
+VI_PLOT4_FAMILY_E_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="E")
+VI_PLOT4_E3_AOV_FAMILY_E_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_E_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_E_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_E_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_E_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r agranular_J, echo=FALSE}
+VI_PLOT4_FAMILY_J_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="J")
+VI_PLOT4_E3_AOV_FAMILY_J <- aov(VI_PLOT4_FAMILY_J_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_J_E3$GROUP, data=VI_PLOT4_FAMILY_J_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_J)
+VI_PLOT4_FAMILY_J_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="J")
+VI_PLOT4_E3_AOV_FAMILY_J_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_J_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_J_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_J_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_J_BAD_REMOVED)
+```
+
+### FAMILY L 
+```{r agrnaular_L, echo=FALSE}
+VI_PLOT4_FAMILY_L_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="L")
+VI_PLOT4_E3_AOV_FAMILY_L <- aov(VI_PLOT4_FAMILY_L_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_L_E3$GROUP, data=VI_PLOT4_FAMILY_L_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_L)
+VI_PLOT4_FAMILY_L_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="L")
+VI_PLOT4_E3_AOV_FAMILY_L_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_L_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_L_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_L_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_L_BAD_REMOVED)
+```
+
+### Two Way ANOVA of Agranular Hemocytes
+```{r agrnaular_AOV, echo=FALSE}
+VI_PLOT4_Agranular_hemocytes_AOV <- aov(VI_PLOT4_E1_E3_GATE$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE$GROUP + VI_PLOT4_E1_E3_GATE$FAMILY, data=VI_PLOT4_E1_E3_GATE)
+summary(VI_PLOT4_Agranular_hemocytes_AOV)
+
+```
+
+# Percent of Live Granular Hemocytes #
+
+### FAMILY A
+```{r live_granular_A, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="A")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_A$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_A$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_A)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="A")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED)
+```
+
+### FAMILY B
+```{r live_granular_B, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="B")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_B$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_B$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_B)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="B")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r live_granula_D, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="D")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_D$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_D$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_D)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="D")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r live_granular_E, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="E")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_E$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_E$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_E)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="E")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r live_granular_J, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="J")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_J$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_J$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_J)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="J")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED)
+```
+
+### FAMILY L
+```{r live_granular_L, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="L")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_L$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_L$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_L)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV) 
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="L")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED)
+```
+
+### Two Way ANOVA of LIVE Granular Hemocytes
+```{r live_granular_aov, echo=FALSE}
+VI_PLOT9_LIVE_granular_hemocytes_AOV <- aov(VI_PLOT9_E1_MINUS_V1R$Arcsine ~ VI_PLOT9_E1_MINUS_V1R$GROUP + VI_PLOT9_E1_MINUS_V1R$FAMILY, data=VI_PLOT9_E1_MINUS_V1R)
+summary(VI_PLOT9_LIVE_granular_hemocytes_AOV)
+VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY, data=VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
+summary(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED)
+TukeyHSD(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED)
+```
+
+# Percent of Live Agranular Hemocytes (E3) #
+
+### FAMILY A
+```{r live_agranular_A, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="A")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_A$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_A$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_A)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="A")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED)
+```
+
+### FAMILY B
+```{r live_agranular_B, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_B <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="B")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_B_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_B$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_B$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_B)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_B_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="B")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r live_agranular_D, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_D <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="D")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_D_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_D$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_D$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_D)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_D_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="D")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r live_agranular_E, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_E <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="E")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_E_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_E$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_E$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_E)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_E_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="E")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r live_agranular_J, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_J <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="J")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_J_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_J$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_J$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_J)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_J_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="J")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED)
+```
+
+### FAMILY L
+```{r live_agranular_L, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_L <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="L")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_L_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_L$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_L$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_L)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_L_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="L")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED)
+```
+
+### Two Way ANOVA of LIVE AGranular Hemocytes
+```{r live_agranular_aov, echo=FALSE}
+VI_PLOT10_LIVE_AGranular_hemocytes_AOV <- aov(VI_PLOT10_E3_MINUS_V1R$Arcsine ~ VI_PLOT10_E3_MINUS_V1R$GROUP + VI_PLOT10_E3_MINUS_V1R$FAMILY, data=VI_PLOT10_E3_MINUS_V1R)
+summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV)
+VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY, data=VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
+summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED)
+TukeyHSD(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED)
+```
+
+# VIABILITY ASSAY OBSERVATIONS AND CONCLUSIONS 
+When comparing the control and treatment percentages of granular hemocytes and agranular hemocytes within families, no significant differences were observed. No significant differences were observed between families either. 
+
+# APOPTOSIS ASSAY #
+
+## Load in data for each plot
+
+```{r load_data, echo=TRUE}
+#Load in the Data for each plot on a separate spreadsheet
+
+APOP_PLOT3_P1_GATE <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT3.csv", header=TRUE)
+APOP_PLOT8_GRANULAR_AGRANULAR <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT8.csv", header=TRUE)
+APOP_PLOT4_GRANULAR_QUAD_PLOT <-read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT4.csv", header=TRUE)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT7.csv", header=TRUE)
+
+## Remove percent symbol from columns 
+APOP_PLOT3_P1_GATE$P1_PERCENT_OF_THE_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT3_P1_GATE$P1_PERCENT_OF_THE_PLOT))
+APOP_PLOT8_GRANULAR_AGRANULAR$P3_PERCENT_OF_THIS_PLOT<- as.numeric(gsub("\\%", "", APOP_PLOT8_GRANULAR_AGRANULAR$P3_PERCENT_OF_THIS_PLOT))
+APOP_PLOT8_GRANULAR_AGRANULAR$P4_PERCENT_OF_THIS_PLOT<- as.numeric(gsub("\\%", "", APOP_PLOT8_GRANULAR_AGRANULAR$P4_PERCENT_OF_THIS_PLOT))
+
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UL_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UL_PERCENT_OF_THIS_PLOT))
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UR_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UR_PERCENT_OF_THIS_PLOT))
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LL_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LL_PERCENT_OF_THIS_PLOT))
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LR_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LR_PERCENT_OF_THIS_PLOT))
+
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UL_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UL_PERCENT_OF_THIS_PLOT))
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UR_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UR_PERCENT_OF_THIS_PLOT))
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LL_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LL_PERCENT_OF_THIS_PLOT))
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_PERCENT_OF_THIS_PLOT))
+
+# Load in Data for the samples to remove 
+APOPTOSIS_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/APOPTOSIS_SAMPLES_REMOVE.csv", header=TRUE)
+
+# Data Frame with bad samples removed
+APOP_PLOT3_P1_GATE_BAD_REMOVED <- APOP_PLOT3_P1_GATE[!APOP_PLOT3_P1_GATE$SAMPLE_ID %in% APOPTOSIS_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+APOP_PLOT8_GRANULAR_AGRANULAR_BAD_REMOVED <- APOP_PLOT8_GRANULAR_AGRANULAR[!APOP_PLOT8_GRANULAR_AGRANULAR$SAMPLE_ID %in% APOPTOSIS_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED <- APOP_PLOT4_GRANULAR_QUAD_PLOT[!APOP_PLOT4_GRANULAR_QUAD_PLOT$SAMPLE_ID %in% APOPTOSIS_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED <- APOP_PLOT7_AGRANULAR_QUAD_PLOT[!APOP_PLOT7_AGRANULAR_QUAD_PLOT$SAMPLE_ID %in% APOPTOSIS_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+```
+
+# Basic plots showing the data by Family and then across families
+
+## Percent LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
+```{r LIVE_apoptotic_Granular, include=TRUE, echo=FALSE}
+ 
+APOP_live_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \n Low Quality Not Removed") +
+    xlab("Family") + ylab("Percent of Hemocyte Events")
+
+APOP_live_apoptotic_granular_BAD_NOT_REMOVED
+
+APOP_live_apoptotic_granular_BAD_REMOVED <- ggplot(data= APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events")
+APOP_live_apoptotic_granular_BAD_REMOVED
+```
+
+## Percent LIVE apoptotic agranular hemocytes (PLOT7, Q1-LR)
+
+```{r live_apoptotic_agranular, echo=FALSE}
+
+APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
+
+APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED
+
+APOP_live_apoptotic_Agranular_BAD_REMOVED <- ggplot(data= APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events")
+APOP_live_apoptotic_Agranular_BAD_REMOVED
+
+```
+
+## Percent DEAD apoptotic granular hemocytes (PLOT4, Q1-UR)
+
+```{r dead_apoptotic_granular, echo=FALSE}
+APOP_dead_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
+
+APOP_dead_apoptotic_granular_BAD_NOT_REMOVED
+
+APOP_dead_apoptotic_granular_BAD_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events")
+APOP_dead_apoptotic_granular_BAD_REMOVED
+
+```
+
+## Percent DEAD apoptotic agranular hemocytes (PLOT 7, Q1-UR)
+
+```{r dead apoptotic_agranular, echo=FALSE}
+
+APOP_dead_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
+
+APOP_dead_apoptotic_Agranular_BAD_NOT_REMOVED
+
+APOP_dead_apoptotic_Agranular_BAD_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Agranular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events")
+APOP_dead_apoptotic_Agranular_BAD_REMOVED
+
+```
+
+## Percent Necrotic granular hemocytes (PLOT 4, Q2-UL)
+
+```{r necrotic_apoptosis_granular, echo=FALSE}
+APOP_necrotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
+
+APOP_necrotic_granular_BAD_NOT_REMOVED
+
+APOP_necrotic_granular_BAD_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Granular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events")
+APOP_necrotic_granular_BAD_REMOVED
+
+```
+
+## Percent necrotic agranular hemocytes (PLOT 7, Q1-UL)
+```{r necrotic_apoptotic_agranular, echo=FALSE}
+APOP_necrotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events")
+
+APOP_necrotic_Agranular_BAD_NOT_REMOVED
+
+APOP_necrotic_Agranular_BAD_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Agranular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events")
+APOP_necrotic_Agranular_BAD_REMOVED
+```
+
+
+# Arc sine Percentage data
+```{r arcsine_percentages, echo=FALSE}
+# NOTE: NA's produced whenever the percentages were above 100%
+APOP_PLOT3_P1_GATE$Arcsine<- transf.arcsin(APOP_PLOT3_P1_GATE$P1_PERCENT_OF_THE_PLOT*0.01)
+APOP_PLOT8_GRANULAR_AGRANULAR$P3_Arcsine <- transf.arcsin(APOP_PLOT8_GRANULAR_AGRANULAR$P3_PERCENT_OF_THIS_PLOT *0.01)
+APOP_PLOT8_GRANULAR_AGRANULAR$P4_Arcsine <- transf.arcsin(APOP_PLOT8_GRANULAR_AGRANULAR$P4_PERCENT_OF_THIS_PLOT*0.01)
+
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UL_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UR_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UR_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LL_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LR_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LR_PERCENT_OF_THIS_PLOT*0.01)
+
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UL_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UR_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UR_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LL_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_PERCENT_OF_THIS_PLOT*0.01)
+
+
+# NOTE: NA's produced whenever the percentages were above 100%
+APOP_PLOT3_P1_GATE_BAD_REMOVED$Arcsine<- transf.arcsin(APOP_PLOT3_P1_GATE_BAD_REMOVED$P1_PERCENT_OF_THE_PLOT*0.01)
+APOP_PLOT8_GRANULAR_AGRANULAR_BAD_REMOVED$P3_Arcsine <- transf.arcsin(APOP_PLOT8_GRANULAR_AGRANULAR_BAD_REMOVED$P3_PERCENT_OF_THIS_PLOT *0.01)
+APOP_PLOT8_GRANULAR_AGRANULAR_BAD_REMOVED$P4_Arcsine <- transf.arcsin(APOP_PLOT8_GRANULAR_AGRANULAR_BAD_REMOVED$P4_PERCENT_OF_THIS_PLOT*0.01)
+
+APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.UL_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.UL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.UR_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.UR_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.LL_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.LL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.LR_Arcsine <- transf.arcsin(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.LR_PERCENT_OF_THIS_PLOT*0.01)
+
+APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.UL_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.UL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.UR_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.UR_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LL_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LL_PERCENT_OF_THIS_PLOT*0.01)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LR_Arcsine <- transf.arcsin(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LR_PERCENT_OF_THIS_PLOT*0.01)
+```
+
+# % LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
+
+### FAMILY A
+
+```{r live_apoptotic_granular_aov_A, echo=FALSE}
+APOP_PLOT_4_granular_FAMILY_A <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="A")
+
+APOP_PLOT_4_granular_FAMILY_A_AOV <- aov(APOP_PLOT_4_granular_FAMILY_A$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A$GROUP, data=APOP_PLOT_4_granular_FAMILY_A)
+summary(APOP_PLOT_4_granular_FAMILY_A_AOV)
+
+APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED <-  APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="A")
+APOP_PLOT_4_granular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_4_granular_FAMILY_A_AOV_BAD_REMOVED)      
+        
+```
+
+
+### FAMILY B
+```{r live_apoptotic_granular_aov_B, echo=FALSE}
+APOP_PLOT_4_granular_FAMILY_B <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="B")
+
+APOP_PLOT_4_granular_FAMILY_B_AOV <- aov(APOP_PLOT_4_granular_FAMILY_B$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B$GROUP, data=APOP_PLOT_4_granular_FAMILY_B)
+summary(APOP_PLOT_4_granular_FAMILY_B_AOV)
+
+APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED <-  APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="B")
+APOP_PLOT_4_granular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_4_granular_FAMILY_B_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY D
+```{r live_apoptotic_granular_aov_D, echo=FALSE}
+APOP_PLOT_4_granular_FAMILY_D <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="D")
+
+APOP_PLOT_4_granular_FAMILY_D_AOV <- aov(APOP_PLOT_4_granular_FAMILY_D$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D$GROUP, data=APOP_PLOT_4_granular_FAMILY_D)
+summary(APOP_PLOT_4_granular_FAMILY_D_AOV)
+
+APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED <-  APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="D")
+APOP_PLOT_4_granular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_4_granular_FAMILY_D_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY E
+
+```{r live_apoptotic_granular_aov_E, echo=FALSE}
+APOP_PLOT_4_granular_FAMILY_E <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="E")
+
+APOP_PLOT_4_granular_FAMILY_E_AOV <- aov(APOP_PLOT_4_granular_FAMILY_E$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E$GROUP, data=APOP_PLOT_4_granular_FAMILY_E)
+summary(APOP_PLOT_4_granular_FAMILY_E_AOV)
+
+APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED <-  APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="E")
+APOP_PLOT_4_granular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_4_granular_FAMILY_E_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY J 
+```{r live_apoptotic_granular_aov_J, echo=FALSE}
+APOP_PLOT_4_granular_FAMILY_J <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="J")
+
+APOP_PLOT_4_granular_FAMILY_J_AOV <- aov(APOP_PLOT_4_granular_FAMILY_J$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J$GROUP, data=APOP_PLOT_4_granular_FAMILY_J)
+summary(APOP_PLOT_4_granular_FAMILY_J_AOV)
+
+APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED <-  APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="J")
+APOP_PLOT_4_granular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_4_granular_FAMILY_J_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY L 
+```{r live_apoptotic_granular_aov_L, echo=FALSE}
+APOP_PLOT_4_granular_FAMILY_L <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="L")
+
+APOP_PLOT_4_granular_FAMILY_L_AOV <- aov(APOP_PLOT_4_granular_FAMILY_L$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L$GROUP, data=APOP_PLOT_4_granular_FAMILY_L)
+summary(APOP_PLOT_4_granular_FAMILY_L_AOV)
+
+APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED <-  APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="L")
+APOP_PLOT_4_granular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_4_granular_FAMILY_L_AOV_BAD_REMOVED)      
+
+```
+
+### TWO WAY ANOVA
+```{r live_granular_apoptotic_aov, echo=FALSE}
+APOP_PLOT_4_granular_TWO_WAY_AOV <- aov(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LR_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT)
+summary(APOP_PLOT_4_granular_TWO_WAY_AOV)
+
+APOP_PLOT_4_granular_TWO_WAY_AOV_BAD_REMOVED <- aov(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.LR_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED)
+summary(APOP_PLOT_4_granular_TWO_WAY_AOV_BAD_REMOVED)
+TukeyHSD(APOP_PLOT_4_granular_TWO_WAY_AOV_BAD_REMOVED)
+```
+
+# % LIVE apoptotic agranular hemocytes (PLOT 7, Q1-LR)
+
+### FAMILY A
+```{r live_apoptotic_agranular_aov_A, echo=FALSE}
+APOP_PLOT_7_agranular_FAMILY_A <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="A")
+
+APOP_PLOT_7_agranular_FAMILY_A_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_A$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A)
+summary(APOP_PLOT_7_agranular_FAMILY_A_AOV)
+
+APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED <-  APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="A")
+APOP_PLOT_7_agranular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_7_agranular_FAMILY_A_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY B
+
+```{r live_apoptotic_agranular_aov_B, echo=FALSE}
+APOP_PLOT_7_agranular_FAMILY_B <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="B")
+
+APOP_PLOT_7_agranular_FAMILY_B_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_B$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B)
+summary(APOP_PLOT_7_agranular_FAMILY_B_AOV)
+
+APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED <-  APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="B")
+APOP_PLOT_7_agranular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_7_agranular_FAMILY_B_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY D
+```{r live_apoptotic_agranular_aov_D, echo=FALSE}
+APOP_PLOT_7_agranular_FAMILY_D <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="D")
+
+APOP_PLOT_7_agranular_FAMILY_D_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_D$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D)
+summary(APOP_PLOT_7_agranular_FAMILY_D_AOV)
+
+APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED <-  APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="D")
+APOP_PLOT_7_agranular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_7_agranular_FAMILY_D_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY E
+
+```{r live_apoptotic_agranular_aov_E, echo=FALSE}
+APOP_PLOT_7_agranular_FAMILY_E <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="E")
+
+APOP_PLOT_7_agranular_FAMILY_E_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_E$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E)
+summary(APOP_PLOT_7_agranular_FAMILY_E_AOV)
+
+APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED <-  APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="E")
+APOP_PLOT_7_agranular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_7_agranular_FAMILY_E_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY J 
+```{r live_apoptotic_agranular_aov_J, echo=FALSE}
+APOP_PLOT_7_agranular_FAMILY_J <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="J")
+
+APOP_PLOT_7_agranular_FAMILY_J_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_J$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J)
+summary(APOP_PLOT_7_agranular_FAMILY_J_AOV)
+
+APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED <-  APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="J")
+APOP_PLOT_7_agranular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_7_agranular_FAMILY_J_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY L 
+
+```{r live_apoptotic_agranular_aov_L, echo=FALSE}
+APOP_PLOT_7_agranular_FAMILY_L <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="L")
+
+APOP_PLOT_7_agranular_FAMILY_L_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_L$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L)
+summary(APOP_PLOT_7_agranular_FAMILY_L_AOV)
+
+APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED <-  APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED %>% filter(FAMILY=="L")
+APOP_PLOT_7_agranular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_7_agranular_FAMILY_L_AOV_BAD_REMOVED)      
+
+```
+
+### TWO WAY ANOVA
+
+```{r live_Agranular_apoptotic_aov, echo=FALSE}
+APOP_PLOT_7_agranular_TWO_WAY_AOV <- aov(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT)
+summary(APOP_PLOT_7_agranular_TWO_WAY_AOV)
+
+APOP_PLOT_7_agranular_TWO_WAY_AOV_BAD_REMOVED <- aov(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LR_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED)
+summary(APOP_PLOT_7_agranular_TWO_WAY_AOV_BAD_REMOVED)
+
+```
+
+
+## % DEAD apoptotic granular hemocytes (PLOT4, Q2-UR)
+
+### FAMILY A
+```{r dead_apoptotic_granular_aov_A, echo=FALSE}
+
+APOP_PLOT_4_dead_granular_FAMILY_A_AOV <- aov(APOP_PLOT_4_granular_FAMILY_A$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A$GROUP, data=APOP_PLOT_4_granular_FAMILY_A)
+summary(APOP_PLOT_4_dead_granular_FAMILY_A_AOV)
+
+APOP_PLOT_4_dead_granular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_4_dead_granular_FAMILY_A_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY B
+```{r dead_apoptotic_granular_aov_B, echo=FALSE}
+
+APOP_PLOT_4_dead_granular_FAMILY_B_AOV <- aov(APOP_PLOT_4_granular_FAMILY_B$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B$GROUP, data=APOP_PLOT_4_granular_FAMILY_B)
+summary(APOP_PLOT_4_dead_granular_FAMILY_B_AOV)
+
+APOP_PLOT_4_dead_granular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_4_dead_granular_FAMILY_B_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY D
+```{r dead_apoptotic_granular_aov_D, echo=FALSE}
+
+APOP_PLOT_4_dead_granular_FAMILY_D_AOV <- aov(APOP_PLOT_4_granular_FAMILY_D$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D$GROUP, data=APOP_PLOT_4_granular_FAMILY_D)
+summary(APOP_PLOT_4_dead_granular_FAMILY_D_AOV)
+
+APOP_PLOT_4_dead_granular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_4_dead_granular_FAMILY_D_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY E
+
+```{r dead_apoptotic_granular_aov_E, echo=FALSE}
+
+APOP_PLOT_4_dead_granular_FAMILY_E_AOV <- aov(APOP_PLOT_4_granular_FAMILY_E$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E$GROUP, data=APOP_PLOT_4_granular_FAMILY_E)
+summary(APOP_PLOT_4_dead_granular_FAMILY_E_AOV)
+
+APOP_PLOT_4_dead_granular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_4_dead_granular_FAMILY_E_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY J 
+
+```{r dead_apoptotic_granular_aov_J, echo=FALSE}
+
+APOP_PLOT_4_dead_granular_FAMILY_J_AOV <- aov(APOP_PLOT_4_granular_FAMILY_J$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J$GROUP, data=APOP_PLOT_4_granular_FAMILY_J)
+summary(APOP_PLOT_4_dead_granular_FAMILY_J_AOV)
+
+APOP_PLOT_4_dead_granular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_4_dead_granular_FAMILY_J_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY L 
+```{r dead_apoptotic_granular_aov_L, echo=FALSE}
+
+APOP_PLOT_4_dead_granular_FAMILY_L_AOV <- aov(APOP_PLOT_4_granular_FAMILY_L$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L$GROUP, data=APOP_PLOT_4_granular_FAMILY_L)
+summary(APOP_PLOT_4_dead_granular_FAMILY_L_AOV)
+
+APOP_PLOT_4_dead_granular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_4_dead_granular_FAMILY_L_AOV_BAD_REMOVED)      
+
+```
+
+### TWO WAY ANOVA
+
+```{r DEAD_granular_apoptotic_aov, echo=FALSE}
+APOP_PLOT_4_dead_granular_TWO_WAY_AOV <- aov(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UR_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT)
+summary(APOP_PLOT_4_dead_granular_TWO_WAY_AOV)
+
+APOP_PLOT_4_dead_granular_TWO_WAY_AOV_BAD_REMOVED <- aov(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.UR_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED)
+summary(APOP_PLOT_4_dead_granular_TWO_WAY_AOV_BAD_REMOVED)
+TukeyHSD(APOP_PLOT_4_dead_granular_TWO_WAY_AOV_BAD_REMOVED)
+```
+
+
+## % DEAD apoptotic agranular hemocytes (PLOT 7, Q1-UR)
+
+### FAMILY A
+```{r dead_apoptotic_agranular_aov_A, echo=FALSE}
+
+APOP_PLOT_7_dead_agranular_FAMILY_A_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_A$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_A_AOV)
+
+APOP_PLOT_7_dead_agranular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_A_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY B
+```{r dead_apoptotic_agranular_aov_B, echo=FALSE}
+
+APOP_PLOT_7_dead_agranular_FAMILY_B_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_B$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_B_AOV)
+
+APOP_PLOT_7_dead_agranular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_B_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY D
+```{r dead_apoptotic_agranular_aov_D, echo=FALSE}
+
+APOP_PLOT_7_dead_agranular_FAMILY_D_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_D$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_D_AOV)
+
+APOP_PLOT_7_dead_agranular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_D_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY E
+```{r dead_apoptotic_agranular_aov_E, echo=FALSE}
+
+APOP_PLOT_7_dead_agranular_FAMILY_E_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_E$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_E_AOV)
+
+APOP_PLOT_7_dead_agranular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_E_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY J 
+
+```{r dead_apoptotic_agranular_aov_J, echo=FALSE}
+
+APOP_PLOT_7_dead_agranular_FAMILY_J_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_J$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_J_AOV)
+
+APOP_PLOT_7_dead_agranular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_J_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY L 
+```{r dead_apoptotic_agranular_aov_L, echo=FALSE}
+
+APOP_PLOT_7_dead_agranular_FAMILY_L_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_L$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_L_AOV)
+
+APOP_PLOT_7_dead_agranular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_7_dead_agranular_FAMILY_L_AOV_BAD_REMOVED)      
+
+```
+
+### TWO WAY ANOVA
+
+```{r DEAD_Agranular_apoptotic_aov, echo=FALSE}
+APOP_PLOT_7_dead_agranular_TWO_WAY_AOV <- aov(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UR_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT)
+summary(APOP_PLOT_7_dead_agranular_TWO_WAY_AOV)
+
+APOP_PLOT_7_dead_agranular_TWO_WAY_AOV_BAD_REMOVED <- aov(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.UR_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED)
+summary(APOP_PLOT_7_dead_agranular_TWO_WAY_AOV_BAD_REMOVED)
+TukeyHSD(APOP_PLOT_7_dead_agranular_TWO_WAY_AOV_BAD_REMOVED)
+```
+
+## Percent necrotic granular hemocytes (PLOT 4, Q2-UL)
+
+### FAMILY A
+```{r necrotic_granular_aov_A, echo=FALSE}
+
+APOP_PLOT_4_necrotic_granular_FAMILY_A_AOV <- aov(APOP_PLOT_4_granular_FAMILY_A$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A$GROUP, data=APOP_PLOT_4_granular_FAMILY_A)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_A_AOV)
+
+APOP_PLOT_4_necrotic_granular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_A_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY B
+```{r necrotic_granular_aov_B, echo=FALSE}
+
+APOP_PLOT_4_necrotic_granular_FAMILY_B_AOV <- aov(APOP_PLOT_4_granular_FAMILY_B$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B$GROUP, data=APOP_PLOT_4_granular_FAMILY_B)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_B_AOV)
+
+APOP_PLOT_4_necrotic_granular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_B_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY D
+```{r necrotic_granular_aov_D, echo=FALSE}
+
+APOP_PLOT_4_necrotic_granular_FAMILY_D_AOV <- aov(APOP_PLOT_4_granular_FAMILY_D$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D$GROUP, data=APOP_PLOT_4_granular_FAMILY_D)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_D_AOV)
+
+APOP_PLOT_4_necrotic_granular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_D_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY E
+
+```{r necrotic_granular_aov_E, echo=FALSE}
+
+APOP_PLOT_4_necrotic_granular_FAMILY_E_AOV <- aov(APOP_PLOT_4_granular_FAMILY_E$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E$GROUP, data=APOP_PLOT_4_granular_FAMILY_E)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_E_AOV)
+
+APOP_PLOT_4_necrotic_granular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_E_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY J 
+```{r necrotic_granular_aov_J, echo=FALSE}
+
+APOP_PLOT_4_necrotic_granular_FAMILY_J_AOV <- aov(APOP_PLOT_4_granular_FAMILY_J$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J$GROUP, data=APOP_PLOT_4_granular_FAMILY_J)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_J_AOV)
+
+APOP_PLOT_4_necrotic_granular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_J_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY L 
+
+```{r necrotic_granular_aov_L, echo=FALSE}
+
+APOP_PLOT_4_necrotic_granular_FAMILY_L_AOV <- aov(APOP_PLOT_4_granular_FAMILY_L$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L$GROUP, data=APOP_PLOT_4_granular_FAMILY_L)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_L_AOV)
+
+APOP_PLOT_4_necrotic_granular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_4_necrotic_granular_FAMILY_L_AOV_BAD_REMOVED)      
+
+```
+
+### TWO WAY ANOVA
+
+```{r necrotic_granular_aov, echo=FALSE}
+APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV <- aov(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UL_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT)
+summary(APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV)
+
+APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV_BAD_REMOVED <- aov(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.UL_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED)
+summary(APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV_BAD_REMOVED)
+
+```
+
+## Percent necrotic agranular hemocytes (PLOT 7, Q1-UL)
+
+### FAMILY A
+```{r necrotic_agranular_aov_A, echo=FALSE}
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_A_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_A$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_A_AOV)
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_A_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY B
+```{r necrotic_agranular_aov_B, echo=FALSE}
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_B_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_B$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_B_AOV)
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_B_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY D
+```{r necrotic_agranular_aov_D, echo=FALSE}
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_D_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_D$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_D_AOV)
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_D_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY E
+```{r necrotic_agranular_aov_E, echo=FALSE}
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_E_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_E$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_E_AOV)
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_E_AOV_BAD_REMOVED)      
+
+```
+### FAMILY J 
+
+```{r necrotic_agranular_aov_J, echo=FALSE}
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_J$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV)
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV_BAD_REMOVED)      
+
+```
+
+### FAMILY L 
+```{r necrotic__agranular_aov_L, echo=FALSE}
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_L$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV)
+
+APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV_BAD_REMOVED)      
+
+```
+
+
+### TWO WAY ANOVA
+```{r necrotic_Agranular_apoptotic_aov, echo=FALSE}
+APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV <- aov(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UL_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT)
+summary(APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV)
+
+APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV_BAD_REMOVED <- aov(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.UL_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED)
+summary(APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV_BAD_REMOVED)
+
+```
+
+# CASPASE ASSAY DATA # 
+
+
