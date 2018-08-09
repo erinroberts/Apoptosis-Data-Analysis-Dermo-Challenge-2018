@@ -519,7 +519,7 @@ summary(VI_PLOT10_LIVE_AGranular_hemocytes_oneway_lm)
 
 ## ANALYZING DIFFERENCE BETWEEN PERCENTAGE OF AGRANULAR VERSUS GRANULAR TOTAL, AND LIVE AND DEAD
 ```{r difference_between_cells, include=TRUE}
-# Statistical difference between total agranular cells and granular cells 
+## Statistical difference between total agranular cells and granular cells 
 VI_PLOT4_granular_vs_agranular_twoway_aov <- aov(VI_PLOT4_restructured_BAD_REMOVED$Arcsine ~ VI_PLOT4_restructured_BAD_REMOVED$E1_E3 + VI_PLOT4_restructured_BAD_REMOVED$GROUP, data=VI_PLOT4_E1_E3_GATE)
 summary(VI_PLOT4_granular_vs_agranular_twoway_aov)
 Anova(VI_PLOT4_granular_vs_agranular_twoway_aov, type="II")
@@ -533,21 +533,52 @@ lsmeans(VI_PLOT4_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLO
 lsmeans(VI_PLOT4_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT4_restructured_BAD_REMOVED$GROUP, adjust="tukey")
 
 lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_INTERACTION_lm, pairwise ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY, adjust="tukey")
+
+## Statistical difference between Live agranular cells and granular cells 
+VI_PLOT9_E1_MINUS_V1R$E1_E3 <- "E1"
+VI_PLOT10_E3_MINUS_V1R$E1_E3 <- "E3"
+VI_PLOT9_PLOT10_combined <-rbind(VI_PLOT9_E1_MINUS_V1R, VI_PLOT10_E3_MINUS_V1R)
+
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$E1_E3 <- "E1"
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$E1_E3 <- "E3"
+VI_PLOT9_PLOT10_BAD_REMOVED_combined <-rbind(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
+
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov <- aov(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3 +  VI_PLOT9_PLOT10_BAD_REMOVED_combined$GROUP,data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
+summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov)
+Anova(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov, type="II")
+TukeyHSD(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov)
+
+# Plus an interaction term
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov <- lm(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3 + VI_PLOT9_PLOT10_BAD_REMOVED_combined$GROUP + VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3:VI_PLOT9_PLOT10_BAD_REMOVED_combined$GROUP, data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
+summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov)
+Anova(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, type="II")
+
+lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3, adjust="tukey")
+lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$GROUP, adjust="tukey")
+
+lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_INTERACTION_lm, pairwise ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY, adjust="tukey")
+
 ```
 # VIABILITY ASSAY OBSERVATIONS AND CONCLUSIONS 
 When comparing the control and treatment percentages of granular hemocytes and agranular hemocytes within families, no significant differences were observed. No significant differences were observed between families either. 
 
-### APOPTOSIS ASSAY #### 
+### APOPTOSIS ASSAY9
 
 ## Load in data for each plot
 
 ```{r load_data, echo=TRUE}
 #Load in the Data for each plot on a separate spreadsheet
 
-APOP_PLOT3_P1_GATE <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT3.csv", header=TRUE)
-APOP_PLOT8_GRANULAR_AGRANULAR <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT8.csv", header=TRUE)
-APOP_PLOT4_GRANULAR_QUAD_PLOT <-read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT4.csv", header=TRUE)
-APOP_PLOT7_AGRANULAR_QUAD_PLOT <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/PLOT7.csv", header=TRUE)
+APOP_PLOT3_P1_GATE <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/DAY7/PLOT3.csv", header=TRUE)
+APOP_PLOT8_GRANULAR_AGRANULAR <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/DAY7/PLOT8.csv", header=TRUE)
+APOP_PLOT4_GRANULAR_QUAD_PLOT <-read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/DAY7/PLOT4.csv", header=TRUE)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/DAY7/PLOT7.csv", header=TRUE)
+
+#Remove empty rows
+APOP_PLOT3_P1_GATE <- na.omit(APOP_PLOT3_P1_GATE)
+APOP_PLOT8_GRANULAR_AGRANULAR <- na.omit(APOP_PLOT8_GRANULAR_AGRANULAR)
+APOP_PLOT4_GRANULAR_QUAD_PLOT <- na.omit(APOP_PLOT4_GRANULAR_QUAD_PLOT)
+APOP_PLOT7_AGRANULAR_QUAD_PLOT<- na.omit(APOP_PLOT7_AGRANULAR_QUAD_PLOT)
 
 ## Remove percent symbol from columns 
 APOP_PLOT3_P1_GATE$P1_PERCENT_OF_THE_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT3_P1_GATE$P1_PERCENT_OF_THE_PLOT))
@@ -565,7 +596,7 @@ APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LL_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\
 APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_PERCENT_OF_THIS_PLOT))
 
 # Load in Data for the samples to remove 
-APOPTOSIS_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/APOPTOSIS_SAMPLES_REMOVE.csv", header=TRUE)
+APOPTOSIS_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/DAY7/APOPTOSIS_SAMPLES_REMOVE.csv", header=TRUE)
 
 # Data Frame with bad samples removed
 APOP_PLOT3_P1_GATE_BAD_REMOVED <- APOP_PLOT3_P1_GATE[!APOP_PLOT3_P1_GATE$SAMPLE_ID %in% APOPTOSIS_Samples_Remove$SAMPLE_ID, , drop=FALSE]
@@ -1312,7 +1343,10 @@ summary(APOP_PLOT_7_necrotic_agranular_oneway_lm)
 
 # CASPASE ASSAY DATA # 
 
+
 # Websites for Reference #
 http://rcompanion.org/handbook/G_09.html
+
+
 
 
