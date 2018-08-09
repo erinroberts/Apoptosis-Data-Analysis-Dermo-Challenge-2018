@@ -36,6 +36,7 @@ VI_PLOT5_P1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PL
 VI_PLOT9_E1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT9.csv", header=TRUE)
 VI_PLOT10_E3_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT10.csv", header=TRUE)
 VI_PLOT12_P1_PerCP <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT12.csv", header=TRUE)
+VI_PLOT4_restructured <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT4_RESTRUCTURED.csv", header=TRUE)
 
 # Remove rows with na's with the remove.na function from rgr
 VI_PLOT2_hemocytes <- na.omit(VI_PLOT2_hemocytes)
@@ -45,6 +46,7 @@ VI_PLOT5_P1_MINUS_V1R <- na.omit(VI_PLOT5_P1_MINUS_V1R)
 VI_PLOT9_E1_MINUS_V1R <- na.omit(VI_PLOT9_E1_MINUS_V1R)
 VI_PLOT10_E3_MINUS_V1R <- na.omit(VI_PLOT10_E3_MINUS_V1R)
 VI_PLOT12_P1_PerCP <- na.omit(VI_PLOT12_P1_PerCP)
+VI_PLOT4_restructured <- na.omit(VI_PLOT4_restructured)
 
 ## Remove percent symbol from columns 
 VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT))
@@ -53,6 +55,7 @@ VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLO
 VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT))
 VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT))
 VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT))
+VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT))
 
 # Load in Data for the samples to remove 
 Viability_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_SAMPLES_REMOVE.csv", header=TRUE)
@@ -65,7 +68,7 @@ VI_PLOT5_P1_MINUS_V1R_BAD_REMOVED <- VI_PLOT5_P1_MINUS_V1R[!VI_PLOT5_P1_MINUS_V1
 VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R[!VI_PLOT9_E1_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
 VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R[!VI_PLOT10_E3_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
 VI_PLOT12_P1_PerCP_BAD_REMOVED <- VI_PLOT12_P1_PerCP[!VI_PLOT12_P1_PerCP$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
-
+VI_PLOT4_restructured_BAD_REMOVED <- VI_PLOT4_restructured[!VI_PLOT4_restructured$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
 
 ```
 
@@ -111,6 +114,7 @@ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R_BAD_R
 VI_PLOT2_hemocytes$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT*.01)
 VI_PLOT4_E1_E3_GATE$E1_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT*0.01)
 VI_PLOT4_E1_E3_GATE$E3_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT4_restructured$Arcsine <- transf.arcsin(VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT*0.01)
 VI_PLOT9_E1_MINUS_V1R$Arcsine <- transf.arcsin(VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE*0.01)
 VI_PLOT10_E3_MINUS_V1R$Arcsine <- transf.arcsin(VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE*0.01)
 VI_PLOT12_P1_PerCP$V1_L_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT*0.01)
@@ -124,7 +128,7 @@ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT9_E1_MINUS_V1R
 VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE*0.01)
 VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_L_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_L_PERCENT_OF_THIS_PLOT*0.01)
 VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_R_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_R_PERCENT_OF_THIS_PLOT*0.01)
-
+VI_PLOT4_restructured_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT4_restructured_BAD_REMOVED$PERCENT_OF_THIS_PLOT*0.01)
 ```
 
 NOTE: Families with significant differences within or between groups have been highlighted in yellow
@@ -513,10 +517,27 @@ VI_PLOT10_LIVE_AGranular_hemocytes_oneway_lm <- lm(VI_PLOT10_E3_MINUS_V1R_BAD_RE
 summary(VI_PLOT10_LIVE_AGranular_hemocytes_oneway_lm)
 ```
 
+## ANALYZING DIFFERENCE BETWEEN PERCENTAGE OF AGRANULAR VERSUS GRANULAR TOTAL, AND LIVE AND DEAD
+```{r difference_between_cells, include=TRUE}
+# Statistical difference between total agranular cells and granular cells 
+VI_PLOT4_granular_vs_agranular_twoway_aov <- aov(VI_PLOT4_restructured_BAD_REMOVED$Arcsine ~ VI_PLOT4_restructured_BAD_REMOVED$E1_E3 + VI_PLOT4_restructured_BAD_REMOVED$GROUP, data=VI_PLOT4_E1_E3_GATE)
+summary(VI_PLOT4_granular_vs_agranular_twoway_aov)
+Anova(VI_PLOT4_granular_vs_agranular_twoway_aov, type="II")
+TukeyHSD(VI_PLOT4_granular_vs_agranular_twoway_aov)
+
+# Plus an interaction term
+VI_PLOT4_granular_vs_agranular_twoway_interaction_aov <- lm(VI_PLOT4_restructured_BAD_REMOVED$Arcsine ~ VI_PLOT4_restructured_BAD_REMOVED$E1_E3 + VI_PLOT4_restructured_BAD_REMOVED$GROUP + VI_PLOT4_restructured_BAD_REMOVED$E1_E3:VI_PLOT4_restructured_BAD_REMOVED$GROUP, data=VI_PLOT4_E1_E3_GATE)
+summary(VI_PLOT4_granular_vs_agranular_twoway_interaction_aov)
+Anova(VI_PLOT4_granular_vs_agranular_twoway_interaction_aov, type="II")
+lsmeans(VI_PLOT4_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT4_restructured_BAD_REMOVED$E1_E3, adjust="tukey")
+lsmeans(VI_PLOT4_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT4_restructured_BAD_REMOVED$GROUP, adjust="tukey")
+
+lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_INTERACTION_lm, pairwise ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY, adjust="tukey")
+```
 # VIABILITY ASSAY OBSERVATIONS AND CONCLUSIONS 
 When comparing the control and treatment percentages of granular hemocytes and agranular hemocytes within families, no significant differences were observed. No significant differences were observed between families either. 
 
-# APOPTOSIS ASSAY #
+### APOPTOSIS ASSAY #### 
 
 ## Load in data for each plot
 
