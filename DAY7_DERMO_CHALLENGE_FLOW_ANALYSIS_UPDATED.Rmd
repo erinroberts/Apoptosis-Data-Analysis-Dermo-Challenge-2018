@@ -19,7 +19,7 @@ library(metafor)
 library(dplyr)
 library(car)
 library(lsmeans)
-
+library(rgr)
 ```
 
 # VIABILITY ASSAY ANALYSIS 
@@ -29,13 +29,22 @@ library(lsmeans)
 ```{r load, echo=TRUE}
 #Load in the Data for each plot on a separate spreadsheet
 
-VI_PLOT2_hemocytes <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT2.csv", header=TRUE)
-VI_PLOT3_P1_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT3.csv", header=TRUE)
-VI_PLOT4_E1_E3_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT4.csv", header=TRUE)
-VI_PLOT5_P1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT5.csv", header=TRUE)
-VI_PLOT9_E1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT9.csv", header=TRUE)
-VI_PLOT10_E3_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT10.csv", header=TRUE)
-VI_PLOT12_P1_PerCP <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/PLOT12.csv", header=TRUE)
+VI_PLOT2_hemocytes <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT2.csv", header=TRUE)
+VI_PLOT3_P1_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT3.csv", header=TRUE)
+VI_PLOT4_E1_E3_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT4.csv", header=TRUE)
+VI_PLOT5_P1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT5.csv", header=TRUE)
+VI_PLOT9_E1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT9.csv", header=TRUE)
+VI_PLOT10_E3_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT10.csv", header=TRUE)
+VI_PLOT12_P1_PerCP <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT12.csv", header=TRUE)
+
+# Remove rows with na's with the remove.na function from rgr
+VI_PLOT2_hemocytes <- na.omit(VI_PLOT2_hemocytes)
+VI_PLOT3_P1_GATE <- na.omit(VI_PLOT3_P1_GATE)
+VI_PLOT4_E1_E3_GATE <- na.omit(VI_PLOT4_E1_E3_GATE)
+VI_PLOT5_P1_MINUS_V1R <- na.omit(VI_PLOT5_P1_MINUS_V1R)
+VI_PLOT9_E1_MINUS_V1R <- na.omit(VI_PLOT9_E1_MINUS_V1R)
+VI_PLOT10_E3_MINUS_V1R <- na.omit(VI_PLOT10_E3_MINUS_V1R)
+VI_PLOT12_P1_PerCP <- na.omit(VI_PLOT12_P1_PerCP)
 
 ## Remove percent symbol from columns 
 VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT))
@@ -46,7 +55,7 @@ VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PL
 VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT))
 
 # Load in Data for the samples to remove 
-Viability_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/VIABILITY_SAMPLES_REMOVE.csv", header=TRUE)
+Viability_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_SAMPLES_REMOVE.csv", header=TRUE)
 
 # Data Frame with bad samples removed
 VI_PLOT2_hemocytes_BAD_REMOVED <- VI_PLOT2_hemocytes[!VI_PLOT2_hemocytes$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
@@ -56,6 +65,8 @@ VI_PLOT5_P1_MINUS_V1R_BAD_REMOVED <- VI_PLOT5_P1_MINUS_V1R[!VI_PLOT5_P1_MINUS_V1
 VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R[!VI_PLOT9_E1_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
 VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R[!VI_PLOT10_E3_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
 VI_PLOT12_P1_PerCP_BAD_REMOVED <- VI_PLOT12_P1_PerCP[!VI_PLOT12_P1_PerCP$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+
+
 ```
 
 ## Basic plots showing the data by Family and then across families
@@ -67,13 +78,35 @@ VI_Percent_total_hemocytes_BAD_NOT_REMOVED <- ggplot(data= VI_PLOT2_hemocytes, a
     xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 VI_Percent_total_hemocytes_BAD_NOT_REMOVED
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
-  xlab("Family") + ylab("Percent of Hemocyte Events") ylim(0,100)
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 VI_Percent_total_hemocytes_BAD_REMOVED
 ```
 
 # Arc sine Percentage data
 
 ```{r arcsine, echo=TRUE}
+
+# Calculate Percent Live Granulocytes 
+  # Take cells here and make a percentage out of GRANULAR hemocyte count from VI_PLOT3_P1_GATE P1_COUNT
+VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT)
+VI_PLOT3_P1_GATE$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE$P1_COUNT)
+VI_PLOT4_E1_E3_GATE$E1_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE$E1_COUNT)
+VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E1_COUNT)*100
+
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)*100 
+
+# Calculate Percent Live Agranulocytes
+VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT)
+VI_PLOT4_E1_E3_GATE$E3_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE$E3_COUNT)
+VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E3_COUNT)*100
+
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)*100 
+
 # NOTE: NA's produced whenever the percentages were above 100%
 VI_PLOT2_hemocytes$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT*.01)
 VI_PLOT4_E1_E3_GATE$E1_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT*0.01)
@@ -166,7 +199,7 @@ VI_PLOT4_E1_AOV_FAMILY_L <- aov(VI_PLOT4_FAMILY_L$E1_Arcsine ~ VI_PLOT4_FAMILY_L
 summary(VI_PLOT4_E1_AOV_FAMILY_L)
 VI_PLOT4_FAMILY_L_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="L")
 VI_PLOT4_E1_AOV_FAMILY_L_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_L_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_L_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_L_BAD_REMOVED)
-summary(VI_PLOT4_E1_AOV_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_L_BAD_REMOVED)
 ```
 
 ### Two Way ANOVA of Granular Hemocytes
@@ -289,17 +322,8 @@ summary(VI_PLOT4_Agranular_hemocytes_oneway_lm)
 
 ## Percent Live Granular Hemocytes out of all Granular hemocytes
 ```{r percent, echo=FALSE}
-# Take cells here and make a percentage out of GRANULAR hemocyte count from VI_PLOT3_P1_GATE P1_COUNT
-VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT)
-VI_PLOT3_P1_GATE$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE$P1_COUNT)
-VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E1_COUNT)*100
-
 VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte Events \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
 VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH                               
-
-VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
-VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT)
-VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)*100 
 
 VI_Percent_Live_Granular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
 VI_Percent_Live_Granular_BAD_REMOVED_GRAPH                          
@@ -395,14 +419,8 @@ summary(VI_PLOT9_LIVE_granular_hemocytes_oneway_lm)
 
 # Percent Live Agranular Hemocytes
 ```{r percent_live_agranular_hemocytes, echo=FALSE}
-VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT)
-VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E3_COUNT)*100
-
 VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Not Removed") + xlab("Family") +   ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)          
 VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH                                             
-
-VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
-VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)*100 
 
 VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)
 VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH                                                          
@@ -1270,9 +1288,10 @@ APOP_PLOT_7_necrotic_agranular_oneway_lm <- lm(APOP_PLOT_7_necrotic_agranular_he
 summary(APOP_PLOT_7_necrotic_agranular_oneway_lm)
 ```
 
-```
 
 # CASPASE ASSAY DATA # 
 
 # Websites for Reference #
 http://rcompanion.org/handbook/G_09.html
+
+
