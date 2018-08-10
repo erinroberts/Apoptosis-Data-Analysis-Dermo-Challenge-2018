@@ -1343,6 +1343,268 @@ summary(APOP_PLOT_7_necrotic_agranular_oneway_lm)
 
 # CASPASE ASSAY DATA # 
 
+## Load in data for each plot
+
+```{r load, echo=TRUE}
+#Load in the Data for each plot on a separate spreadsheet
+
+CAS_P1_hemocytes <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT3.csv", header=TRUE)
+CAS_PLOT4_granular_quad_plot <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT4.csv", header=TRUE)
+CAS_PLOT7_agranular_quad_plot <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT7.csv", header=TRUE)
+CAS_PLOT8_granular_agranular <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT8.csv", header=TRUE)
+CAS_PLOT10_live_dead <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT10.csv", header=TRUE)
+
+#Load in data tables with the extra GATE category
+CAS_P1_hemocytes_GATE_ADDED <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT3_GATE_ADDED.csv", header = TRUE)
+CAS_PLOT4_granular_quad_plot_GATE_ADDED <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT4_GATE_ADDED.csv", header=TRUE)
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT7_GATE_ADDED.csv", header=TRUE)
+CAS_PLOT8_granular_agranular_GATE_ADDED <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT8_GATE_ADDED.csv", header=TRUE)
+CAS_PLOT10_live_dead_GATE_ADDED <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/PLOT10_GATE_ADDED.csv", header=TRUE)
+
+# Remove rows with na's with the remove.na function from rgr
+CAS_P1_hemocytes <- na.omit(CAS_P1_hemocytes)
+CAS_PLOT4_granular_quad_plot <-na.omit(CAS_PLOT4_granular_quad_plot)
+CAS_PLOT7_agranular_quad_plot <- na.omit(CAS_PLOT7_agranular_quad_plot)
+CAS_PLOT8_granular_agranular <- na.omit(CAS_PLOT8_granular_agranular)
+CAS_PLOT10_live_dead <- na.omit(CAS_PLOT10_live_dead)
+
+CAS_P1_hemocytes_GATE_ADDED <- na.omit(CAS_P1_hemocytes_GATE_ADDED)
+CAS_PLOT4_granular_quad_plot_GATE_ADDED <- na.omit(CAS_PLOT4_granular_quad_plot_GATE_ADDED)
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED <- na.omit(CAS_PLOT7_agranular_quad_plot_GATE_ADDED)
+CAS_PLOT8_granular_agranular_GATE_ADDED <- na.omit(CAS_PLOT8_granular_agranular_GATE_ADDED)
+CAS_PLOT10_live_dead_GATE_ADDED <- na.omit(CAS_PLOT10_live_dead_GATE_ADDED)
+
+## Remove percent symbol from columns 
+CAS_P1_hemocytes$P1_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_P1_hemocytes$P1_Percent_of_this_plot))
+CAS_PLOT4_granular_quad_plot$Q3.UL_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT4_granular_quad_plot$Q3.UL_Percent_of_this_plot))
+CAS_PLOT4_granular_quad_plot$Q3.UR_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT4_granular_quad_plot$Q3.UR_Percent_of_this_plot))
+CAS_PLOT4_granular_quad_plot$Q3.LL_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT4_granular_quad_plot$Q3.LL_Percent_of_this_plot))
+CAS_PLOT4_granular_quad_plot$Q3.LR_Percent_of_this_plot  <- as.numeric(gsub("\\%", "", CAS_PLOT4_granular_quad_plot$Q3.LR_Percent_of_this_plot))
+
+CAS_PLOT7_agranular_quad_plot$Q4.UL_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT7_agranular_quad_plot$Q4.UL_Percent_of_this_plot))
+CAS_PLOT7_agranular_quad_plot$Q4.UR_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT7_agranular_quad_plot$Q4.UR_Percent_of_this_plot))
+CAS_PLOT7_agranular_quad_plot$Q4.LR_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT7_agranular_quad_plot$Q4.LR_Percent_of_this_plot))
+CAS_PLOT7_agranular_quad_plot$Q4.LL_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT7_agranular_quad_plot$Q4.LL_Percent_of_this_plot))
+
+CAS_PLOT8_granular_agranular$P3_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT8_granular_agranular$P3_Percent_of_this_plot))
+CAS_PLOT8_granular_agranular$P4_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT8_granular_agranular$P4_Percent_of_this_plot))
+
+CAS_PLOT10_live_dead$V2.L_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT10_live_dead$V2.L_Percent_of_this_plot))
+CAS_PLOT10_live_dead$V2.R_Percent_of_this_plot <- as.numeric(gsub("\\%", "", CAS_PLOT10_live_dead$V2.R_Percent_of_this_plot))
+
+CAS_P1_hemocytes_GATE_ADDED$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", CAS_P1_hemocytes_GATE_ADDED$PERCENT_OF_THIS_PLOT ))
+CAS_PLOT4_granular_quad_plot_GATE_ADDED$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", CAS_PLOT4_granular_quad_plot_GATE_ADDED$PERCENT_OF_THIS_PLOT))
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", CAS_PLOT7_agranular_quad_plot_GATE_ADDED$PERCENT_OF_THIS_PLOT))
+CAS_PLOT8_granular_agranular_GATE_ADDED$PERCENT_OF_THIS_PLOT <-  as.numeric(gsub("\\%", "", CAS_PLOT8_granular_agranular_GATE_ADDED$PERCENT_OF_THIS_PLOT))
+CAS_PLOT10_live_dead_GATE_ADDED$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", CAS_PLOT10_live_dead_GATE_ADDED$PERCENT_OF_THIS_PLOT))
+
+# Not going to remove any samples right now due to low sample sizes to begin with
+
+
+```
+
+## Basic plots showing the data across families
+
+## Percent LIVE Apoptotic Granular Hemocytes out of all granular hemocytes
+```{r CAS_live_apoptotic_granular, echo=FALSE}
+ 
+Percent_live_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data= CAS_PLOT4_granular_quad_plot, aes(x=FAMILY, y=Q3.LR_Percent_of_this_plot, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Caspase-dependent Apoptotic \n Granular Hemocytes Low Quality Not Removed") +
+    xlab("Family") + ylab("Percent of Granular Hemocyte Events") + ylim(0,100)
+Percent_live_apoptotic_granular_BAD_NOT_REMOVED
+
+```
+
+# LIVE Apoptotic Granular hemocytes compared to Live and Necrotic hemocytes
+```{r apoptosis_granular_compared, echo=TRUE}
+
+CAS_all_percentages_granular <- ggplot(CAS_PLOT4_granular_quad_plot_GATE_ADDED, aes(x=FAMILY, y=PERCENT_OF_THIS_PLOT, by=GATE, color=GATE, shape=GROUP)) + geom_point() + ggtitle("Percent of Granular Caspase-dependent Apoptotic, \n Necrotic, and Live Hemocytes") + ylab("Percent of Granular Hemocyte Events") 
+CAS_all_percentages_granular + scale_color_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q3_LL"="red","Q3_LR"="green","Q3_UL"="blue", "Q3_UR"="purple"))
+```
+
+# LIVE APOPTOTIC AGRANULAR Hemocytes 
+
+
+## Percent LIVE Apoptotic Aranular Hemocytes out of all Agranular hemocytes
+```{r CAS_live_apoptotic_granular, echo=FALSE}
+ 
+Percent_live_apoptotic_agranular_BAD_NOT_REMOVED <- ggplot(data=CAS_PLOT7_agranular_quad_plot, aes(x=FAMILY, y=Q4.LR_Percent_of_this_plot, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Caspase-dependent Apoptotic \n Agranular Hemocytes Low Quality Not Removed") +
+    xlab("Family") + ylab("Percent of Agranular Hemocyte Events") + ylim(0,100)
+Percent_live_apoptotic_agranular_BAD_NOT_REMOVED
+
+```
+
+
+# LIVE Apoptotic Agranular hemocytes compared to Live and Necrotic hemocytes
+```{r apoptosis_granular_compared, echo=TRUE}
+
+CAS_all_percentages_agranular <- ggplot(CAS_PLOT7_agranular_quad_plot_GATE_ADDED, aes(x=FAMILY, y=PERCENT_OF_THIS_PLOT, by=GATE, color=GATE, shape=GROUP)) + geom_point() + ggtitle("Percent of Agranular Caspase-dependent Apoptotic, \n Necrotic, and Live Hemocytes") + ylab("Percent of Agranular Hemocyte Events") 
+
+CAS_all_percentages_agranular + scale_color_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q4_LL"="red","Q4_LR"="green","Q4_UL"="blue", "Q4_UR"="purple"))
+```
+
+# Comparing Live apoptotic cells following treatment between granular and agranular
+
+```{r compare_granular_agranular, echo=TRUE}
+CAS_live_apoptotic_granular <- CAS_PLOT4_granular_quad_plot_GATE_ADDED %>% filter(GATE=="Q3_LR")
+CAS_live_apoptotic_agranular <- CAS_PLOT7_agranular_quad_plot_GATE_ADDED %>% filter(GATE=="Q4_LR")
+CAS_live_apoptotic_granular_agranular <- rbind(CAS_live_apoptotic_granular,CAS_live_apoptotic_agranular)
+
+CAS_live_apoptotic_granular_agranular_plot <- ggplot(CAS_live_apoptotic_granular_agranular, aes(x=FAMILY, y=PERCENT_OF_THIS_PLOT, by=GATE, color=GATE, shape=GROUP)) + geom_point() + ggtitle("Percent of Granular and Agranular Caspase-dependent Apoptotic Hemocytes") + ylab("Percent of Hemocyte Events in each respective quad plot") 
+
+CAS_live_apoptotic_granular_agranular_plot + scale_color_manual(name="Hemocyte Type", labels=c("Live Caspase-dependent Apoptotic Granular", "Live Caspase-dependent Apoptotic Agranular"), values=c("Q3_LR"="red","Q4_LR"="green"))
+
+```
+
+
+# Arc sine Percentage data
+
+```{r arcsine, echo=TRUE}
+
+# NOTE: NA's produced whenever the percentages were above 100%
+VI_PLOT2_hemocytes$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT*.01)
+
+CAS_PLOT4_granular_quad_plot$Q3.UL_Arcsine<- transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.UL_Percent_of_this_plot*0.01)
+CAS_PLOT4_granular_quad_plot$Q3.UR_Arcsine <-  transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.UR_Percent_of_this_plot*0.01)
+CAS_PLOT4_granular_quad_plot$Q3.LL_Arcsine <- transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.LL_Percent_of_this_plot*0.01)
+CAS_PLOT4_granular_quad_plot$Q3.LR_Arcsine  <- transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.LR_Percent_of_this_plot*0.01)
+
+CAS_PLOT7_agranular_quad_plot$Q4.UL_Arcsine <- transf.arcsin(CAS_PLOT7_agranular_quad_plot$Q4.UL_Percent_of_this_plot*0.01)
+CAS_PLOT7_agranular_quad_plot$Q4.UR_Arcsine <- transf.arcsin(CAS_PLOT7_agranular_quad_plot$Q4.UR_Percent_of_this_plot*0.01)
+CAS_PLOT7_agranular_quad_plot$Q4.LR_Arcsine <- transf.arcsin(CAS_PLOT7_agranular_quad_plot$Q4.LR_Percent_of_this_plot*0.01)
+CAS_PLOT7_agranular_quad_plot$Q4.LL_Arcsine <- transf.arcsin(CAS_PLOT7_agranular_quad_plot$Q4.LL_Percent_of_this_plot*0.01)
+
+CAS_PLOT4_granular_quad_plot_GATE_ADDED$Arcsine <- transf.arcsin(CAS_PLOT4_granular_quad_plot_GATE_ADDED$PERCENT_OF_THIS_PLOT*0.01)
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED$Arcsine <- transf.arcsin(CAS_PLOT7_agranular_quad_plot_GATE_ADDED$PERCENT_OF_THIS_PLOT*0.01)
+
+```
+
+# One-Way Anova of Live Caspase-dependent Apoptotic Granular Hemocytes 
+
+## Family A HAS NO CONTROL, cannot perform ANOVA
+
+### Family B
+```{r CAS_live_apoptotic_familyB, echo=TRUE}
+CAS_live_apoptotic_granular_FamilyB <- CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="B")
+
+CAS_live_apoptotic_granular_FamilyB_aov <- aov(CAS_live_apoptotic_granular_FamilyB$Q3.LR_Arcsine ~ CAS_live_apoptotic_granular_FamilyB$GROUP, data= CAS_live_apoptotic_granular_FamilyB)
+summary(CAS_live_apoptotic_granular_FamilyB_aov)
+```
+
+### Family D
+```{r CAS_live_apoptotic_familyD, echo=TRUE}
+CAS_live_apoptotic_granular_FamilyD <- CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="D")
+
+CAS_live_apoptotic_granular_FamilyD_aov <- aov(CAS_live_apoptotic_granular_FamilyD$Q3.LR_Arcsine ~ CAS_live_apoptotic_granular_FamilyD$GROUP, data= CAS_live_apoptotic_granular_FamilyD)
+summary(CAS_live_apoptotic_granular_FamilyD_aov)
+
+```
+
+### Family E
+```{r CAS_live_apoptotic_familyE, echo=TRUE}
+CAS_live_apoptotic_granular_FamilyE <- CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="E")
+
+CAS_live_apoptotic_granular_FamilyE_aov <- aov(CAS_live_apoptotic_granular_FamilyE$Q3.LR_Arcsine ~ CAS_live_apoptotic_granular_FamilyE$GROUP, data= CAS_live_apoptotic_granular_FamilyE)
+summary(CAS_live_apoptotic_granular_FamilyE_aov)
+
+```
+
+### Family J
+```{r CAS_live_apoptotic_familyJ, echo=TRUE}
+CAS_live_apoptotic_granular_FamilyJ <- CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="J")
+
+CAS_live_apoptotic_granular_FamilyJ_aov <- aov(CAS_live_apoptotic_granular_FamilyJ$Q3.LR_Arcsine ~ CAS_live_apoptotic_granular_FamilyJ$GROUP, data= CAS_live_apoptotic_granular_FamilyJ)
+summary(CAS_live_apoptotic_granular_FamilyJ_aov)
+
+```
+
+### Family L 
+```{r CAS_live_apoptotic_familyL, echo=TRUE}
+CAS_live_apoptotic_granular_FamilyL <- CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="L")
+
+CAS_live_apoptotic_granular_FamilyL_aov <- aov(CAS_live_apoptotic_granular_FamilyL$Q3.LR_Arcsine ~ CAS_live_apoptotic_granular_FamilyL$GROUP, data= CAS_live_apoptotic_granular_FamilyL)
+summary(CAS_live_apoptotic_granular_FamilyL_aov)
+
+```
+
+# Two-Way ANOVA of Live Apoptotic Granular Hemocytes to test difference between families 
+```{r CAS_twoway_aov_live_apoptotic_granular, echo=TRUE}
+CAS_live_apoptotic_granular_twoway_aov <- aov(CAS_PLOT4_granular_quad_plot$Q3.LR_Arcsine ~ CAS_PLOT4_granular_quad_plot$FAMILY + CAS_PLOT4_granular_quad_plot$GROUP, data= CAS_PLOT4_granular_quad_plot)
+summary(CAS_live_apoptotic_granular_twoway_aov)
+
+# INTERACTION TERM ADDED  (using lm model)
+CAS_live_apoptotic_granular_twoway_interaction_aov <- aov(CAS_PLOT4_granular_quad_plot$Q3.LR_Arcsine ~ CAS_PLOT4_granular_quad_plot$FAMILY + CAS_PLOT4_granular_quad_plot$GROUP + CAS_PLOT4_granular_quad_plot$FAMILY*CAS_PLOT4_granular_quad_plot$GROUP, data=CAS_PLOT4_granular_quad_plot)
+summary(CAS_live_apoptotic_granular_twoway_interaction_aov)
+```
+
+# One-way ANOVA of Live Caspase-dependent Apoptotic Agranular Hemocytes
+
+## Family A HAS NO CONTROL, cannot perform ANOVA
+
+### Family B
+```{r CAS_live_apoptotic_agranular_familyB, echo=TRUE}
+CAS_live_apoptotic_agranular_FamilyB <- CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="B")
+
+CAS_live_apoptotic_agranular_FamilyB_aov <- aov(CAS_live_apoptotic_agranular_FamilyB$Q4.LR_Arcsine ~ CAS_live_apoptotic_agranular_FamilyB$GROUP, data= CAS_live_apoptotic_agranular_FamilyB)
+summary(CAS_live_apoptotic_agranular_FamilyB_aov)
+```
+
+### Family D
+```{r CAS_live_apoptotic_agranular_familyD, echo=TRUE}
+CAS_live_apoptotic_agranular_FamilyD <- CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="D")
+
+CAS_live_apoptotic_agranular_FamilyD_aov <- aov(CAS_live_apoptotic_agranular_FamilyD$Q4.LR_Arcsine ~ CAS_live_apoptotic_agranular_FamilyD$GROUP, data= CAS_live_apoptotic_agranular_FamilyD)
+summary(CAS_live_apoptotic_agranular_FamilyD_aov)
+```
+
+### FAMILY E
+```{r CAS_live_apoptotic_agranular_familyE, echo=TRUE}
+CAS_live_apoptotic_agranular_FamilyE <- CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="E")
+
+CAS_live_apoptotic_agranular_FamilyE_aov <- aov(CAS_live_apoptotic_agranular_FamilyE$Q4.LR_Arcsine ~ CAS_live_apoptotic_agranular_FamilyE$GROUP, data= CAS_live_apoptotic_agranular_FamilyE)
+summary(CAS_live_apoptotic_agranular_FamilyE_aov)
+```
+
+### FAMILY J
+```{r CAS_live_apoptotic_agranular_familyJ, echo=TRUE}
+CAS_live_apoptotic_agranular_FamilyJ <- CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="J")
+
+CAS_live_apoptotic_agranular_FamilyJ_aov <- aov(CAS_live_apoptotic_agranular_FamilyJ$Q4.LR_Arcsine ~ CAS_live_apoptotic_agranular_FamilyJ$GROUP, data= CAS_live_apoptotic_agranular_FamilyJ)
+summary(CAS_live_apoptotic_agranular_FamilyJ_aov)
+```
+
+### FAMILY L 
+```{r CAS_live_apoptotic_agranular_familyL, echo=TRUE}
+CAS_live_apoptotic_agranular_FamilyL <- CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="L")
+
+CAS_live_apoptotic_agranular_FamilyL_aov <- aov(CAS_live_apoptotic_agranular_FamilyL$Q4.LR_Arcsine ~ CAS_live_apoptotic_agranular_FamilyL$GROUP, data= CAS_live_apoptotic_agranular_FamilyL)
+summary(CAS_live_apoptotic_agranular_FamilyL_aov)
+```
+
+## Two-Way ANOVA of Live Caspase dependent apoptotic agranular hemocytes
+
+```{r CAS_live_apoptotic_agranular_twoway, echo=TRUE}
+CAS_live_apoptotic_agranular_twoway_aov <- aov(CAS_PLOT7_agranular_quad_plot$Q4.LR_Arcsine ~ CAS_PLOT7_agranular_quad_plot$FAMILY + CAS_PLOT7_agranular_quad_plot$GROUP, data= CAS_PLOT7_agranular_quad_plot)
+summary(CAS_live_apoptotic_agranular_twoway_aov)
+
+# Plus interaction term
+CAS_live_apoptotic_agranular_twoway_interaction_aov <- aov(CAS_PLOT7_agranular_quad_plot$Q4.LR_Arcsine ~ CAS_PLOT7_agranular_quad_plot$FAMILY + CAS_PLOT7_agranular_quad_plot$GROUP + CAS_PLOT7_agranular_quad_plot$FAMILY*CAS_PLOT7_agranular_quad_plot$GROUP, data= CAS_PLOT7_agranular_quad_plot)
+summary(CAS_live_apoptotic_agranular_twoway_interaction_aov)
+
+```
+
+# One Way and Two-Way ANOVA of Live apoptotic granular and agranular hemocytes 
+```{r CAS_live_apoptotic_agranular_agranular_twoway, echo=TRUE}
+CAS_live_apoptotic_granular_agranular_oneway_aov <- aov(CAS_PLOT7_agranular_quad_plot_GATE_ADDED$Arcsine ~ CAS_PLOT7_agranular_quad_plot_GATE_ADDED$GATE, data= CAS_PLOT7_agranular_quad_plot_GATE_ADDED)
+summary(CAS_live_apoptotic_granular_agranular_oneway_aov)
+
+CAS_live_apoptotic_granular_agranular_twoway_aov <- aov(CAS_PLOT7_agranular_quad_plot_GATE_ADDED$Arcsine ~ CAS_PLOT7_agranular_quad_plot_GATE_ADDED$GATE + CAS_PLOT7_agranular_quad_plot_GATE_ADDED$GROUP, data= CAS_PLOT7_agranular_quad_plot_GATE_ADDED)
+summary(CAS_live_apoptotic_granular_agranular_twoway_aov)
+
+# Plus interaction term
+CAS_live_apoptotic_granular_agranular_twoway_aov <- aov(CAS_PLOT7_agranular_quad_plot_GATE_ADDED$Arcsine ~ CAS_PLOT7_agranular_quad_plot_GATE_ADDED$GATE + CAS_PLOT7_agranular_quad_plot_GATE_ADDED$GROUP + CAS_PLOT7_agranular_quad_plot_GATE_ADDED$GATE*CAS_PLOT7_agranular_quad_plot_GATE_ADDED$GROUP, data= CAS_PLOT7_agranular_quad_plot_GATE_ADDED)
+summary(CAS_live_apoptotic_granular_agranular_twoway_aov)
+```
+
 
 # Websites for Reference #
 http://rcompanion.org/handbook/G_09.html
