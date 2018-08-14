@@ -877,12 +877,34 @@ TukeyHSD(APOP_PLOT_7_agranular_INTERACTION_aov)
 ### One Way ANOVA of Differences between Families
 
 ```{r oneway_apoptotic-agranular, include=FALSE}
-
 APOP_PLOT_7_agranular_hemocytes_BAD_REMOVED_CHALLENGE <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED[!grepl("control", APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP),]
 APOP_PLOT_7_agranular_oneway_aov <- aov(APOP_PLOT_7_agranular_hemocytes_BAD_REMOVED_CHALLENGE$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=APOP_PLOT_7_agranular_hemocytes_BAD_REMOVED_CHALLENGE)
 summary(APOP_PLOT_7_agranular_oneway_aov)
 ```
 
+
+## % LIVE apoptotic granular and agranular hemocytes in challenged oysters
+
+```{r combined, echo=TRUE}
+# Graphing
+agranular_live_apoptotic_all <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q1_LR")
+granular_live_apoptotic_all <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q2_LR")
+APOP_Live_apoptotic_combined_all <- rbind(agranular_live_apoptotic_all,granular_live_apoptotic_all)
+
+agranular_live_apoptotic <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q1_LR") %>% filter(GROUP=="treatment")
+granular_live_apoptotic <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q2_LR") %>% filter(GROUP=="treatment")
+APOP_Live_apoptotic_combined <- rbind(agranular_live_apoptotic, granular_live_apoptotic)
+ggplot(APOP_Live_apoptotic_combined, aes(x=FAMILY, y=PERCENT_OF_THIS_PLOT, by=GATE, color=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live Apoptotic Hemocytes \n in Challenged Oysters (low quality removed)") +
+  ylab("Percent of Hemocyte Events in each quad plot") + scale_color_manual(name="Hemocyte Type", labels=c("Live Apoptotic Agranular", "Live Apoptotic Granular"), values=c("Q1_LR"="red","Q2_LR"="green"))
+
+# Two-Way ANOVA
+APOP_Live_apoptotic_combined_all_aov <- aov(APOP_Live_apoptotic_combined_all$PERCENT_OF_THIS_PLOT ~ APOP_Live_apoptotic_combined_all$FAMILY + APOP_Live_apoptotic_combined_all$GROUP, data=APOP_Live_apoptotic_combined_all)
+summary(APOP_Live_apoptotic_combined_all_aov)
+TukeyHSD(APOP_Live_apoptotic_combined_all_aov)
+
+# Two-Way ANOVA with interaction 
+
+```
 
 ## % DEAD apoptotic granular hemocytes (PLOT4, Q2-UR)
 
