@@ -145,7 +145,7 @@ summary(APOP_PLOT_4_granular_FAMILY_A_AOV_BAD_REMOVED)
 
 
 ### FAMILY B
-```{r live_apoptotic_granular_aov_B, echo=FALSE}
+```{r live_apoptotic_granular_aov_B, echo=TRUE}
 APOP_PLOT_4_granular_FAMILY_B <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="B")
 
 APOP_PLOT_4_granular_FAMILY_B_AOV <- aov(APOP_PLOT_4_granular_FAMILY_B$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B$GROUP, data=APOP_PLOT_4_granular_FAMILY_B)
@@ -158,7 +158,7 @@ summary(APOP_PLOT_4_granular_FAMILY_B_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY D
-```{r live_apoptotic_granular_aov_D, echo=FALSE}
+```{r live_apoptotic_granular_aov_D, echo=TRUE}
 APOP_PLOT_4_granular_FAMILY_D <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="D")
 
 APOP_PLOT_4_granular_FAMILY_D_AOV <- aov(APOP_PLOT_4_granular_FAMILY_D$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D$GROUP, data=APOP_PLOT_4_granular_FAMILY_D)
@@ -172,7 +172,7 @@ summary(APOP_PLOT_4_granular_FAMILY_D_AOV_BAD_REMOVED)
 
 ### FAMILY E
 
-```{r live_apoptotic_granular_aov_E, echo=FALSE}
+```{r live_apoptotic_granular_aov_E, echo=TRUE}
 APOP_PLOT_4_granular_FAMILY_E <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="E")
 
 APOP_PLOT_4_granular_FAMILY_E_AOV <- aov(APOP_PLOT_4_granular_FAMILY_E$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E$GROUP, data=APOP_PLOT_4_granular_FAMILY_E)
@@ -185,7 +185,7 @@ summary(APOP_PLOT_4_granular_FAMILY_E_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY J 
-```{r live_apoptotic_granular_aov_J, echo=FALSE}
+```{r live_apoptotic_granular_aov_J, echo=TRUE}
 APOP_PLOT_4_granular_FAMILY_J <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="J")
 
 APOP_PLOT_4_granular_FAMILY_J_AOV <- aov(APOP_PLOT_4_granular_FAMILY_J$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J$GROUP, data=APOP_PLOT_4_granular_FAMILY_J)
@@ -198,7 +198,7 @@ summary(APOP_PLOT_4_granular_FAMILY_J_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY L 
-```{r live_apoptotic_granular_aov_L, echo=FALSE}
+```{r live_apoptotic_granular_aov_L, echo=TRUE}
 APOP_PLOT_4_granular_FAMILY_L <- APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(FAMILY=="L")
 
 APOP_PLOT_4_granular_FAMILY_L_AOV <- aov(APOP_PLOT_4_granular_FAMILY_L$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L$GROUP, data=APOP_PLOT_4_granular_FAMILY_L)
@@ -211,7 +211,7 @@ summary(APOP_PLOT_4_granular_FAMILY_L_AOV_BAD_REMOVED)
 ```
 
 ### TWO WAY ANOVA of granular apoptotic 
-```{r live_granular_apoptotic_aov, echo=FALSE}
+```{r live_granular_apoptotic_aov, echo=TRUE}
 APOP_PLOT_4_granular_TWO_WAY_AOV <- lm(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.LR_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT)
 Anova(APOP_PLOT_4_granular_TWO_WAY_AOV, type="II") 
 summary(APOP_PLOT_4_granular_TWO_WAY_AOV) #produces the overall p-value and r squared
@@ -239,7 +239,7 @@ cld(APOP_PLOT_4_granular_hemocytes_INTERACTION_leastsquare, alpha=0.05, Letters=
 
 ### One Way ANOVA of Differences between Families
 
-```{r oneway_apoptotic-granular, include=FALSE}
+```{r oneway_apoptotic-granular, echo=TRUE}
 
 APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE <- APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED[!grepl("control", APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP),]
 APOP_PLOT_4_granular_hemocytes_oneway_aov <- aov(APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE$Q2.LR_Arcsine ~ APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE)
@@ -251,7 +251,7 @@ TukeyHSD(APOP_PLOT_4_granular_hemocytes_oneway_aov)
 
 ## Percent LIVE apoptotic agranular hemocytes (PLOT7, Q1-LR)
 
-```{r live_apoptotic_agranular, echo=FALSE}
+```{r live_apoptotic_agranular, echo=TRUE}
 
 APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 
@@ -265,7 +265,7 @@ APOP_live_apoptotic_Agranular_BAD_REMOVED
 
 
 ### FAMILY A
-```{r live_apoptotic_agranular_aov_A, echo=FALSE}
+```{r live_apoptotic_agranular_aov_A, echo=TRUE}
 APOP_PLOT_7_agranular_FAMILY_A <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="A")
 
 APOP_PLOT_7_agranular_FAMILY_A_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_A$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A)
@@ -292,7 +292,7 @@ summary(APOP_PLOT_7_agranular_FAMILY_B_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY D
-```{r live_apoptotic_agranular_aov_D, echo=FALSE}
+```{r live_apoptotic_agranular_aov_D, echo=TRUE}
 APOP_PLOT_7_agranular_FAMILY_D <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="D")
 
 APOP_PLOT_7_agranular_FAMILY_D_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_D$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D)
@@ -306,7 +306,7 @@ summary(APOP_PLOT_7_agranular_FAMILY_D_AOV_BAD_REMOVED)
 
 ### FAMILY E
 
-```{r live_apoptotic_agranular_aov_E, echo=FALSE}
+```{r live_apoptotic_agranular_aov_E, echo=TRUE}
 APOP_PLOT_7_agranular_FAMILY_E <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="E")
 
 APOP_PLOT_7_agranular_FAMILY_E_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_E$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E)
@@ -319,7 +319,7 @@ summary(APOP_PLOT_7_agranular_FAMILY_E_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY J 
-```{r live_apoptotic_agranular_aov_J, echo=FALSE}
+```{r live_apoptotic_agranular_aov_J, echo=TRUE}
 APOP_PLOT_7_agranular_FAMILY_J <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="J")
 
 APOP_PLOT_7_agranular_FAMILY_J_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_J$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J)
@@ -333,7 +333,7 @@ summary(APOP_PLOT_7_agranular_FAMILY_J_AOV_BAD_REMOVED)
 
 ### FAMILY L 
 
-```{r live_apoptotic_agranular_aov_L, echo=FALSE}
+```{r live_apoptotic_agranular_aov_L, echo=TRUE}
 APOP_PLOT_7_agranular_FAMILY_L <- APOP_PLOT7_AGRANULAR_QUAD_PLOT %>% filter(FAMILY=="L")
 
 APOP_PLOT_7_agranular_FAMILY_L_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_L$Q1.LR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L)
@@ -347,7 +347,7 @@ summary(APOP_PLOT_7_agranular_FAMILY_L_AOV_BAD_REMOVED)
 
 ### TWO WAY ANOVA 
 
-```{r live_Agranular_apoptotic_aov, echo=FALSE}
+```{r live_Agranular_apoptotic_aov, echo=TRUE}
 APOP_PLOT_7_agranular_TWO_WAY_AOV <- lm(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.LR_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT)
 Anova(APOP_PLOT_7_agranular_TWO_WAY_AOV, type="II") #significant family effect
 summary(APOP_PLOT_7_agranular_TWO_WAY_AOV) # p-value overall is significant
@@ -411,7 +411,7 @@ cld(APOP_Live_apoptotic_combined_all_aov_interaction_leastsquare_gate, alpha=0.0
 
 ## Percent DEAD apoptotic granular hemocytes (PLOT4, Q1-UR)
 
-```{r dead_apoptotic_granular, echo=FALSE}
+```{r dead_apoptotic_granular, echo=TRUE}
 APOP_dead_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 
 APOP_dead_apoptotic_granular_BAD_NOT_REMOVED
@@ -424,7 +424,7 @@ APOP_dead_apoptotic_granular_BAD_REMOVED
 
 
 ### FAMILY A
-```{r dead_apoptotic_granular_aov_A, echo=FALSE}
+```{r dead_apoptotic_granular_aov_A, echo=TRUE}
 
 APOP_PLOT_4_dead_granular_FAMILY_A_AOV <- aov(APOP_PLOT_4_granular_FAMILY_A$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A$GROUP, data=APOP_PLOT_4_granular_FAMILY_A)
 summary(APOP_PLOT_4_dead_granular_FAMILY_A_AOV)
@@ -435,7 +435,7 @@ summary(APOP_PLOT_4_dead_granular_FAMILY_A_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY B
-```{r dead_apoptotic_granular_aov_B, echo=FALSE}
+```{r dead_apoptotic_granular_aov_B, echo=TRUE}
 
 APOP_PLOT_4_dead_granular_FAMILY_B_AOV <- aov(APOP_PLOT_4_granular_FAMILY_B$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B$GROUP, data=APOP_PLOT_4_granular_FAMILY_B)
 summary(APOP_PLOT_4_dead_granular_FAMILY_B_AOV)
@@ -446,7 +446,7 @@ summary(APOP_PLOT_4_dead_granular_FAMILY_B_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY D
-```{r dead_apoptotic_granular_aov_D, echo=FALSE}
+```{r dead_apoptotic_granular_aov_D, echo=TRUE}
 
 APOP_PLOT_4_dead_granular_FAMILY_D_AOV <- aov(APOP_PLOT_4_granular_FAMILY_D$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D$GROUP, data=APOP_PLOT_4_granular_FAMILY_D)
 summary(APOP_PLOT_4_dead_granular_FAMILY_D_AOV)
@@ -458,7 +458,7 @@ summary(APOP_PLOT_4_dead_granular_FAMILY_D_AOV_BAD_REMOVED)
 
 ### FAMILY E
 
-```{r dead_apoptotic_granular_aov_E, echo=FALSE}
+```{r dead_apoptotic_granular_aov_E, echo=TRUE}
 
 APOP_PLOT_4_dead_granular_FAMILY_E_AOV <- aov(APOP_PLOT_4_granular_FAMILY_E$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E$GROUP, data=APOP_PLOT_4_granular_FAMILY_E)
 summary(APOP_PLOT_4_dead_granular_FAMILY_E_AOV)
@@ -470,7 +470,7 @@ summary(APOP_PLOT_4_dead_granular_FAMILY_E_AOV_BAD_REMOVED)
 
 ### FAMILY J 
 
-```{r dead_apoptotic_granular_aov_J, echo=FALSE}
+```{r dead_apoptotic_granular_aov_J, echo=TRUE}
 
 APOP_PLOT_4_dead_granular_FAMILY_J_AOV <- aov(APOP_PLOT_4_granular_FAMILY_J$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J$GROUP, data=APOP_PLOT_4_granular_FAMILY_J)
 summary(APOP_PLOT_4_dead_granular_FAMILY_J_AOV)
@@ -481,7 +481,7 @@ summary(APOP_PLOT_4_dead_granular_FAMILY_J_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY L 
-```{r dead_apoptotic_granular_aov_L, echo=FALSE}
+```{r dead_apoptotic_granular_aov_L, echo=TRUE}
 
 APOP_PLOT_4_dead_granular_FAMILY_L_AOV <- aov(APOP_PLOT_4_granular_FAMILY_L$Q2.UR_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L$GROUP, data=APOP_PLOT_4_granular_FAMILY_L)
 summary(APOP_PLOT_4_dead_granular_FAMILY_L_AOV)
@@ -493,7 +493,7 @@ summary(APOP_PLOT_4_dead_granular_FAMILY_L_AOV_BAD_REMOVED)
 
 ### TWO WAY ANOVA
 
-```{r DEAD_granular_apoptotic_aov, echo=FALSE}
+```{r DEAD_granular_apoptotic_aov, echo=TRUE}
 APOP_PLOT_4_dead_granular_TWO_WAY_AOV <- lm(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UR_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT)
 Anova(APOP_PLOT_4_dead_granular_TWO_WAY_AOV, type="II")
 summary(APOP_PLOT_4_dead_granular_TWO_WAY_AOV)
@@ -526,7 +526,7 @@ TukeyHSD(APOP_PLOT_4_dead_granular_oneway_aov)
 
 ## Percent DEAD apoptotic agranular hemocytes (PLOT 7, Q1-UR)
 
-```{r dead apoptotic_agranular, echo=FALSE}
+```{r dead apoptotic_agranular, echo=TRUE}
 
 APOP_dead_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 
@@ -540,7 +540,7 @@ APOP_dead_apoptotic_Agranular_BAD_REMOVED
 
 
 ### FAMILY A
-```{r dead_apoptotic_agranular_aov_A, echo=FALSE}
+```{r dead_apoptotic_agranular_aov_A, echo=TRUE}
 
 APOP_PLOT_7_dead_agranular_FAMILY_A_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_A$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A)
 summary(APOP_PLOT_7_dead_agranular_FAMILY_A_AOV)
@@ -551,7 +551,7 @@ summary(APOP_PLOT_7_dead_agranular_FAMILY_A_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY B
-```{r dead_apoptotic_agranular_aov_B, echo=FALSE}
+```{r dead_apoptotic_agranular_aov_B, echo=TRUE}
 
 APOP_PLOT_7_dead_agranular_FAMILY_B_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_B$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B)
 summary(APOP_PLOT_7_dead_agranular_FAMILY_B_AOV)
@@ -562,7 +562,7 @@ summary(APOP_PLOT_7_dead_agranular_FAMILY_B_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY D
-```{r dead_apoptotic_agranular_aov_D, echo=FALSE}
+```{r dead_apoptotic_agranular_aov_D, echo=TRUE}
 
 APOP_PLOT_7_dead_agranular_FAMILY_D_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_D$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D)
 summary(APOP_PLOT_7_dead_agranular_FAMILY_D_AOV)
@@ -573,7 +573,7 @@ summary(APOP_PLOT_7_dead_agranular_FAMILY_D_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY E
-```{r dead_apoptotic_agranular_aov_E, echo=FALSE}
+```{r dead_apoptotic_agranular_aov_E, echo=TRUE}
 
 APOP_PLOT_7_dead_agranular_FAMILY_E_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_E$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E)
 summary(APOP_PLOT_7_dead_agranular_FAMILY_E_AOV)
@@ -585,7 +585,7 @@ summary(APOP_PLOT_7_dead_agranular_FAMILY_E_AOV_BAD_REMOVED)
 
 ### FAMILY J 
 
-```{r dead_apoptotic_agranular_aov_J, echo=FALSE}
+```{r dead_apoptotic_agranular_aov_J, echo=TRUE}
 
 APOP_PLOT_7_dead_agranular_FAMILY_J_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_J$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J)
 summary(APOP_PLOT_7_dead_agranular_FAMILY_J_AOV)
@@ -596,7 +596,7 @@ summary(APOP_PLOT_7_dead_agranular_FAMILY_J_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY L 
-```{r dead_apoptotic_agranular_aov_L, echo=FALSE}
+```{r dead_apoptotic_agranular_aov_L, echo=TRUE}
 
 APOP_PLOT_7_dead_agranular_FAMILY_L_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_L$Q1.UR_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L)
 summary(APOP_PLOT_7_dead_agranular_FAMILY_L_AOV)
@@ -608,7 +608,7 @@ summary(APOP_PLOT_7_dead_agranular_FAMILY_L_AOV_BAD_REMOVED)
 
 ### TWO WAY ANOVA
 
-```{r DEAD_Agranular_apoptotic_aov, echo=FALSE}
+```{r DEAD_Agranular_apoptotic_aov, echo=TRUE}
 APOP_PLOT_7_dead_agranular_TWO_WAY_AOV <- lm(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UR_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT)
 Anova(APOP_PLOT_7_dead_agranular_TWO_WAY_AOV, type="II")
 summary(APOP_PLOT_7_dead_agranular_TWO_WAY_AOV)
@@ -629,7 +629,7 @@ cld(APOP_PLOT_7_dead_agranular_INTERACTION_aov_leastsquares, alpha=0.05, Letters
 
 ### One Way ANOVA of Differences between Families
 
-```{r oneway_DEAD_Agranular_apoptotic, include=FALSE}
+```{r oneway_DEAD_Agranular_apoptotic, echo=TRUE}
 
 APOP_PLOT_7_dead_agranular_hemocytes_BAD_REMOVED_CHALLENGE <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED[!grepl("control",APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP),]
 APOP_PLOT_7_dead_agranular_oneway_aov <- aov(APOP_PLOT_7_dead_agranular_hemocytes_BAD_REMOVED_CHALLENGE$Q1.UR_Arcsine ~ APOP_PLOT_7_dead_agranular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=APOP_PLOT_7_dead_agranular_hemocytes_BAD_REMOVED_CHALLENGE)
@@ -667,7 +667,7 @@ cld(combined_dead_apoptotic_agranular_granular_aov_interaction_leastsquares_gate
 
 ## Percent Necrotic granular hemocytes (PLOT 4, Q2-UL)
 
-```{r necrotic_apoptosis_granular, echo=FALSE}
+```{r necrotic_apoptosis_granular, echo=TRUE}
 APOP_necrotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 
 APOP_necrotic_granular_BAD_NOT_REMOVED
@@ -679,7 +679,7 @@ APOP_necrotic_granular_BAD_REMOVED
 ```
 
 ### FAMILY A
-```{r necrotic_granular_aov_A, echo=FALSE}
+```{r necrotic_granular_aov_A, echo=TRUE}
 
 APOP_PLOT_4_necrotic_granular_FAMILY_A_AOV <- aov(APOP_PLOT_4_granular_FAMILY_A$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A$GROUP, data=APOP_PLOT_4_granular_FAMILY_A)
 summary(APOP_PLOT_4_necrotic_granular_FAMILY_A_AOV)
@@ -690,7 +690,7 @@ summary(APOP_PLOT_4_necrotic_granular_FAMILY_A_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY B
-```{r necrotic_granular_aov_B, echo=FALSE}
+```{r necrotic_granular_aov_B, echo=TRUE}
 
 APOP_PLOT_4_necrotic_granular_FAMILY_B_AOV <- aov(APOP_PLOT_4_granular_FAMILY_B$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B$GROUP, data=APOP_PLOT_4_granular_FAMILY_B)
 summary(APOP_PLOT_4_necrotic_granular_FAMILY_B_AOV)
@@ -701,7 +701,7 @@ summary(APOP_PLOT_4_necrotic_granular_FAMILY_B_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY D
-```{r necrotic_granular_aov_D, echo=FALSE}
+```{r necrotic_granular_aov_D, echo=TRUE}
 
 APOP_PLOT_4_necrotic_granular_FAMILY_D_AOV <- aov(APOP_PLOT_4_granular_FAMILY_D$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D$GROUP, data=APOP_PLOT_4_granular_FAMILY_D)
 summary(APOP_PLOT_4_necrotic_granular_FAMILY_D_AOV)
@@ -713,7 +713,7 @@ summary(APOP_PLOT_4_necrotic_granular_FAMILY_D_AOV_BAD_REMOVED)
 
 ### FAMILY E
 
-```{r necrotic_granular_aov_E, echo=FALSE}
+```{r necrotic_granular_aov_E, echo=TRUE}
 
 APOP_PLOT_4_necrotic_granular_FAMILY_E_AOV <- aov(APOP_PLOT_4_granular_FAMILY_E$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E$GROUP, data=APOP_PLOT_4_granular_FAMILY_E)
 summary(APOP_PLOT_4_necrotic_granular_FAMILY_E_AOV)
@@ -724,7 +724,7 @@ summary(APOP_PLOT_4_necrotic_granular_FAMILY_E_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY J 
-```{r necrotic_granular_aov_J, echo=FALSE}
+```{r necrotic_granular_aov_J, echo=TRUE}
 
 APOP_PLOT_4_necrotic_granular_FAMILY_J_AOV <- aov(APOP_PLOT_4_granular_FAMILY_J$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J$GROUP, data=APOP_PLOT_4_granular_FAMILY_J)
 summary(APOP_PLOT_4_necrotic_granular_FAMILY_J_AOV)
@@ -736,7 +736,7 @@ summary(APOP_PLOT_4_necrotic_granular_FAMILY_J_AOV_BAD_REMOVED)
 
 ### FAMILY L 
 
-```{r necrotic_granular_aov_L, echo=FALSE}
+```{r necrotic_granular_aov_L, echo=TRUE}
 
 APOP_PLOT_4_necrotic_granular_FAMILY_L_AOV <- aov(APOP_PLOT_4_granular_FAMILY_L$Q2.UL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L$GROUP, data=APOP_PLOT_4_granular_FAMILY_L)
 summary(APOP_PLOT_4_necrotic_granular_FAMILY_L_AOV)
@@ -748,7 +748,7 @@ summary(APOP_PLOT_4_necrotic_granular_FAMILY_L_AOV_BAD_REMOVED)
 
 ### TWO WAY ANOVA
 
-```{r necrotic_granular_aov, echo=FALSE}
+```{r necrotic_granular_aov, echo=TRUE}
 APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV <- lm(APOP_PLOT4_GRANULAR_QUAD_PLOT$Q2.UL_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT)
 Anova(APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV, type="II")
 summary(APOP_PLOT_4_necrotic_granular_TWO_WAY_AOV) #nothing significant
@@ -766,7 +766,7 @@ cld(APOP_PLOT_4_necrotic_granular_INTERACTION_aov_leastsquares, alpha=0.05, Lett
 
 ### One Way ANOVA of Differences between Families
 
-```{r necrotic_granular, include=FALSE}
+```{r necrotic_granular, echo=TRUE}
 
 APOP_PLOT_4_necrotic_granular_hemocytes_BAD_REMOVED_CHALLENGE <- APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED[!grepl("control",APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP),]
 APOP_PLOT_4_necrotic_granular_oneway_aov <- aov(APOP_PLOT_4_necrotic_granular_hemocytes_BAD_REMOVED_CHALLENGE$Q2.UL_Arcsine ~ APOP_PLOT_4_necrotic_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=APOP_PLOT_4_necrotic_granular_hemocytes_BAD_REMOVED_CHALLENGE)
@@ -779,7 +779,7 @@ TukeyHSD(APOP_PLOT_4_necrotic_granular_oneway_aov)
 
 
 ## Percent necrotic agranular hemocytes (PLOT 7, Q1-UL)
-```{r necrotic_apoptotic_agranular, echo=FALSE}
+```{r necrotic_apoptotic_agranular, echo=TRUE}
 APOP_necrotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.UL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Necrotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 
 APOP_necrotic_Agranular_BAD_NOT_REMOVED
@@ -792,7 +792,7 @@ APOP_necrotic_Agranular_BAD_REMOVED
 
 
 ### FAMILY A
-```{r necrotic_agranular_aov_A, echo=FALSE}
+```{r necrotic_agranular_aov_A, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_FAMILY_A_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_A$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A)
 summary(APOP_PLOT_7_necrotic_agranular_FAMILY_A_AOV)
@@ -803,7 +803,7 @@ summary(APOP_PLOT_7_necrotic_agranular_FAMILY_A_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY B
-```{r necrotic_agranular_aov_B, echo=FALSE}
+```{r necrotic_agranular_aov_B, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_FAMILY_B_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_B$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B)
 summary(APOP_PLOT_7_necrotic_agranular_FAMILY_B_AOV)
@@ -814,7 +814,7 @@ summary(APOP_PLOT_7_necrotic_agranular_FAMILY_B_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY D
-```{r necrotic_agranular_aov_D, echo=FALSE}
+```{r necrotic_agranular_aov_D, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_FAMILY_D_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_D$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D)
 summary(APOP_PLOT_7_necrotic_agranular_FAMILY_D_AOV)
@@ -825,7 +825,7 @@ summary(APOP_PLOT_7_necrotic_agranular_FAMILY_D_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY E
-```{r necrotic_agranular_aov_E, echo=FALSE}
+```{r necrotic_agranular_aov_E, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_FAMILY_E_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_E$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E)
 summary(APOP_PLOT_7_necrotic_agranular_FAMILY_E_AOV)
@@ -836,7 +836,7 @@ summary(APOP_PLOT_7_necrotic_agranular_FAMILY_E_AOV_BAD_REMOVED)
 ```
 ### FAMILY J 
 
-```{r necrotic_agranular_aov_J, echo=FALSE}
+```{r necrotic_agranular_aov_J, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_J$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J)
 summary(APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV)
@@ -847,7 +847,7 @@ summary(APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY L 
-```{r necrotic__agranular_aov_L, echo=FALSE}
+```{r necrotic__agranular_aov_L, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_L$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L)
 summary(APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV)
@@ -859,7 +859,7 @@ summary(APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV_BAD_REMOVED)
 
 
 ### TWO WAY ANOVA
-```{r necrotic_Agranular_aov, echo=FALSE}
+```{r necrotic_Agranular_aov, echo=TRUE}
 APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV <- lm(APOP_PLOT7_AGRANULAR_QUAD_PLOT$Q1.UL_Arcsine ~ APOP_PLOT7_AGRANULAR_QUAD_PLOT$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT)
 Anova(APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV, type="II")
 summary(APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV)
@@ -873,7 +873,7 @@ summary(APOP_PLOT_7_necrotic_agranular_TWO_WAY_AOV_BAD_REMOVED)
 
 ### One Way ANOVA of Differences between Families
 
-```{r necrotic_Agranular, include=FALSE}
+```{r necrotic_Agranular, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_hemocytes_BAD_REMOVED_CHALLENGE <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED[!grepl("control",APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP),]
 APOP_PLOT_7_necrotic_agranular_oneway_aov <- aov(APOP_PLOT_7_necrotic_agranular_hemocytes_BAD_REMOVED_CHALLENGE$Q1.UL_Arcsine ~ APOP_PLOT_7_necrotic_agranular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=APOP_PLOT_7_necrotic_agranular_hemocytes_BAD_REMOVED_CHALLENGE)
