@@ -15,6 +15,7 @@ library(car)
 library(lsmeans)
 library(rgr)
 library(multcompView)
+library(Rmisc)
 ```
 
 
@@ -929,4 +930,10 @@ ggplot(full_Data, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE, linetype=cell,
 
 ```
 
+
+#### Calculate Summary Statistics ####
+
+full_combined <- rbind(APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED, APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED)
+
+full_statistics <- summarySE(data=full_combined, "PERCENT_OF_THIS_PLOT", groupvars=c("GATE", "GROUP", "cell","FAMILY"), conf.interval= 0.95)
 
