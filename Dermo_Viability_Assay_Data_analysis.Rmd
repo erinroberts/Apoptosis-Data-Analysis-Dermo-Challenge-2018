@@ -567,9 +567,6 @@ cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_int
 
 #Plotting
 ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=E1_E3)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
-
 ```
 
-## VIABILITY ASSAY OBSERVATIONS AND CONCLUSIONS
-When comparing the control and treatment percentages of granular hemocytes and agranular hemocytes within families, no significant differences were observed. No significant differences were observed between families either. 
 
