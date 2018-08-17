@@ -20,13 +20,8 @@ library(dplyr)
 library(car)
 library(lsmeans)
 library(rgr)
-library(ggplot2)
-library(metafor)
-library(dplyr)
-library(car)
-library(lsmeans)
-library(rgr)
 library(multcompView)
+library(Rmisc)
 ```
 
 # VIABILITY ASSAY ANALYSIS 
@@ -568,5 +563,22 @@ cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_int
 #Plotting
 ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=E1_E3)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
 ```
+
+#### Calculate Summary Statistics ####
+```{r summary_stats, echo=TRUE}
+
+# Summary Statistics for Percentages 
+total_viabaility_statistics <- summarySE(data=VI_PLOT4_restructured_BAD_REMOVED, "PERCENT_OF_THIS_PLOT", groupvars=c("GROUP", "E1_E3","FAMILY"))
+
+viability_statistics_live <- summarySE(data=VI_PLOT9_PLOT10_BAD_REMOVED_combined, "PERCENT_LIVE", groupvars=c("GROUP", "E1_E3","FAMILY"), conf.interval= 0.95)
+
+# Summary Statistics for size
+mean_size <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_ASSAY_MEAN_VALUES_CORRECTED_EDITED.csv", header=TRUE)
+class(mean_size$MEAN)
+mean_size_BAD_REMOVED <- mean_size[!mean_size$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+mean_size_statistics <- summarySE(data=mean_size_BAD_REMOVED, "MEAN", groupvars=c("GROUP","GATE","PLOT","FAMILY"), conf.interval = 0.95)
+
+```
+
 
 
