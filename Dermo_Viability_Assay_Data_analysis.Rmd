@@ -1,0 +1,575 @@
+---
+title: "Dermo Viability Assay Data Analysis"
+author: "Erin Roberts"
+date: "7/27/2018"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+
+```{r packages, echo=FALSE}
+library(ggplot2)
+library(metafor)
+library(dplyr)
+library(car)
+library(lsmeans)
+library(rgr)
+library(ggplot2)
+library(metafor)
+library(dplyr)
+library(car)
+library(lsmeans)
+library(rgr)
+library(multcompView)
+```
+
+# VIABILITY ASSAY ANALYSIS 
+
+## Load in data for each plot
+
+```{r load, echo=TRUE}
+#Load in the Data for each plot on a separate spreadsheet
+
+VI_PLOT2_hemocytes <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT2.csv", header=TRUE)
+VI_PLOT3_P1_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT3.csv", header=TRUE)
+VI_PLOT4_E1_E3_GATE <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT4.csv", header=TRUE)
+VI_PLOT5_P1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT5.csv", header=TRUE)
+VI_PLOT9_E1_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT9.csv", header=TRUE)
+VI_PLOT10_E3_MINUS_V1R <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT10.csv", header=TRUE)
+VI_PLOT12_P1_PerCP <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT12.csv", header=TRUE)
+VI_PLOT4_restructured <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/PLOT4_RESTRUCTURED.csv", header=TRUE)
+
+# Remove rows with na's with the remove.na function from rgr
+VI_PLOT2_hemocytes <- na.omit(VI_PLOT2_hemocytes)
+VI_PLOT3_P1_GATE <- na.omit(VI_PLOT3_P1_GATE)
+VI_PLOT4_E1_E3_GATE <- na.omit(VI_PLOT4_E1_E3_GATE)
+VI_PLOT5_P1_MINUS_V1R <- na.omit(VI_PLOT5_P1_MINUS_V1R)
+VI_PLOT9_E1_MINUS_V1R <- na.omit(VI_PLOT9_E1_MINUS_V1R)
+VI_PLOT10_E3_MINUS_V1R <- na.omit(VI_PLOT10_E3_MINUS_V1R)
+VI_PLOT12_P1_PerCP <- na.omit(VI_PLOT12_P1_PerCP)
+VI_PLOT4_restructured <- na.omit(VI_PLOT4_restructured)
+
+## Remove percent symbol from columns 
+VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT))
+VI_PLOT3_P1_GATE$P1_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT3_P1_GATE$P1_PERCENT_OF_THIS_PLOT))
+VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT))
+VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT))
+VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT))
+VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT))
+VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT))
+
+# Load in Data for the samples to remove 
+Viability_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_SAMPLES_REMOVE.csv", header=TRUE)
+
+# Data Frame with bad samples removed
+VI_PLOT2_hemocytes_BAD_REMOVED <- VI_PLOT2_hemocytes[!VI_PLOT2_hemocytes$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT3_P1_GATE_BAD_REMOVED <- VI_PLOT3_P1_GATE[!VI_PLOT3_P1_GATE$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE[!VI_PLOT4_E1_E3_GATE$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT5_P1_MINUS_V1R_BAD_REMOVED <- VI_PLOT5_P1_MINUS_V1R[!VI_PLOT5_P1_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R[!VI_PLOT9_E1_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R[!VI_PLOT10_E3_MINUS_V1R$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT12_P1_PerCP_BAD_REMOVED <- VI_PLOT12_P1_PerCP[!VI_PLOT12_P1_PerCP$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+VI_PLOT4_restructured_BAD_REMOVED <- VI_PLOT4_restructured[!VI_PLOT4_restructured$SAMPLE_ID %in% Viability_Samples_Remove$SAMPLE_ID, , drop=FALSE]
+
+```
+
+## Basic plots showing the data by Family and then across families
+
+## Percent Total Hemocytes out of all events
+```{r percent_total_hemocytes, echo=TRUE}
+ 
+VI_Percent_total_hemocytes_BAD_NOT_REMOVED <- ggplot(data= VI_PLOT2_hemocytes, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \n Low Quality Not Removed") +
+    xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+VI_Percent_total_hemocytes_BAD_NOT_REMOVED
+VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+VI_Percent_total_hemocytes_BAD_REMOVED
+```
+
+# Arc sine Percentage data
+
+```{r arcsine, echo=TRUE}
+# Calculate Percent Live Granulocytes 
+  # Take cells here and make a percentage out of GRANULAR hemocyte count from VI_PLOT3_P1_GATE P1_COUNT
+  # These commands only work correctly if the csv has all the commas removed from the numbers for the thousands separator
+VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT<- as.numeric(VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT)
+
+VI_PLOT3_P1_GATE$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE$P1_COUNT)
+VI_PLOT4_E1_E3_GATE$E1_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE$E1_COUNT) 
+VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E1_COUNT)*100
+
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT <- as.numeric(VI_PLOT3_P1_GATE_BAD_REMOVED$P1_COUNT)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_COUNT)*100 
+
+# Calculate Percent Live Agranulocytes 
+VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT)
+VI_PLOT4_E1_E3_GATE$E3_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE$E3_COUNT)
+VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE$E3_COUNT)*100
+
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT <- as.numeric(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT <- as.numeric(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE <- (VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$COUNT_THIS_PLOT / VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_COUNT)*100 
+
+# Use transf.arcsine to arcsine transform the percentages
+VI_PLOT2_hemocytes$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT*.01)
+VI_PLOT4_E1_E3_GATE$E1_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE$E1_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT4_E1_E3_GATE$E3_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE$E3_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT4_restructured$Arcsine <- transf.arcsin(VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT9_E1_MINUS_V1R$Arcsine <- transf.arcsin(VI_PLOT9_E1_MINUS_V1R$PERCENT_LIVE*0.01)
+VI_PLOT10_E3_MINUS_V1R$Arcsine <- transf.arcsin(VI_PLOT10_E3_MINUS_V1R$PERCENT_LIVE*0.01)
+VI_PLOT12_P1_PerCP$V1_L_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT12_P1_PerCP$V1_R_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT*0.01)
+
+# Use transf.arcsine to arcsine transform the percentages for the "BAD REMOVED" samples
+VI_PLOT2_hemocytes_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes_BAD_REMOVED$M4_PERCENT_OF_THIS_PLOT*.01)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_Arcsine <- transf.arcsin(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE*0.01)
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$PERCENT_LIVE*0.01)
+VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_L_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_L_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_R_Arcsine <- transf.arcsin(VI_PLOT12_P1_PerCP_BAD_REMOVED$V1_R_PERCENT_OF_THIS_PLOT*0.01)
+VI_PLOT4_restructured_BAD_REMOVED$Arcsine <- transf.arcsin(VI_PLOT4_restructured_BAD_REMOVED$PERCENT_OF_THIS_PLOT*0.01)
+```
+
+## Percent Granular Hemocytes out of all hemocytes
+```{r percent_granular_hemocytes, echo=TRUE}
+VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Not Removed") +xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
+VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED
+
+VI_Percent_Granular_Hemocytes_BAD_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Removed") +
+  xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
+VI_Percent_Granular_Hemocytes_BAD_REMOVED
+```
+
+## Percent of granular hemocytes (E1)
+
+### FAMILY A
+```{r granular_A, echo=TRUE}
+VI_PLOT4_FAMILY_A <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
+VI_PLOT4_E1_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A$E1_Arcsine ~ VI_PLOT4_FAMILY_A$GROUP, data=VI_PLOT4_FAMILY_A)
+summary(VI_PLOT4_E1_AOV_FAMILY_A)
+VI_PLOT4_FAMILY_A_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="A")
+VI_PLOT4_E1_AOV_FAMILY_A_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_A_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_A_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_A_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_A_BAD_REMOVED)
+```
+
+### FAMILY B
+
+```{r granular_B, echo=TRUE}
+V1_PLOT4_FAMILY_B <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="B")
+VI_PLOT4_E1_AOV_FAMILY_B <- aov(V1_PLOT4_FAMILY_B$E1_Arcsine ~ V1_PLOT4_FAMILY_B$GROUP, data=V1_PLOT4_FAMILY_B)
+summary(VI_PLOT4_E1_AOV_FAMILY_B)
+V1_PLOT4_FAMILY_B_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="B")
+VI_PLOT4_E1_AOV_FAMILY_B_BAD_REMOVED <- aov(V1_PLOT4_FAMILY_B_BAD_REMOVED$E1_Arcsine ~ V1_PLOT4_FAMILY_B_BAD_REMOVED$GROUP, data=V1_PLOT4_FAMILY_B_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_B_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r granular_D, echo=TRUE}
+VI_PLOT4_FAMILY_D <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="D")
+VI_PLOT4_E1_AOV_FAMILY_D <- aov(VI_PLOT4_FAMILY_D$E1_Arcsine ~ VI_PLOT4_FAMILY_D$GROUP, data=VI_PLOT4_FAMILY_D)
+summary(VI_PLOT4_E1_AOV_FAMILY_D)
+VI_PLOT4_FAMILY_D_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="D")
+VI_PLOT4_E1_AOV_FAMILY_D_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_D_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_D_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_D_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_D_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r granular_E, echo=TRUE}
+VI_PLOT4_FAMILY_E <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="E")
+VI_PLOT4_E1_AOV_FAMILY_E <- aov(VI_PLOT4_FAMILY_E$E1_Arcsine ~ VI_PLOT4_FAMILY_E$GROUP, data=VI_PLOT4_FAMILY_E)
+summary(VI_PLOT4_E1_AOV_FAMILY_E)
+VI_PLOT4_FAMILY_E_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="E")
+VI_PLOT4_E1_AOV_FAMILY_E_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_E_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_E_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_E_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r granular_J, echo=TRUE}
+VI_PLOT4_FAMILY_J <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="J")
+VI_PLOT4_E1_AOV_FAMILY_J <- aov(VI_PLOT4_FAMILY_J$E1_Arcsine ~ VI_PLOT4_FAMILY_J$GROUP, data=VI_PLOT4_FAMILY_J)
+summary(VI_PLOT4_E1_AOV_FAMILY_J)
+VI_PLOT4_FAMILY_J_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="J")
+VI_PLOT4_E1_AOV_FAMILY_J_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_J_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_J_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_J_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_J_BAD_REMOVED)
+```
+
+### FAMILY L
+```{r granular_L, echo=TRUE}
+VI_PLOT4_FAMILY_L <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="L")
+VI_PLOT4_E1_AOV_FAMILY_L <- aov(VI_PLOT4_FAMILY_L$E1_Arcsine ~ VI_PLOT4_FAMILY_L$GROUP, data=VI_PLOT4_FAMILY_L)
+summary(VI_PLOT4_E1_AOV_FAMILY_L)
+VI_PLOT4_FAMILY_L_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY=="L")
+VI_PLOT4_E1_AOV_FAMILY_L_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_L_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_L_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_L_BAD_REMOVED)
+summary(VI_PLOT4_E1_AOV_FAMILY_L_BAD_REMOVED)
+```
+
+### Two Way ANOVA of Granular Hemocytes
+
+```{r granular_aov, echo=TRUE}
+VI_PLOT4_Granular_hemocytes_AOV <- lm(VI_PLOT4_E1_E3_GATE$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE$GROUP + VI_PLOT4_E1_E3_GATE$FAMILY, data=VI_PLOT4_E1_E3_GATE)
+Anova(VI_PLOT4_Granular_hemocytes_AOV, type="II")
+summary(VI_PLOT4_Granular_hemocytes_AOV)
+VI_PLOT4_Granular_hemocytes_AOV_BAD_REMOVED <- lm(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
+Anova(VI_PLOT4_Granular_hemocytes_AOV_BAD_REMOVED, type="II")
+summary(VI_PLOT4_Granular_hemocytes_AOV_BAD_REMOVED)
+#NO significance, no interaction term added
+```
+
+### One Way ANOVA of Differences between Families
+
+```{r oneway_granular, include=TRUE}
+
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED[!grepl("control", VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP),]
+VI_PLOT4_Granular_hemocytes_oneway_lm <- aov(VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$E1_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT4_Granular_hemocytes_oneway_lm)
+```
+
+# Percent of Agranular hemocytes (E3) #
+
+## Percent Agranular Hemocytes out of all hemocytes
+```{r percent_agranular_hemocytes, echo=TRUE}
+VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events \n Low Quality Not Removed") +
+  xlab("Family") + ylab("Percent of Live and Dead Agranular Hemocytes") + ylim(0,100)
+VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED
+VI_Percent_Agranular_Hemocytes_BAD_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events") +
+  xlab("Family") + ylab("Percent of Live and Dead \n Agranular Hemocytes Low Quality Removed") + ylim(0,100)
+VI_Percent_Agranular_Hemocytes_BAD_REMOVED
+```
+
+### FAMILY A
+```{r agranular_A, echo=TRUE}
+VI_PLOT4_FAMILY_A_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
+VI_PLOT4_E3_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_A_E3$GROUP, data=VI_PLOT4_FAMILY_A_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_A)
+VI_PLOT4_FAMILY_A_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="A")
+VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_A_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_A_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_A_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED)
+```
+
+### FAMILY B
+```{r agranular_B, echo=FALSE}
+VI_PLOT4_FAMILY_B_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="B")
+VI_PLOT4_E3_AOV_FAMILY_B <- aov(VI_PLOT4_FAMILY_B_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_B_E3$GROUP, data=VI_PLOT4_FAMILY_B_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_B)
+VI_PLOT4_FAMILY_B_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="B")
+VI_PLOT4_E3_AOV_FAMILY_B_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_B_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_B_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_B_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_B_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r agranular D, echo=FALSE}
+VI_PLOT4_FAMILY_D_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="D")
+VI_PLOT4_E3_AOV_FAMILY_D <- aov(VI_PLOT4_FAMILY_D_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_D_E3$GROUP, data=VI_PLOT4_FAMILY_D_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_D)
+VI_PLOT4_FAMILY_D_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="D")
+VI_PLOT4_E3_AOV_FAMILY_D_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_D_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_D_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_D_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_D_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r agranular_E, echo=FALSE}
+VI_PLOT4_FAMILY_E_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="E")
+VI_PLOT4_E3_AOV_FAMILY_E <- aov(VI_PLOT4_FAMILY_E_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_E_E3$GROUP, data=VI_PLOT4_FAMILY_E_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_E)
+VI_PLOT4_FAMILY_E_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="E")
+VI_PLOT4_E3_AOV_FAMILY_E_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_E_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_E_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_E_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_E_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r agranular_J, echo=FALSE}
+VI_PLOT4_FAMILY_J_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="J")
+VI_PLOT4_E3_AOV_FAMILY_J <- aov(VI_PLOT4_FAMILY_J_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_J_E3$GROUP, data=VI_PLOT4_FAMILY_J_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_J)
+VI_PLOT4_FAMILY_J_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="J")
+VI_PLOT4_E3_AOV_FAMILY_J_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_J_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_J_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_J_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_J_BAD_REMOVED)
+```
+
+### FAMILY L 
+```{r agrnaular_L, echo=FALSE}
+VI_PLOT4_FAMILY_L_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="L")
+VI_PLOT4_E3_AOV_FAMILY_L <- aov(VI_PLOT4_FAMILY_L_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_L_E3$GROUP, data=VI_PLOT4_FAMILY_L_E3)
+summary(VI_PLOT4_E3_AOV_FAMILY_L)
+VI_PLOT4_FAMILY_L_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="L")
+VI_PLOT4_E3_AOV_FAMILY_L_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_L_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_L_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_L_E3_BAD_REMOVED)
+summary(VI_PLOT4_E3_AOV_FAMILY_L_BAD_REMOVED)
+```
+
+### Two Way ANOVA of Agranular Hemocytes
+```{r agrnaular_AOV, echo=FALSE}
+VI_PLOT4_Agranular_hemocytes_AOV <- lm(VI_PLOT4_E1_E3_GATE$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE$GROUP + VI_PLOT4_E1_E3_GATE$FAMILY, data=VI_PLOT4_E1_E3_GATE)
+Anova(VI_PLOT4_Agranular_hemocytes_AOV, type="II")
+summary(VI_PLOT4_Agranular_hemocytes_AOV)
+
+VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED <- lm(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
+Anova(VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED, type="II")
+summary(VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED)
+
+
+```
+
+### One Way ANOVA of Differences between Families
+
+```{r oneway_Agranular, echo=TRUE}
+
+VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED[!grepl("control", VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP),]
+VI_PLOT4_Agranular_hemocytes_oneway_aov <- aov(VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT4_Agranular_hemocytes_oneway_aov)
+```
+
+## Two Way ANOVA of Granular vs. Agranular
+```{r granular_agranular_percentage, echo=TRUE}
+# Plotting
+ggplot(VI_PLOT4_restructured_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=E1_E3)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Hemocytes (low quality removed)") +
+  ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Granular Hemocytes", "Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+VI_PLOT4_agranular_granular_lm <- lm(VI_PLOT4_restructured_BAD_REMOVED$Arcsine ~ VI_PLOT4_restructured_BAD_REMOVED$E1_E3 + VI_PLOT4_restructured_BAD_REMOVED$FAMILY, data=VI_PLOT4_restructured_BAD_REMOVED)
+Anova(VI_PLOT4_agranular_granular_lm, type="II")
+summary(VI_PLOT4_agranular_granular_lm)
+
+VI_PLOT4_agranular_granular_lm_interaction <- lm(VI_PLOT4_restructured_BAD_REMOVED$Arcsine ~ VI_PLOT4_restructured_BAD_REMOVED$E1_E3 + VI_PLOT4_restructured_BAD_REMOVED$FAMILY + VI_PLOT4_restructured_BAD_REMOVED$FAMILY:VI_PLOT4_restructured_BAD_REMOVED$E1_E3, data=VI_PLOT4_restructured_BAD_REMOVED)
+Anova(VI_PLOT4_agranular_granular_lm_interaction, type="II")
+summary(VI_PLOT4_agranular_granular_lm_interaction)
+
+VI_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_PLOT4_agranular_granular_lm_interaction, "VI_PLOT4_restructured_BAD_REMOVED$E1_E3", adjust="tukey")
+cld(VI_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
+
+```
+
+
+# Percent of Live Granular Hemocytes #
+
+## Percent Live Granular Hemocytes out of all Granular hemocytes
+```{r percent, echo=FALSE}
+VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte Events \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
+VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH                               
+
+VI_Percent_Live_Granular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
+VI_Percent_Live_Granular_BAD_REMOVED_GRAPH                          
+```
+
+### FAMILY A
+```{r live_granular_A, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="A")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_A$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_A$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_A)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="A")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_A_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED)
+```
+
+### FAMILY B
+```{r live_granular_B, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="B")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_B$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_B$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_B)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="B")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_B_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r live_granula_D, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="D")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_D$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_D$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_D)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="D")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED$GROUP, data=VI_PLOT9_E1_MINUS_V1R_FAMILY_D_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r live_granular_E, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="E")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_E$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_E$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_E)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="E")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r live_granular_J, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="J")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_J$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_J$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_J)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV)
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="J")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_J_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED)
+```
+
+### FAMILY L
+```{r live_granular_L, echo=FALSE}
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L <- VI_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="L")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_L$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_L$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_L)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV) 
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="L")
+VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED <- aov(VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED$GROUP, data= VI_PLOT9_E1_MINUS_V1R_FAMILY_L_BAD_REMOVED)
+summary(VI_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED)
+```
+
+### Two Way ANOVA of LIVE Granular Hemocytes
+```{r live_granular_aov, echo=FALSE}
+VI_PLOT9_LIVE_granular_hemocytes_AOV <- lm(VI_PLOT9_E1_MINUS_V1R$Arcsine ~ VI_PLOT9_E1_MINUS_V1R$GROUP + VI_PLOT9_E1_MINUS_V1R$FAMILY, data=VI_PLOT9_E1_MINUS_V1R)
+Anova(VI_PLOT9_LIVE_granular_hemocytes_AOV, type="II")
+summary(VI_PLOT9_LIVE_granular_hemocytes_AOV)
+
+VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED <- lm(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY, data=VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
+Anova(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED, type="II") #FAMILY is significantly different
+summary(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED)
+
+
+# INTERACTION TERM ADDED
+VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov <- lm(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY:VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP)
+Anova(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov , type="II")
+summary(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov)
+VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares <- lsmeans(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov, "VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
+cld(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares, alpha=0.05, Letters=letters)
+
+```
+
+### One Way ANOVA of Differences between Families
+
+```{r oneway_live-granular, include=FALSE}
+
+VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED[!grepl("control", VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP),]
+VI_PLOT9_LIVE_granular_hemocytes_oneway_aov <- aov(VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$Arcsine ~ VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT9_LIVE_granular_hemocytes_oneway_aov)
+TukeyHSD(VI_PLOT9_LIVE_granular_hemocytes_oneway_aov)
+```
+# Percent of Live Agranular Hemocytes (E3) #
+
+# Percent Live Agranular Hemocytes
+```{r percent_live_agranular_hemocytes, echo=FALSE}
+VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Not Removed") + xlab("Family") +   ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)          
+VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH                                             
+
+VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)
+VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH                                                          
+```
+
+### FAMILY A
+```{r live_agranular_A, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="A")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_A$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_A$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_A)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="A")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED)
+```
+
+### FAMILY B
+```{r live_agranular_B, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_B <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="B")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_B_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_B$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_B$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_B)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_B_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="B")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_B_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_B_AOV_BAD_REMOVED)
+```
+
+### FAMILY D
+```{r live_agranular_D, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_D <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="D")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_D_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_D$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_D$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_D)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_D_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="D")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_D_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_D_AOV_BAD_REMOVED)
+```
+
+### FAMILY E
+```{r live_agranular_E, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_E <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="E")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_E_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_E$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_E$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_E)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_E_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="E")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_E_AOV_BAD_REMOVED)
+```
+
+### FAMILY J
+```{r live_agranular_J, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_J <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="J")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_J_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_J$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_J$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_J)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_J_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="J")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_J_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED)
+```
+
+### FAMILY L
+```{r live_agranular_L, echo=FALSE}
+VI_PLOT10_E3_MINUS_V1R_FAMILY_L <- VI_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="L")
+VI_PLOT10_E3_MINUS_V1R_FAMILY_L_AOV <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_L$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_L$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_L)
+summary(VI_PLOT10_E3_MINUS_V1R_FAMILY_L_AOV)
+VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="L")
+VI_PLOT10_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED <- aov(VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED$GROUP, data= VI_PLOT10_E3_MINUS_V1R_FAMILY_L_BAD_REMOVED)
+summary(VI_PLOT10_E1_MINUS_V1R_FAMILY_L_AOV_BAD_REMOVED)
+```
+
+### Two Way ANOVA of LIVE AGranular Hemocytes
+```{r live_agranular_aov, echo=FALSE}
+VI_PLOT10_LIVE_AGranular_hemocytes_AOV <- lm(VI_PLOT10_E3_MINUS_V1R$Arcsine ~ VI_PLOT10_E3_MINUS_V1R$GROUP + VI_PLOT10_E3_MINUS_V1R$FAMILY, data=VI_PLOT10_E3_MINUS_V1R)
+Anova(VI_PLOT10_LIVE_AGranular_hemocytes_AOV, type="II")
+summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV)
+
+VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED <- lm(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY, data=VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
+Anova(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED, type="II")
+summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED)
+
+VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction <- lm(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY + VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY:VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP, data=VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
+Anova(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction, type="II")
+summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction)
+
+VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_leastsquares <- lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction, "VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
+cld(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_leastsquares, alpha=0.05, Letters=letters)
+
+```
+
+### One Way ANOVA of Differences between Families
+
+```{r oneway_live-agranular, include=FALSE}
+
+VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE <- VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED[!grepl("control", VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP),]
+VI_PLOT10_LIVE_AGranular_hemocytes_oneway_aov <- aov(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE$Arcsine ~ VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT10_LIVE_AGranular_hemocytes_oneway_aov)
+TukeyHSD(VI_PLOT10_LIVE_AGranular_hemocytes_oneway_aov)
+```
+
+## Analyzing difference between Live Agranular and Granular 
+```{r difference_between_cells, include=TRUE}
+
+## Statistical difference between Live agranular cells and granular cells 
+VI_PLOT9_PLOT10_combined <-rbind(VI_PLOT9_E1_MINUS_V1R, VI_PLOT10_E3_MINUS_V1R)
+VI_PLOT9_PLOT10_BAD_REMOVED_combined <-rbind(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
+
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov <- lm(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3 +  VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY,data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
+Anova(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov)
+summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov)
+
+# Plus an interaction term
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov <- lm(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3 + VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY + VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
+Anova(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, type="II")
+summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov)
+
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction <- lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, adjust="tukey")
+cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction, alpha=0.05, Letters=letters)
+
+#Plotting
+ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=E1_E3)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+
+```
+
+## VIABILITY ASSAY OBSERVATIONS AND CONCLUSIONS
+When comparing the control and treatment percentages of granular hemocytes and agranular hemocytes within families, no significant differences were observed. No significant differences were observed between families either. 
+
