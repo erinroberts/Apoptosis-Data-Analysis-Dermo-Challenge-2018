@@ -2,12 +2,15 @@
 title: "Dermo Challenge Apoptosis Assay Data Analysis"
 author: "Erin Roberts"
 date: "8/14/2018"
-output: html_document
+output: 
+  md_document:
+      variant: markdown_github
+
 ---
 
 ## Load Packages
 
-```{r packages, echo=FALSE}
+```{r packages, echo=TRUE, include=FALSE}
 library(ggplot2)
 library(metafor)
 library(dplyr)
@@ -384,9 +387,6 @@ agranular_live_apoptotic_all <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_RE
 granular_live_apoptotic_all <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q2_LR")
 APOP_Live_apoptotic_combined_all <- rbind(agranular_live_apoptotic_all,granular_live_apoptotic_all)
 
-#agranular_live_apoptotic <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q1_LR") %>% filter(GROUP=="treatment")
-#granular_live_apoptotic <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q2_LR") %>% filter(GROUP=="treatment")
-APOP_Live_apoptotic_combined <- rbind(agranular_live_apoptotic, granular_live_apoptotic)
 ggplot(APOP_Live_apoptotic_combined_all, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live Apoptotic Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Apoptotic Agranular", "Live Apoptotic Granular"), values=c("Q2_LR"="#99a765","Q1_LR"="#96578a")) 
 
 # Two-Way ANOVA
@@ -644,7 +644,7 @@ TukeyHSD(APOP_PLOT_7_dead_agranular_oneway_aov)
 dead_apoptotic_granular <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED %>% filter(GATE=="Q2_UR") 
 dead_apoptotic_agranular <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED %>% filter(GATE=="Q1_UR")
 combined_dead_apoptotic_agranular_granular <- rbind(dead_apoptotic_granular, dead_apoptotic_agranular)
-ggplot(combined_dead_apoptotic_agranular_granular, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Dead Apoptotic Hemocytes \n in Challenged Oysters (low quality removed)") +
+ggplot(combined_dead_apoptotic_agranular_granular, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Dead Apoptotic Hemocytes (low quality removed)") +
   ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Dead Apoptotic Granular", "Dead Apoptotic Agranular"), values=c("Q2_UR"="#99a765","Q1_UR"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free")
 
 # Two-Way ANOVA
@@ -848,7 +848,7 @@ summary(APOP_PLOT_7_necrotic_agranular_FAMILY_J_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY L 
-```{r necrotic__agranular_aov_L, echo=TRUE}
+```{r necrotic_agranular_aov_L, echo=TRUE}
 
 APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV <- aov(APOP_PLOT_7_agranular_FAMILY_L$Q1.UL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L)
 summary(APOP_PLOT_7_necrotic_agranular_FAMILY_L_AOV)
@@ -927,6 +927,173 @@ ggplot(full_Data, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE, linetype=cell,
   ylab("Percent of Hemocyte Events in each quad plot") + 
   scale_fill_manual(name="Hemocyte Type", labels=c("Live Agranular Non-Apoptotic", "Live Agranular Apoptotic", "Dead Agranular Apoptotic", "Agranular Necrotic", "Live Granular Non-Apoptotic", "Live Granular Apoptotic", "Dead Granular Apoptotic", "Granular Necrotic"), values=c("Q1_LL"="#50b47b","Q1_LR"="#5d3585", "Q1_UL"="#98a441", "Q1_UR"="#6770d5","Q2_LL"="#ba6437","Q2_LR"="#6d8dd7", "Q2_UL"="#ba496b", "Q2_UR"="#c26abb")) +
   scale_color_manual(values=c("granular"="black","agranular"="black"))
+
+```
+
+#### Percent Live Granular Hemocytes
+
+### One-Way ANOVA control vs. challenge
+
+## Plotting
+```{r live_granular_plotting, echo=TRUE}
+ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.LL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+```
+
+### Family A
+```{r live_granular_A, echo=TRUE}
+APOP_PLOT_4_live_granular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_4_live_granular_FAMILY_A_AOV_BAD_REMOVED)
+
+```
+
+### Family B
+```{r live_granular_B, echo=TRUE}
+APOP_PLOT_4_live_granular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_4_live_granular_FAMILY_B_AOV_BAD_REMOVED)
+```
+
+### Family D
+```{r live_granular_D, echo=TRUE}
+APOP_PLOT_4_live_granular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_4_live_granular_FAMILY_D_AOV_BAD_REMOVED)
+
+```
+
+### Family E
+```{r live_granular_E, echo=TRUE}
+APOP_PLOT_4_live_granular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_4_live_granular_FAMILY_E_AOV_BAD_REMOVED)
+```
+
+### Family J
+```{r live_granular_J, echo=TRUE}
+APOP_PLOT_4_live_granular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_4_live_granular_FAMILY_J_AOV_BAD_REMOVED)
+```
+
+### Family L
+```{r live_granular_L, echo=TRUE}
+APOP_PLOT_4_live_granular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_4_granular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_4_live_granular_FAMILY_L_AOV_BAD_REMOVED)
+```
+
+### Two- Way ANOVA
+```{r live_granular_anova, echo=TRUE}
+APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_lm <- lm(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED)
+Anova(APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_lm, type="II")
+summary(APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_lm)
+
+# Interaction
+APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_interaction_lm <- lm(APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$Q2.LL_Arcsine ~ APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY + APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP:APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED)
+Anova(APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_interaction_lm, type="II") # Family is significant
+summary(APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_interaction_lm)
+
+APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_interaction_lm_leastsquares <-lsmeans(APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_interaction_lm, "APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY", adjust="tukey")
+cld(APOP_PLOT_4_live_granular_FAMILY_BAD_REMOVED_interaction_lm_leastsquares, alpha=0.05, Letters=letters)
+```
+
+
+### One-Way Anova of just challenged 
+```{r live_granular_oneway, echo=TRUE}
+APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE <- APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED[!grepl("control",APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP),]
+
+APOP_PLOT_4_granular_oneway_aov <- aov(APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE$Q2.LL_Arcsine ~ APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=APOP_PLOT_4_granular_hemocytes_BAD_REMOVED_CHALLENGE)
+summary(APOP_PLOT_4_granular_oneway_aov)
+TukeyHSD(APOP_PLOT_4_granular_oneway_aov)
+```
+#### Percent Live Agranular Hemocytes 
+
+## Plotting
+```{r live_agranular_plotting, echo=TRUE}
+ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.LL_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocytes \nLow Quality Removed") +
+  xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
+```
+
+### Family A
+```{r live_agranular_A, echo=TRUE}
+APOP_PLOT_7_live_agranular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED)
+summary(APOP_PLOT_7_live_agranular_FAMILY_A_AOV_BAD_REMOVED)  
+```
+
+### Family B
+```{r live_agranular_B, echo=TRUE}
+APOP_PLOT_7_live_agranular_FAMILY_B_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_B_BAD_REMOVED)
+summary(APOP_PLOT_7_live_agranular_FAMILY_B_AOV_BAD_REMOVED)  
+```
+
+### Family D
+```{r live_agranular_D, echo=TRUE}
+APOP_PLOT_7_live_agranular_FAMILY_D_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_D_BAD_REMOVED)
+summary(APOP_PLOT_7_live_agranular_FAMILY_D_AOV_BAD_REMOVED)  
+```
+
+### Family E
+```{r live_agranular_E, echo=TRUE}
+APOP_PLOT_7_live_agranular_FAMILY_E_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_E_BAD_REMOVED)
+summary(APOP_PLOT_7_live_agranular_FAMILY_E_AOV_BAD_REMOVED)  
+```
+
+### Family J
+```{r live_agranular_J, echo=TRUE}
+APOP_PLOT_7_live_agranular_FAMILY_J_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_J_BAD_REMOVED)
+summary(APOP_PLOT_7_live_agranular_FAMILY_J_AOV_BAD_REMOVED)  
+```
+
+### Family L
+```{r live_agranular_L, echo=TRUE}
+APOP_PLOT_7_live_agranular_FAMILY_L_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_L_BAD_REMOVED)
+summary(APOP_PLOT_7_live_agranular_FAMILY_L_AOV_BAD_REMOVED)  
+```
+
+### Two- Way ANOVA
+```{r live_agranular_twoway}
+APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm <- lm(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LL_Arcsine ~APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY, data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED)
+Anova(APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm, type="II") # Family is significant
+summary(APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm) 
+
+# Interaction
+APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm_interaction <- lm(APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Q1.LL_Arcsine ~APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP + APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY + APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP:APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY , data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED)
+Anova(APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm_interaction, type="II") # Family is significant
+summary(APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm_interaction) 
+
+APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm_interaction_leastsquares <-lsmeans(APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm_interaction, "APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$FAMILY", adjust="tukey")
+cld(APOP_PLOT_7_live_agranular_FAMILY_BAD_REMOVED_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
+```
+
+### One-Way Anova of just challenged 
+```{r live_granular_oneway_double, echo=TRUE}
+APOP_PLOT_7_live_agranular_hemocytes_BAD_REMOVED_CHALLENGE <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED[!grepl("control",APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$GROUP),]
+
+APOP_PLOT_7_live_agranular_oneway_aov <- aov(APOP_PLOT_7_live_agranular_hemocytes_BAD_REMOVED_CHALLENGE$Q1.LL_Arcsine ~ APOP_PLOT_7_live_agranular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=APOP_PLOT_7_live_agranular_hemocytes_BAD_REMOVED_CHALLENGE)
+summary(APOP_PLOT_7_live_agranular_oneway_aov) # significantly different between families 
+TukeyHSD(APOP_PLOT_7_live_agranular_oneway_aov)
+```
+
+### Two-Way ANOVA of Live Granular vs. Agranular
+```{r two_way_aov_granular_agranular, echo=TRUE}
+live_granular <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q2_LL")
+live_agranular <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q1_LL")
+live_granular_agranular_combined <- rbind(live_granular,live_agranular)
+
+ggplot(live_granular_agranular_combined, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular", "Live Agranular"), values=c("Q2_LL"="#99a765","Q1_LL"="#96578a")) 
+
+# Two way ANOVA
+live_granular_agranular_aov <- lm(live_granular_agranular_combined$Arcsine ~live_granular_agranular_combined$FAMILY + live_granular_agranular_combined$GATE, data=live_granular_agranular_combined)
+Anova(live_granular_agranular_aov, type="II") #GATE and Family are significant
+summary(live_granular_agranular_aov)
+
+# Two- Way ANOVA 
+live_granular_agranular_aov_interaction <- lm(live_granular_agranular_combined$Arcsine ~live_granular_agranular_combined$FAMILY + live_granular_agranular_combined$GATE + live_granular_agranular_combined$FAMILY:live_granular_agranular_combined$GATE, data=live_granular_agranular_combined)
+Anova(live_granular_agranular_aov_interaction, type="II") #GATE and Family are significant
+summary(live_granular_agranular_aov_interaction)
+
+live_granular_agranula_aov_interaction_leastsquares <- lsmeans(live_granular_agranular_aov_interaction, "live_granular_agranular_combined$GATE", adjust="tukey")
+cld(live_granular_agranula_aov_interaction_leastsquares, alpha=0.05, Letters=letters) # the means of the two groups are significantly different 
+live_granular_agranula_aov_interaction_leastsquares_family <- lsmeans(live_granular_agranular_aov_interaction, "live_granular_agranular_combined$FAMILY", adjust="tukey")
+cld(live_granular_agranula_aov_interaction_leastsquares_family, alpha=0.05, Letters=letters) # the means of the two groups are not significantly different 
+
+
 
 ```
 
