@@ -1099,8 +1099,8 @@ cld(live_granular_agranula_aov_interaction_leastsquares_family, alpha=0.05, Lett
 
 
 #### Calculate Summary Statistics ####
-
+```{r summary_stats, echo=TRUE}
 full_combined <- rbind(APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED, APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED)
 
 full_statistics <- summarySE(data=full_combined, "PERCENT_OF_THIS_PLOT", groupvars=c("GATE", "GROUP", "cell","FAMILY"), conf.interval= 0.95)
-
+```
