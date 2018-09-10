@@ -19,6 +19,7 @@ library(lsmeans)
 library(rgr)
 library(multcompView)
 library(Rmisc)
+library(ggpubr)
 ```
 
 
@@ -648,6 +649,7 @@ TukeyHSD(APOP_PLOT_7_dead_agranular_oneway_aov)
 dead_apoptotic_granular <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED %>% filter(GATE=="Q2_UR") 
 dead_apoptotic_agranular <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED %>% filter(GATE=="Q1_UR")
 combined_dead_apoptotic_agranular_granular <- rbind(dead_apoptotic_granular, dead_apoptotic_agranular)
+
 ggplot(combined_dead_apoptotic_agranular_granular, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Dead Apoptotic Hemocytes (low quality removed)") +
   ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Dead Apoptotic Granular", "Dead Apoptotic Agranular"), values=c("Q2_UR"="#99a765","Q1_UR"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free")
 
@@ -1665,8 +1667,46 @@ DAY50_live_granular_agranula_aov_interaction_leastsquares_family <- lsmeans(DAY5
 cld(DAY50_live_granular_agranula_aov_interaction_leastsquares_family, alpha=0.05, Letters=letters) # the means of the groups are not significantly different 
 ```
 
-### Plotting of Combined DAY 7 and DAY 50 
+### Plotting of Combined DAY 7 and DAY 50 for live and dead hemocytes
 
+```{r dead_apop_7_50_plotting, echo=TRUE}
+
+DAY50_dead_granular_agranular_combined$DAY <- "50" 
+DAY50_live_granular_agranular_combined$DAY <- "50"
+APOP_Live_apoptotic_combined_all$DAY <- "07" 
+combined_dead_apoptotic_agranular_granular$DAY <- "07"
+
+DAY50_dead_granular_agranular_combined_subset <- DAY50_dead_granular_agranular_combined[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT")]
+DAY50_live_granular_agranular_combined_subset <-DAY50_live_granular_agranular_combined[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP","PLOT")]
+APOP_Live_apoptotic_combined_all_subset <- APOP_Live_apoptotic_combined_all[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP","PLOT")]
+combined_dead_apoptotic_agranular_granular_subset <-combined_dead_apoptotic_agranular_granular[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP","PLOT")]
+
+all_apoptotic_DAY7_DAY50 <- rbind(DAY50_dead_granular_agranular_combined_subset,DAY50_live_granular_agranular_combined_subset, APOP_Live_apoptotic_combined_all_subset, combined_dead_apoptotic_agranular_granular_subset)
+
+
+# Overall with all families included
+#to change the labels in the plot below 
+
+combined_families <- ggplot(all_apoptotic_DAY7_DAY50, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live and Dead Apoptotic Hemocytes \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + facet_grid(.~DAY+GROUP, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Apoptotic Granular","Dead Apoptotic Agranular", "Live Apoptotic Granular","Dead Apoptotic Granular"), values=c("Q1_LR"="#969e4a","Q1_UR"="#9250a2", "Q2_LR"="#b9515a", "Q2_UR"="#6785d7")) 
+
+#BEST PLOT
+#combined_families_bar <- 
+  ggplot(all_apoptotic_DAY7_DAY50, aes(x=DAY, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + 
+  geom_col(position=position_dodge()) + 
+  ggtitle("Percent of Granular and Agranular Live and Dead Apoptotic Hemocytes \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
+  facet_grid(GROUP~FAMILY, scales="free") + 
+  scale_fill_manual(name="Hemocyte Type", labels=c("Live Apoptotic Agranular","Dead Apoptotic Agranular", "Live Apoptotic Granular","Dead Apoptotic Granular"), 
+                    values=c("Q1_LR"="#969e4a","Q1_UR"="#9250a2", "Q2_LR"="#b9515a", "Q2_UR"="#6785d7")) 
+
+# By GATE and DAY and GROUP
+gate_names <- c("Q1_LR"="Live Apoptotic Agranular", "Q1_UR"="Dead Apoptotic Agranular", "Q2_LR"="Live Apoptotic Granular", "Q2_UR"="Dead Apoptotic Granular")
+families_separated <- ggplot(all_apoptotic_DAY7_DAY50, aes(x=DAY, y=PERCENT_OF_THIS_PLOT, fill=FAMILY)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live and Dead Apoptotic Hemocytes \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + facet_grid(.~GATE, scales="free", labeller = as_labeller((gate_names)))  + scale_fill_manual(name="Family", labels=c("A","B","D","E","J","L"), values=c("A"="#6971c9","B"="#86a542", "D"="#a24f99", "E"="#50b47b","J"="#ba4855","L"="#c07d37")) 
+
+# Put the plots together
+ggarrange(combined_families,families_separated, labels=c("A","B"), ncol=1,nrow=2)
+
+
+```
 
 #### Necrotic Granular Cells #### 
 
@@ -1681,17 +1721,98 @@ DAY50_APOP_necrotic_granular_BAD_REMOVED <- ggplot(data= DAY50_necrotic_granular
 DAY50_APOP_necrotic_granular_BAD_REMOVED
 ```
 
-### FAMILY L 
-```{r day50_dead_apoptotic_granularfamilyL, echo=TRUE}
-DAY50_dead_granular_FAMILY_L <- DAY50_dead_granular %>% filter(FAMILY=="L")
+### FAMILY A 
+```{r day50_necrotic_granularfamilyA, echo=TRUE}
+DAY50_necrotic_granular_FAMILY_A <- DAY50_necrotic_granular %>% filter(FAMILY=="A")
 
-DAY50_dead_granular_FAMILY_L_aov <- aov(DAY50_dead_granular_FAMILY_L$Arcsine ~ DAY50_dead_granular_FAMILY_L$GROUP, data=DAY50_dead_granular_FAMILY_L)
-summary(DAY50_dead_granular_FAMILY_L_aov)
+DAY50_necrotic_granular_FAMILY_A_aov <- aov(DAY50_necrotic_granular_FAMILY_A$Arcsine ~ DAY50_necrotic_granular_FAMILY_A$GROUP, data=DAY50_necrotic_granular_FAMILY_A)
+summary(DAY50_necrotic_granular_FAMILY_A_aov)
 
-DAY50_dead_granular_BAD_REMOVED_FAMILY_L <- DAY50_dead_granular_BAD_REMOVED %>% filter(FAMILY=="L") 
-DAY50_dead_granular_BAD_REMOVED_FAMILY_L_aov <- aov(DAY50_dead_granular_BAD_REMOVED_FAMILY_L$Arcsine ~ DAY50_dead_granular_BAD_REMOVED_FAMILY_L$GROUP, data=DAY50_dead_granular_BAD_REMOVED_FAMILY_L)
-summary(DAY50_dead_granular_BAD_REMOVED_FAMILY_L_aov)
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_A <- DAY50_necrotic_granular_BAD_REMOVED %>% filter(FAMILY=="A") 
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_A_aov <- aov(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_A$Arcsine ~ DAY50_necrotic_granular_BAD_REMOVED_FAMILY_A$GROUP, data=DAY50_necrotic_granular_BAD_REMOVED_FAMILY_A)
+summary(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_A_aov)
 ```
 
-### Plotting of  Combined 
+### FAMILY B
+```{r day50_necrotic_granularfamilyB, echo=TRUE}
+DAY50_necrotic_granular_FAMILY_B <- DAY50_necrotic_granular %>% filter(FAMILY=="B")
+
+DAY50_necrotic_granular_FAMILY_B_aov <- aov(DAY50_necrotic_granular_FAMILY_B$Arcsine ~ DAY50_necrotic_granular_FAMILY_B$GROUP, data=DAY50_necrotic_granular_FAMILY_B)
+summary(DAY50_necrotic_granular_FAMILY_B_aov)
+
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_B <- DAY50_necrotic_granular_BAD_REMOVED %>% filter(FAMILY=="B") 
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_B_aov <- aov(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_B$Arcsine ~ DAY50_necrotic_granular_BAD_REMOVED_FAMILY_B$GROUP, data=DAY50_necrotic_granular_BAD_REMOVED_FAMILY_B)
+summary(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_B_aov)
+```
+
+### FAMILY D
+```{r day50_necrotic_granularfamilyD, echo=TRUE}
+DAY50_necrotic_granular_FAMILY_D <- DAY50_necrotic_granular %>% filter(FAMILY=="D")
+
+DAY50_necrotic_granular_FAMILY_D_aov <- aov(DAY50_necrotic_granular_FAMILY_D$Arcsine ~ DAY50_necrotic_granular_FAMILY_D$GROUP, data=DAY50_necrotic_granular_FAMILY_D)
+summary(DAY50_necrotic_granular_FAMILY_D_aov)
+
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_D <- DAY50_necrotic_granular_BAD_REMOVED %>% filter(FAMILY=="D") 
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_D_aov <- aov(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_D$Arcsine ~ DAY50_necrotic_granular_BAD_REMOVED_FAMILY_D$GROUP, data=DAY50_necrotic_granular_BAD_REMOVED_FAMILY_D)
+summary(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_D_aov)
+```
+
+### FAMILY E
+```{r day50_necrotic_granularfamilyE, echo=TRUE}
+DAY50_necrotic_granular_FAMILY_E <- DAY50_necrotic_granular %>% filter(FAMILY=="E")
+
+DAY50_necrotic_granular_FAMILY_E_aov <- aov(DAY50_necrotic_granular_FAMILY_E$Arcsine ~ DAY50_necrotic_granular_FAMILY_E$GROUP, data=DAY50_necrotic_granular_FAMILY_E)
+summary(DAY50_necrotic_granular_FAMILY_E_aov)
+
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_E <- DAY50_necrotic_granular_BAD_REMOVED %>% filter(FAMILY=="E") 
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_E_aov <- aov(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_E$Arcsine ~ DAY50_necrotic_granular_BAD_REMOVED_FAMILY_E$GROUP, data=DAY50_necrotic_granular_BAD_REMOVED_FAMILY_E)
+summary(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_E_aov)
+```
+
+### FAMILY J
+```{r day50_necrotic_granularfamilyJ, echo=TRUE}
+DAY50_necrotic_granular_FAMILY_J <- DAY50_necrotic_granular %>% filter(FAMILY=="J")
+
+DAY50_necrotic_granular_FAMILY_J_aov <- aov(DAY50_necrotic_granular_FAMILY_J$Arcsine ~ DAY50_necrotic_granular_FAMILY_J$GROUP, data=DAY50_necrotic_granular_FAMILY_J)
+summary(DAY50_necrotic_granular_FAMILY_J_aov)
+
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_J <- DAY50_necrotic_granular_BAD_REMOVED %>% filter(FAMILY=="J") 
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_J_aov <- aov(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_J$Arcsine ~ DAY50_necrotic_granular_BAD_REMOVED_FAMILY_J$GROUP, data=DAY50_necrotic_granular_BAD_REMOVED_FAMILY_J)
+summary(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_J_aov)
+```
+
+### FAMILY L
+```{r day50_necrotic_granularfamilyL, echo=TRUE}
+DAY50_necrotic_granular_FAMILY_L <- DAY50_necrotic_granular %>% filter(FAMILY=="L")
+
+DAY50_necrotic_granular_FAMILY_L_aov <- aov(DAY50_necrotic_granular_FAMILY_L$Arcsine ~ DAY50_necrotic_granular_FAMILY_L$GROUP, data=DAY50_necrotic_granular_FAMILY_L)
+summary(DAY50_necrotic_granular_FAMILY_L_aov)
+
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_L <- DAY50_necrotic_granular_BAD_REMOVED %>% filter(FAMILY=="L") 
+DAY50_necrotic_granular_BAD_REMOVED_FAMILY_L_aov <- aov(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_L$Arcsine ~ DAY50_necrotic_granular_BAD_REMOVED_FAMILY_L$GROUP, data=DAY50_necrotic_granular_BAD_REMOVED_FAMILY_L)
+summary(DAY50_necrotic_granular_BAD_REMOVED_FAMILY_L_aov)
+```
+
+### Two Way ANOVA of Necrotic Granular ###
+
+```{r day50_twoway_necrotic_granular, echo=TRUE}
+DAY50_necrotic_granular_twoway_BAD_REMOVED_lm <- lm(DAY50_necrotic_granular_BAD_REMOVED$Arcsine ~ DAY50_necrotic_granular_BAD_REMOVED$GROUP + DAY50_necrotic_granular_BAD_REMOVED$FAMILY, data=DAY50_necrotic_granular_BAD_REMOVED)
+Anova(DAY50_necrotic_granular_twoway_BAD_REMOVED_lm, type="II")
+summary(DAY50_necrotic_granular_twoway_BAD_REMOVED_lm)
+
+```
+
+### One Way ANOVA of Necrotic Granular Just Challenged
+
+
+```{r Day50_necrotic_apoptotic_agranular_oneway_, echo=TRUE}
+DAY50_necrotic_granular_BAD_REMOVED_CHALLENGE <- 
+
+DAY50_PLOT4_dead_apoptotic_agranular_BAD_REMOVED_CHALLENGE <- DAY50_dead_agranular_BAD_REMOVED[!grepl("control",DAY50_dead_agranular_BAD_REMOVED$GROUP),]
+
+DAY50_PLOT4_dead_apoptotic_agranular_oneway_aov <- aov(DAY50_PLOT4_dead_apoptotic_agranular_BAD_REMOVED_CHALLENGE$Arcsine ~ DAY50_PLOT4_dead_apoptotic_agranular_BAD_REMOVED_CHALLENGE$FAMILY, data=DAY50_PLOT4_dead_apoptotic_agranular_BAD_REMOVED_CHALLENGE)
+summary(DAY50_PLOT4_dead_apoptotic_agranular_oneway_aov) # significantly different between families 
+```
+
+### Modeling with Dirichlet Multinomial Regression 
 
