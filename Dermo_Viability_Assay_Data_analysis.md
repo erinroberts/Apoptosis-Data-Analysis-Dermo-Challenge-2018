@@ -99,27 +99,6 @@ Key for GATE Names used in Analysis
 ``` r
 Viability_assay_GATE_KEY <- read.csv("../ANALYSIS_CSVs/VIABILITY_ASSAY/Viability_assay_GATE_KEY.csv",header=TRUE, stringsAsFactors = FALSE)
 Viability_assay_GATE_KEY <- as.data.frame(Viability_assay_GATE_KEY)
-Viability_assay_GATE_KEY
-```
-
-    ##   PLOT.NUMBER        AXES                          GATES.CREATED.or.USED
-    ## 1      PLOT 2       FL1-H                                    CREATED: M4
-    ## 2      PLOT 3 FSC-H/SSC-H                          CREATED: P1 USED: M4 
-    ## 3       PLOT4 FSC-H/SSC-H       CREATED: E1,E3; USED: P1 (IN M4 IN ALL))
-    ## 4      PLOT 5 FSC-H/SSC-H                                 USED: P1, V1-R
-    ## 5      PLOT 9       FL3-A     USED: E1 in (P1 in (M4in all)) EXCEPT V1-R
-    ## 6     PLOT 10       FL3-A USED: E3 in (p1 in ( M4 in all)), EXCEPT V1-R 
-    ## 7     PLOT 12       FL3-A           CREATED: V1-R, V1-L; USED: P1 in all
-    ##                                                                                    PLOT.DESCRIPTION
-    ## 1                                                           M4 gate surrounds hemocytes on the plot
-    ## 2                                                                        P1 surrounds all hemocytes
-    ## 3                         E1 surrounds all granular hemocytes, E3 surrounds all agranular hemocytes
-    ## 4                                            Shows hemocytes in P1 with the dead hemocytes removed 
-    ## 5                                                     Shows LIVE granular hemocytes (dead removed) 
-    ## 6                                                     Shows LIVE agranular hemocytes (dead removed)
-    ## 7 Shows all hemocytes that fluoresce with PI, but only those to the right of vertical gate are dead
-
-``` r
 kable(Viability_assay_GATE_KEY, caption = "Table of Gate Key")
 ```
 
@@ -248,12 +227,12 @@ ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.png", pl
 ``` r
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
   xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
-ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf", plot=VI_Percent_total_hemocytes_BAD_REMOVED)
+ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_REMOVED.png", plot=VI_Percent_total_hemocytes_BAD_REMOVED)
 ```
 
     ## Saving 7 x 5 in image
 
-![Percent of Hemocyte Events in Total Sample Events Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf "Percent of Hemocyte Events in Total Sample Events Low Quality Removed")
+![Percent of Hemocyte Events in Total Sample Events Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_REMOVED.png "Percent of Hemocyte Events in Total Sample Events Low Quality Removed")
 
 Percent Granular Hemocytes out of all hemocytes
 -----------------------------------------------
@@ -266,12 +245,23 @@ VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED
 ![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_granular_hemocytes-1.png)
 
 ``` r
-VI_Percent_Granular_Hemocytes_BAD_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Removed") +
-  xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
-VI_Percent_Granular_Hemocytes_BAD_REMOVED
+ggsave(filename = "./Figures/VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED.png", plot=VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED)
 ```
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_granular_hemocytes-2.png)
+    ## Saving 7 x 5 in image
+
+![VI\_Percent\_Granular\_Hemocytes\_BAD\_NOT\_REMOVED](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED.png)
+
+``` r
+VI_Percent_Granular_Hemocytes_BAD_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Removed") +
+  xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
+
+ggsave(filename = "./Figures/VI_Percent_Granular_Hemocytes_BAD_REMOVED.png", plot=VI_Percent_Granular_Hemocytes_BAD_REMOVED)
+```
+
+    ## Saving 7 x 5 in image
+
+![VI\_Percent\_Granular\_Hemocytes\_BAD\_REMOVED](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Granular_Hemocytes_BAD_REMOVED.png)
 
 Percent of granular hemocytes (E1)
 ----------------------------------
