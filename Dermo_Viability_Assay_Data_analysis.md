@@ -234,6 +234,154 @@ ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_REMOVED.png", plot=V
 
 ![Percent of Hemocyte Events in Total Sample Events Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_REMOVED.png "Percent of Hemocyte Events in Total Sample Events Low Quality Removed")
 
+### Comparing Total hemocytes in control and treated
+
+``` r
+VI_PLOT2_hemocytes_BAD_REMOVED_anova <- aov(VI_PLOT2_hemocytes_BAD_REMOVED$Arcsine ~ VI_PLOT2_hemocytes_BAD_REMOVED$GROUP, data=VI_PLOT2_hemocytes_BAD_REMOVED)
+summary(VI_PLOT2_hemocytes_BAD_REMOVED_anova)
+```
+
+    ##                                      Df Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_hemocytes_BAD_REMOVED$GROUP  1 0.0058 0.005764   0.417  0.521
+    ## Residuals                            51 0.7044 0.013811
+
+### FAMILY A
+
+``` r
+VI_PLOT2_FAMILY_A <- VI_PLOT2_hemocytes %>% filter(FAMILY=="A")
+```
+
+    ## Warning: package 'bindrcpp' was built under R version 3.4.4
+
+``` r
+VI_PLOT2_AOV_FAMILY_A <- aov(VI_PLOT2_FAMILY_A$Arcsine ~ VI_PLOT2_FAMILY_A$GROUP, data=VI_PLOT2_FAMILY_A)
+summary(VI_PLOT2_AOV_FAMILY_A)
+```
+
+    ##                         Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_A$GROUP  1 0.00419 0.004186   0.801  0.394
+    ## Residuals                9 0.04703 0.005225
+
+``` r
+VI_PLOT2_FAMILY_A_BAD_REMOVED <- VI_PLOT2_hemocytes_BAD_REMOVED %>% filter(FAMILY =="A")
+VI_PLOT2_FAMILY_A_BAD_REMOVED_aov <- aov(VI_PLOT2_FAMILY_A_BAD_REMOVED$Arcsine ~ VI_PLOT2_FAMILY_A_BAD_REMOVED$GROUP, data=VI_PLOT2_FAMILY_A_BAD_REMOVED)
+summary(VI_PLOT2_FAMILY_A_BAD_REMOVED_aov)
+```
+
+    ##                                     Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_A_BAD_REMOVED$GROUP  1 0.00282 0.002815    0.51  0.495
+    ## Residuals                            8 0.04413 0.005517
+
+### FAMILY B
+
+``` r
+VI_PLOT2_FAMILY_B <- VI_PLOT2_hemocytes %>% filter(FAMILY=="B")
+VI_PLOT2_AOV_FAMILY_B <- aov(VI_PLOT2_FAMILY_B$Arcsine ~ VI_PLOT2_FAMILY_B$GROUP, data=VI_PLOT2_FAMILY_B)
+summary(VI_PLOT2_AOV_FAMILY_B)
+```
+
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_B$GROUP  1 0.0000 0.00002       0  0.987
+    ## Residuals                6 0.3674 0.06123
+
+``` r
+VI_PLOT2_FAMILY_B_BAD_REMOVED <- VI_PLOT2_hemocytes_BAD_REMOVED %>% filter(FAMILY =="B")
+VI_PLOT2_FAMILY_B_BAD_REMOVED_aov <- aov(VI_PLOT2_FAMILY_B_BAD_REMOVED$Arcsine ~ VI_PLOT2_FAMILY_B_BAD_REMOVED$GROUP, data=VI_PLOT2_FAMILY_B_BAD_REMOVED)
+summary(VI_PLOT2_FAMILY_B_BAD_REMOVED_aov)
+```
+
+    ##                                     Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_B_BAD_REMOVED$GROUP  1 0.00570 0.005703   0.504  0.509
+    ## Residuals                            5 0.05652 0.011304
+
+### FAMILY D
+
+``` r
+VI_PLOT2_FAMILY_D <- VI_PLOT2_hemocytes %>% filter(FAMILY=="D")
+VI_PLOT2_AOV_FAMILY_D <- aov(VI_PLOT2_FAMILY_D$Arcsine ~ VI_PLOT2_FAMILY_D$GROUP, data=VI_PLOT2_FAMILY_D)
+summary(VI_PLOT2_AOV_FAMILY_D)
+```
+
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_D$GROUP  1 0.0141 0.01409   0.207  0.661
+    ## Residuals                8 0.5447 0.06809
+
+``` r
+VI_PLOT2_FAMILY_D_BAD_REMOVED <- VI_PLOT2_hemocytes_BAD_REMOVED %>% filter(FAMILY =="D")
+VI_PLOT2_FAMILY_D_BAD_REMOVED_aov <- aov(VI_PLOT2_FAMILY_D_BAD_REMOVED$Arcsine ~ VI_PLOT2_FAMILY_D_BAD_REMOVED$GROUP, data=VI_PLOT2_FAMILY_D_BAD_REMOVED)
+summary(VI_PLOT2_FAMILY_D_BAD_REMOVED_aov)
+```
+
+    ##                                     Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_D_BAD_REMOVED$GROUP  1 0.00001 0.000010   0.003   0.96
+    ## Residuals                            7 0.02490 0.003557
+
+### FAMILY E
+
+``` r
+VI_PLOT2_FAMILY_E <- VI_PLOT2_hemocytes %>% filter(FAMILY=="E")
+VI_PLOT2_AOV_FAMILY_E <- aov(VI_PLOT2_FAMILY_E$Arcsine ~ VI_PLOT2_FAMILY_E$GROUP, data=VI_PLOT2_FAMILY_E)
+summary(VI_PLOT2_AOV_FAMILY_E)
+```
+
+    ##                         Df  Sum Sq Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_E$GROUP  1 0.01646 0.01646   0.535  0.488
+    ## Residuals                7 0.21547 0.03078
+
+``` r
+VI_PLOT2_FAMILY_E_BAD_REMOVED <- VI_PLOT2_hemocytes_BAD_REMOVED %>% filter(FAMILY =="E")
+VI_PLOT2_FAMILY_E_BAD_REMOVED_aov <- aov(VI_PLOT2_FAMILY_E_BAD_REMOVED$Arcsine ~ VI_PLOT2_FAMILY_E_BAD_REMOVED$GROUP, data=VI_PLOT2_FAMILY_E_BAD_REMOVED)
+summary(VI_PLOT2_FAMILY_E_BAD_REMOVED_aov)
+```
+
+    ##                                     Df  Sum Sq Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_E_BAD_REMOVED$GROUP  1 0.02701 0.02701   0.852  0.398
+    ## Residuals                            5 0.15849 0.03170
+
+### FAMILY J
+
+``` r
+VI_PLOT2_FAMILY_J <- VI_PLOT2_hemocytes %>% filter(FAMILY=="J")
+VI_PLOT2_AOV_FAMILY_J <- aov(VI_PLOT2_FAMILY_J$Arcsine ~ VI_PLOT2_FAMILY_J$GROUP, data=VI_PLOT2_FAMILY_J)
+summary(VI_PLOT2_AOV_FAMILY_J)
+```
+
+    ##                         Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_J$GROUP  1 0.00087 0.000868   0.102  0.756
+    ## Residuals               11 0.09404 0.008549
+
+``` r
+VI_PLOT2_FAMILY_J_BAD_REMOVED <- VI_PLOT2_hemocytes_BAD_REMOVED %>% filter(FAMILY =="J")
+VI_PLOT2_FAMILY_J_BAD_REMOVED_aov <- aov(VI_PLOT2_FAMILY_J_BAD_REMOVED$Arcsine ~ VI_PLOT2_FAMILY_J_BAD_REMOVED$GROUP, data=VI_PLOT2_FAMILY_J_BAD_REMOVED)
+summary(VI_PLOT2_FAMILY_J_BAD_REMOVED_aov)
+```
+
+    ##                                     Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_J_BAD_REMOVED$GROUP  1 0.00202 0.002022   0.227  0.645
+    ## Residuals                            9 0.08027 0.008919
+
+### FAMILY L
+
+``` r
+VI_PLOT2_FAMILY_L <- VI_PLOT2_hemocytes %>% filter(FAMILY=="L")
+VI_PLOT2_AOV_FAMILY_L <- aov(VI_PLOT2_FAMILY_L$Arcsine ~ VI_PLOT2_FAMILY_L$GROUP, data=VI_PLOT2_FAMILY_L)
+summary(VI_PLOT2_AOV_FAMILY_L)
+```
+
+    ##                         Df Sum Sq Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_L$GROUP  1 0.0192 0.01918   0.528  0.483
+    ## Residuals               11 0.3994 0.03631
+
+``` r
+VI_PLOT2_FAMILY_L_BAD_REMOVED <- VI_PLOT2_hemocytes_BAD_REMOVED %>% filter(FAMILY =="L")
+VI_PLOT2_FAMILY_L_BAD_REMOVED_aov <- aov(VI_PLOT2_FAMILY_L_BAD_REMOVED$Arcsine ~ VI_PLOT2_FAMILY_L_BAD_REMOVED$GROUP, data=VI_PLOT2_FAMILY_L_BAD_REMOVED)
+summary(VI_PLOT2_FAMILY_L_BAD_REMOVED_aov)
+```
+
+    ##                                     Df  Sum Sq  Mean Sq F value Pr(>F)
+    ## VI_PLOT2_FAMILY_L_BAD_REMOVED$GROUP  1 0.00851 0.008512   1.717  0.231
+    ## Residuals                            7 0.03470 0.004957
+
 Percent Granular Hemocytes out of all hemocytes
 -----------------------------------------------
 
@@ -263,11 +411,6 @@ Percent of granular hemocytes (E1)
 
 ``` r
 VI_PLOT4_FAMILY_A <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
-```
-
-    ## Warning: package 'bindrcpp' was built under R version 3.4.4
-
-``` r
 VI_PLOT4_E1_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A$E1_Arcsine ~ VI_PLOT4_FAMILY_A$GROUP, data=VI_PLOT4_FAMILY_A)
 summary(VI_PLOT4_E1_AOV_FAMILY_A)
 ```
@@ -533,7 +676,7 @@ ggsave(filename="./Figures/VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED.png", 
 
     ## Saving 7 x 5 in image
 
-![VI\_Percent\_Agranular\_Hemocytes\_BAD\_NOT\_REMOVED](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/Figures/VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED.png)
+![VI\_Percent\_Agranular\_Hemocytes\_BAD\_NOT\_REMOVED](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED.png)
 
 ``` r
 VI_Percent_Agranular_Hemocytes_BAD_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events") +
@@ -547,23 +690,11 @@ ggsave(filename="./Figures/VI_Percent_Agranular_Hemocytes_BAD_REMOVED.png", plot
 
 ### FAMILY A
 
-``` r
-VI_PLOT4_FAMILY_A_E3 <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
-VI_PLOT4_E3_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A_E3$E3_Arcsine ~ VI_PLOT4_FAMILY_A_E3$GROUP, data=VI_PLOT4_FAMILY_A_E3)
-summary(VI_PLOT4_E3_AOV_FAMILY_A)
-```
-
     ##                            Df  Sum Sq Mean Sq F value Pr(>F)  
     ## VI_PLOT4_FAMILY_A_E3$GROUP  1 0.04417 0.04417   3.933 0.0787 .
     ## Residuals                   9 0.10108 0.01123                 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-``` r
-VI_PLOT4_FAMILY_A_E3_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="A")
-VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_A_E3_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_FAMILY_A_E3_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_A_E3_BAD_REMOVED)
-summary(VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED)
-```
 
     ##                                        Df  Sum Sq Mean Sq F value Pr(>F)
     ## VI_PLOT4_FAMILY_A_E3_BAD_REMOVED$GROUP  1 0.03490 0.03490   3.066  0.118
@@ -621,6 +752,11 @@ summary(VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED)
 
 ### Two Way ANOVA of Agranular Hemocytes
 
+``` r
+VI_PLOT4_Agranular_hemocytes_AOV <- lm(VI_PLOT4_E1_E3_GATE$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE$GROUP + VI_PLOT4_E1_E3_GATE$FAMILY, data=VI_PLOT4_E1_E3_GATE)
+Anova(VI_PLOT4_Agranular_hemocytes_AOV, type="II")
+```
+
     ## Anova Table (Type II tests)
     ## 
     ## Response: VI_PLOT4_E1_E3_GATE$E3_Arcsine
@@ -628,6 +764,10 @@ summary(VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED)
     ## VI_PLOT4_E1_E3_GATE$GROUP  0.01023  1  0.5092 0.4784
     ## VI_PLOT4_E1_E3_GATE$FAMILY 0.00512  5  0.0510 0.9983
     ## Residuals                  1.14534 57
+
+``` r
+summary(VI_PLOT4_Agranular_hemocytes_AOV)
+```
 
     ## 
     ## Call:
@@ -662,6 +802,11 @@ summary(VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED)
     ## Multiple R-squared:  0.0123, Adjusted R-squared:  -0.09167 
     ## F-statistic: 0.1183 on 6 and 57 DF,  p-value: 0.9938
 
+``` r
+VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED <- lm(VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_Arcsine ~ VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP + VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY, data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
+Anova(VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED, type="II")
+```
+
     ## Anova Table (Type II tests)
     ## 
     ## Response: VI_PLOT4_E1_E3_GATE_BAD_REMOVED$E3_Arcsine
@@ -669,6 +814,10 @@ summary(VI_PLOT4_E3_AOV_FAMILY_A_BAD_REMOVED)
     ## VI_PLOT4_E1_E3_GATE_BAD_REMOVED$GROUP  0.01298  1  0.7253 0.3988
     ## VI_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY 0.01736  5  0.1940 0.9633
     ## Residuals                              0.82340 46
+
+``` r
+summary(VI_PLOT4_Agranular_hemocytes_AOV_BAD_REMOVED)
+```
 
     ## 
     ## Call:
@@ -921,7 +1070,7 @@ ggsave(filename = "./Figures/VI_PLOT4_restructured_BAD_REMOVED_plot.png",plot= V
 
     ## Saving 7 x 5 in image
 
-![VI\_PLOT4\_restructured\_BAD\_REMOVED\_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/Figures/VI_PLOT4_restructured_BAD_REMOVED_plot.png)
+![VI\_PLOT4\_restructured\_BAD\_REMOVED\_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_PLOT4_restructured_BAD_REMOVED_plot.png)
 
 Percent of Live Granular Hemocytes
 ==================================
@@ -929,9 +1078,23 @@ Percent of Live Granular Hemocytes
 Percent Live Granular Hemocytes out of all Granular hemocytes
 -------------------------------------------------------------
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent-1.png)![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent-2.png)
+``` r
+VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte Events \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
+ggsave(filename="./Figures/VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH.png", plot=VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH)
+```
 
-### FAMILY A
+    ## Saving 7 x 5 in image
+
+![Percent of Live Granular Hemocyte Events Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Live_Granular_BAD_NOT_REMOVED_GRAPH.png)
+
+``` r
+VI_Percent_Live_Granular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Granular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Granular Hemocytes") + ylim(0,100)
+ggsave(filename="./Figures/VI_Percent_Live_Granular_BAD_REMOVED_GRAPH.png",plot=VI_Percent_Live_Granular_BAD_REMOVED_GRAPH)
+```
+
+    ## Saving 7 x 5 in image
+
+![Percent of Live Granular Hemocyte Events Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Live_Granular_BAD_REMOVED_GRAPH.png) \#\#\# FAMILY A
 
     ##                                      Df  Sum Sq  Mean Sq F value Pr(>F)  
     ## VI_PLOT9_E1_MINUS_V1R_FAMILY_A$GROUP  1 0.03028 0.030283   4.258 0.0691 .
@@ -1015,6 +1178,11 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
 
 ### Two Way ANOVA of LIVE Granular Hemocytes
 
+``` r
+VI_PLOT9_LIVE_granular_hemocytes_AOV <- lm(VI_PLOT9_E1_MINUS_V1R$Arcsine ~ VI_PLOT9_E1_MINUS_V1R$GROUP + VI_PLOT9_E1_MINUS_V1R$FAMILY, data=VI_PLOT9_E1_MINUS_V1R)
+Anova(VI_PLOT9_LIVE_granular_hemocytes_AOV, type="II")
+```
+
     ## Anova Table (Type II tests)
     ## 
     ## Response: VI_PLOT9_E1_MINUS_V1R$Arcsine
@@ -1024,6 +1192,10 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
     ## Residuals                    1.98176 57                      
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+summary(VI_PLOT9_LIVE_granular_hemocytes_AOV)
+```
 
     ## 
     ## Call:
@@ -1058,6 +1230,11 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
     ## Multiple R-squared:  0.4233, Adjusted R-squared:  0.3626 
     ## F-statistic: 6.974 on 6 and 57 DF,  p-value: 1.358e-05
 
+``` r
+VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED <- lm(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY, data=VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
+Anova(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED, type="II") #FAMILY is significantly different
+```
+
     ## Anova Table (Type II tests)
     ## 
     ## Response: VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine
@@ -1067,6 +1244,10 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
     ## Residuals                                1.12571 46                      
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+summary(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED)
+```
 
     ## 
     ## Call:
@@ -1101,6 +1282,12 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
     ## Multiple R-squared:  0.4334, Adjusted R-squared:  0.3596 
     ## F-statistic: 5.866 on 6 and 46 DF,  p-value: 0.0001326
 
+``` r
+# INTERACTION TERM ADDED
+VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov <- lm(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY:VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP)
+Anova(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov , type="II")
+```
+
     ## Anova Table (Type II tests)
     ## 
     ## Response: VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine
@@ -1131,6 +1318,10 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
     ## Residuals                                                                           
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+summary(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov)
+```
 
     ## 
     ## Call:
@@ -1214,6 +1405,11 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
     ## Multiple R-squared:  0.4936, Adjusted R-squared:  0.3577 
     ## F-statistic: 3.632 on 11 and 41 DF,  p-value: 0.001224
 
+``` r
+VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares <- lsmeans(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov, "VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
+cld(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares, alpha=0.05, Letters=letters)
+```
+
     ##  VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY   lsmean         SE df lower.CL
     ##  J                                        1.105514 0.04357950 41 1.017504
     ##  L                                        1.105514 0.04357950 41 1.017504
@@ -1236,15 +1432,77 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
 
 ### One Way ANOVA of Differences between Families
 
+``` r
+VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE <- VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED[!grepl("control", VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP),]
+VI_PLOT9_LIVE_granular_hemocytes_oneway_aov <- aov(VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$Arcsine ~ VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data=VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE)
+summary(VI_PLOT9_LIVE_granular_hemocytes_oneway_aov)
+```
+
+    ##                                                               Df Sum Sq
+    ## VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY  5 0.7968
+    ## Residuals                                                     36 0.9822
+    ##                                                               Mean Sq
+    ## VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY 0.15936
+    ## Residuals                                                     0.02728
+    ##                                                               F value
+    ## VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY   5.841
+    ## Residuals                                                            
+    ##                                                                 Pr(>F)    
+    ## VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY 0.000476 ***
+    ## Residuals                                                                 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+TukeyHSD(VI_PLOT9_LIVE_granular_hemocytes_oneway_aov)
+```
+
+    ##   Tukey multiple comparisons of means
+    ##     95% family-wise confidence level
+    ## 
+    ## Fit: aov(formula = VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$Arcsine ~ VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY, data = VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE)
+    ## 
+    ## $`VI_PLOT9_LIVE_granular_hemocytes_BAD_REMOVED_CHALLENGE$FAMILY`
+    ##            diff          lwr         upr     p adj
+    ## B-A -0.25281228 -0.529292818  0.02366827 0.0896075
+    ## D-A -0.31158084 -0.577214748 -0.04594692 0.0136432
+    ## E-A  0.04333724 -0.233143299  0.31981778 0.9968574
+    ## J-A -0.18966111 -0.440103161  0.06078095 0.2291766
+    ## L-A  0.01601309 -0.249620821  0.28164700 0.9999702
+    ## D-B -0.05876856 -0.335249101  0.21771198 0.9871401
+    ## E-B  0.29614952  0.009232101  0.58306694 0.0397120
+    ## J-B  0.06315117 -0.198767400  0.32506974 0.9774913
+    ## L-B  0.26882537 -0.007655174  0.54530591 0.0606782
+    ## E-D  0.35491808  0.078437536  0.63139862 0.0055621
+    ## J-D  0.12191973 -0.128522326  0.37236178 0.6881088
+    ## L-D  0.32759393  0.061960014  0.59322784 0.0084159
+    ## J-E -0.23299835 -0.494916919  0.02892022 0.1051931
+    ## L-E -0.02732415 -0.303804693  0.24915639 0.9996597
+    ## L-J  0.20567420 -0.044767856  0.45611625 0.1599650
+
 Percent of Live Agranular Hemocytes (E3)
 ========================================
 
-Percent Live Agranular Hemocytes
-================================
+Percent Live Agranular Hemocytes Plotting
+=========================================
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_live_agranular_hemocytes-1.png)![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_live_agranular_hemocytes-2.png)
+``` r
+VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Not Removed") + xlab("Family") +   ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)          
+ggsave(filename="./Figures/VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH.png", plot=VI_Percent_Live_Agranular_BAD_NOT_REMOVED_GRAPH)                                            
+```
 
-### FAMILY A
+    ## Saving 7 x 5 in image
+
+![VI\_Percent\_Live\_Agranular\_BAD\_NOT\_REMOVED\_GRAPH](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH.png)
+
+``` r
+VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH <- ggplot(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED, aes(x=FAMILY, y=PERCENT_LIVE, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Agranular Hemocyte \n Events Low Quality Removed") + xlab("Family") + ylab("Percent of Live Agranular Hemocytes") + ylim(0,100)
+ggsave(filename="./Figures/VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH.png", plot=VI_Percent_Live_Agranular_BAD_REMOVED_GRAPH)                                                  
+```
+
+    ## Saving 7 x 5 in image
+
+![Percent of Live Agranular Hemocyte Events Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Granular_Hemocytes_BAD_REMOVED.png) \#\#\# FAMILY A
 
     ##                                       Df   Sum Sq   Mean Sq F value Pr(>F)
     ## VI_PLOT10_E3_MINUS_V1R_FAMILY_A$GROUP  1 0.000351 0.0003509    0.74  0.412
