@@ -2,15 +2,13 @@
 title: "Dermo Challenge Apoptosis Assay Data Analysis"
 author: "Erin Roberts"
 date: "8/14/2018"
-output: 
-  md_document:
-      variant: markdown_github
+output: github_document
 
 ---
 
 ## Load Packages
 
-```{r packages, echo=TRUE, include=FALSE}
+```{r packages, echo=TRUE}
 library(ggplot2)
 library(metafor)
 library(dplyr)
@@ -80,7 +78,7 @@ APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED <- APOP_PLOT7_AGRANULAR_QU
 ```
 
 # Arc sine Percentage data
-```{r arcsine_percentages, echo=TRUE}
+```{r apop_arcsine_percentages, echo=TRUE}
 # NOTE: NA's produced whenever the percentages were above 100%
 APOP_PLOT3_P1_GATE$Arcsine<- transf.arcsin(APOP_PLOT3_P1_GATE$P1_PERCENT_OF_THE_PLOT*0.01)
 APOP_PLOT8_GRANULAR_AGRANULAR$P3_Arcsine <- transf.arcsin(APOP_PLOT8_GRANULAR_AGRANULAR$P3_PERCENT_OF_THIS_PLOT *0.01)
@@ -121,7 +119,7 @@ APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED$Arcsine <- transf.arcsin(A
 # % LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
 
 ## Percent LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
-```{r LIVE_apoptotic_Granular, include=TRUE, echo=TRUE}
+```{r LIVE_apoptotic_Granula_plot4r, include=TRUE, echo=TRUE}
  
 APOP_live_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \n Low Quality Not Removed") +
     xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
@@ -1175,7 +1173,7 @@ DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED$Arcsine <- transf.arcsin(DAY50_
 # % LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
 
 ## Percent LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
-```{r LIVE_apoptotic_Granular, include=TRUE, echo=TRUE}
+```{r LIVE_apoptotic_Granular_day50, include=TRUE, echo=TRUE}
 DAY50_live_granular <- DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT %>% filter(GATE=="Q2_LR")
 DAY50_APOP_live_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=DAY50_live_granular, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes at Day 50 \n Low Quality Not Removed") +
     xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)+ facet_grid(.~FAMILY+GROUP, scales="free") 
@@ -1187,7 +1185,7 @@ DAY50_APOP_live_apoptotic_granular_BAD_REMOVED
 
 ### FAMILY A
 
-```{r day50_live_apoptotic_granular, echo=TRUE}
+```{r day50_live_apoptotic_granular_A, echo=TRUE}
 DAY50_live_granular_FAMILY_A <- DAY50_live_granular %>% filter(FAMILY=="A")
 
 DAY50_live_granular_FAMILY_A_aov <- aov(DAY50_live_granular_FAMILY_A$Arcsine ~ DAY50_live_granular_FAMILY_A$GROUP, data=DAY50_live_granular_FAMILY_A)
@@ -1237,7 +1235,7 @@ summary(DAY50_live_granular_BAD_REMOVED_FAMILY_E_aov)
 ```
 
 ### FAMILY J
-```{r day50_live_apoptotic_granular, echo=TRUE}
+```{r day50_live_apoptotic_granular_J, echo=TRUE}
 DAY50_live_granular_FAMILY_J <- DAY50_live_granular %>% filter(FAMILY=="J")
 
 DAY50_live_granular_FAMILY_J_aov <- aov(DAY50_live_granular_FAMILY_J$Arcsine ~ DAY50_live_granular_FAMILY_J$GROUP, data=DAY50_live_granular_FAMILY_J)
@@ -1249,7 +1247,7 @@ summary(DAY50_live_granular_BAD_REMOVED_FAMILY_J_aov)
 ```
 
 ### FAMILY L 
-```{r day50_live_apoptotic_granular, echo=TRUE}
+```{r day50_live_apoptotic_granular_L, echo=TRUE}
 DAY50_live_granular_FAMILY_L <- DAY50_live_granular %>% filter(FAMILY=="L")
 
 DAY50_live_granular_FAMILY_L_aov <- aov(DAY50_live_granular_FAMILY_L$Arcsine ~ DAY50_live_granular_FAMILY_L$GROUP, data=DAY50_live_granular_FAMILY_L)
@@ -1896,7 +1894,7 @@ summary(DAY50_necrotic_agranular_BAD_REMOVED_FAMILY_L_aov)
 
 ### Two Way ANOVA of Necrotic Agranular ###
 
-```{r day50_twoway_necrotic_granular, echo=TRUE}
+```{r day50_twoway_necrotic_agranular, echo=TRUE}
 DAY50_necrotic_agranular_twoway_BAD_REMOVED_lm <- lm(DAY50_necrotic_agranular_BAD_REMOVED$Arcsine ~ DAY50_necrotic_agranular_BAD_REMOVED$GROUP + DAY50_necrotic_agranular_BAD_REMOVED$FAMILY, data=DAY50_necrotic_agranular_BAD_REMOVED)
 Anova(DAY50_necrotic_agranular_twoway_BAD_REMOVED_lm , type="II")
 summary(DAY50_necrotic_agranular_twoway_BAD_REMOVED_lm)
