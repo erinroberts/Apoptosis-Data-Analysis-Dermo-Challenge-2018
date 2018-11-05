@@ -249,11 +249,7 @@ ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf", pl
 
     ## Saving 7 x 5 in image
 
-``` r
-knitr::include_graphics("./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf")
-```
-
-![](./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf)
+![Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed](./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf)
 
 ``` r
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
@@ -261,7 +257,15 @@ VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_RE
 VI_Percent_total_hemocytes_BAD_REMOVED
 ```
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_total_hemocytes-3.png)
+![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/Percent_total_hemocytes_continued-1.png)
+
+``` r
+ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf", plot=VI_Percent_total_hemocytes_BAD_REMOVED)
+```
+
+    ## Saving 7 x 5 in image
+
+![Percent of Hemocyte Events in Total Sample Events Quality Removed](./Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf)
 
 Percent Granular Hemocytes out of all hemocytes
 -----------------------------------------------
