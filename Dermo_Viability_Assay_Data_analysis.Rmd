@@ -142,14 +142,14 @@ VI_Percent_total_hemocytes_BAD_NOT_REMOVED <- ggplot(data= VI_PLOT2_hemocytes, a
     xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf", plot = VI_Percent_total_hemocytes_BAD_NOT_REMOVED)
 ```
-![Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf)
+![Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf "Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed")
 
 ```{r Percent_total_hemocytes_continued, echo=TRUE}
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
   xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf", plot=VI_Percent_total_hemocytes_BAD_REMOVED)
 ```
-![Percent of Hemocyte Events in Total Sample Events Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf)
+![Percent of Hemocyte Events in Total Sample Events Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf "Percent of Hemocyte Events in Total Sample Events Low Quality Removed")
 
 ## Percent Granular Hemocytes out of all hemocytes
 ```{r percent_granular_hemocytes, echo=TRUE}
@@ -168,6 +168,7 @@ VI_Percent_Granular_Hemocytes_BAD_REMOVED
 VI_PLOT4_FAMILY_A <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
 VI_PLOT4_E1_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A$E1_Arcsine ~ VI_PLOT4_FAMILY_A$GROUP, data=VI_PLOT4_FAMILY_A)
 summary(VI_PLOT4_E1_AOV_FAMILY_A)
+
 VI_PLOT4_FAMILY_A_BAD_REMOVED <- VI_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(FAMILY =="A")
 VI_PLOT4_E1_AOV_FAMILY_A_BAD_REMOVED <- aov(VI_PLOT4_FAMILY_A_BAD_REMOVED$E1_Arcsine ~ VI_PLOT4_FAMILY_A_BAD_REMOVED$GROUP, data=VI_PLOT4_FAMILY_A_BAD_REMOVED)
 summary(VI_PLOT4_E1_AOV_FAMILY_A_BAD_REMOVED)

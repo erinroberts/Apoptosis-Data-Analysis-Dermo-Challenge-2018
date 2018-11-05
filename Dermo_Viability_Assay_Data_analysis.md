@@ -243,7 +243,7 @@ ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf", pl
 
     ## Saving 7 x 5 in image
 
-![Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf)
+![Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf "Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed")
 
 ``` r
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
@@ -253,7 +253,7 @@ ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf", plot=V
 
     ## Saving 7 x 5 in image
 
-![Percent of Hemocyte Events in Total Sample Events Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf)
+![Percent of Hemocyte Events in Total Sample Events Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_REMOVED.pdf "Percent of Hemocyte Events in Total Sample Events Low Quality Removed")
 
 Percent Granular Hemocytes out of all hemocytes
 -----------------------------------------------
