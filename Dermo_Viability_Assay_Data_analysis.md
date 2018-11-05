@@ -6,10 +6,14 @@ Erin Roberts
 Load Packages
 -------------
 
+R version being used is 3.4.1
+
     ## Loading required package: Matrix
 
     ## Loading 'metafor' package (version 2.0-0). For an overview 
     ## and introduction to the package please type: help(metafor).
+
+    ## Warning: package 'dplyr' was built under R version 3.4.2
 
     ## 
     ## Attaching package: 'dplyr'
@@ -22,7 +26,11 @@ Load Packages
     ## 
     ##     intersect, setdiff, setequal, union
 
+    ## Warning: package 'car' was built under R version 3.4.4
+
     ## Loading required package: carData
+
+    ## Warning: package 'carData' was built under R version 3.4.4
 
     ## 
     ## Attaching package: 'car'
@@ -31,12 +39,14 @@ Load Packages
     ## 
     ##     recode
 
-    ## Loading required package: emmeans
+    ## Warning: package 'lsmeans' was built under R version 3.4.4
 
-    ## The 'lsmeans' package is now basically a front end for 'emmeans'.
-    ## Users are encouraged to switch the rest of the way.
-    ## See help('transition') for more information, including how to
-    ## convert old 'lsmeans' objects and scripts to work with 'emmeans'.
+    ## The 'lsmeans' package is being deprecated.
+    ## Users are encouraged to switch to 'emmeans'.
+    ## See help('transition') for more information, including how
+    ## to convert 'lsmeans' objects and scripts to work with 'emmeans'.
+
+    ## Warning: package 'rgr' was built under R version 3.4.4
 
     ## Loading required package: MASS
 
@@ -55,14 +65,6 @@ Load Packages
     ## The following object is masked from 'package:car':
     ## 
     ##     logit
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     syms
-
-    ## The following object is masked from 'package:ggplot2':
-    ## 
-    ##     syms
 
     ## Loading required package: lattice
 
@@ -84,14 +86,15 @@ Load Packages
     ##     arrange, count, desc, failwith, id, mutate, rename, summarise,
     ##     summarize
 
+    ## Warning: package 'knitr' was built under R version 3.4.3
+
 VIABILITY ASSAY ANALYSIS
 ========================
 
 Key for GATE Names used in Analysis
 -----------------------------------
 
-Load in Data for GATE\_KEY
-==========================
+### Load in Data for GATE\_KEY
 
 ``` r
 Viability_assay_GATE_KEY <- read.csv("../ANALYSIS_CSVs/VIABILITY_ASSAY/Viability_assay_GATE_KEY.csv",header=TRUE, stringsAsFactors = FALSE)
@@ -273,6 +276,11 @@ Percent of granular hemocytes (E1)
 
 ``` r
 VI_PLOT4_FAMILY_A <- VI_PLOT4_E1_E3_GATE %>% filter(FAMILY=="A")
+```
+
+    ## Warning: package 'bindrcpp' was built under R version 3.4.4
+
+``` r
 VI_PLOT4_E1_AOV_FAMILY_A <- aov(VI_PLOT4_FAMILY_A$E1_Arcsine ~ VI_PLOT4_FAMILY_A$GROUP, data=VI_PLOT4_FAMILY_A)
 summary(VI_PLOT4_E1_AOV_FAMILY_A)
 ```
@@ -906,9 +914,20 @@ summary(VI_PLOT4_agranular_granular_lm_interaction)
     ## F-statistic: 46.35 on 11 and 94 DF,  p-value: < 2.2e-16
 
 ``` r
-#VI_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_PLOT4_agranular_granular_lm_interaction, "VI_PLOT4_restructured_BAD_REMOVED$E1_E3", adjust="tukey")
-#cld(VI_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
+VI_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_PLOT4_agranular_granular_lm_interaction, "VI_PLOT4_restructured_BAD_REMOVED$E1_E3", adjust="tukey")
+cld(VI_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
 ```
+
+    ##  VI_PLOT4_restructured_BAD_REMOVED$E1_E3    lsmean         SE df  lower.CL
+    ##  E1                                      0.4567471 0.03570963 94 0.3858448
+    ##  E3                                      0.4567471 0.03570963 94 0.3858448
+    ##   upper.CL .group
+    ##  0.5276494  a    
+    ##  0.5276494  a    
+    ## 
+    ## Results are averaged over the levels of: VI_PLOT4_restructured_BAD_REMOVED$FAMILY 
+    ## Confidence level used: 0.95 
+    ## significance level used: alpha = 0.05
 
 Percent of Live Granular Hemocytes
 ==================================
@@ -1200,6 +1219,26 @@ Percent Live Granular Hemocytes out of all Granular hemocytes
     ## Residual standard error: 0.1567 on 41 degrees of freedom
     ## Multiple R-squared:  0.4936, Adjusted R-squared:  0.3577 
     ## F-statistic: 3.632 on 11 and 41 DF,  p-value: 0.001224
+
+    ##  VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY   lsmean         SE df lower.CL
+    ##  J                                        1.105514 0.04357950 41 1.017504
+    ##  L                                        1.105514 0.04357950 41 1.017504
+    ##  A                                        1.231920 0.05921289 41 1.112338
+    ##  B                                        1.293703 0.05405372 41 1.184540
+    ##  D                                        1.293703 0.05405372 41 1.184540
+    ##  E                                        1.293703 0.05405372 41 1.184540
+    ##  upper.CL .group
+    ##  1.193525  a    
+    ##  1.193525  a    
+    ##  1.351503  ab   
+    ##  1.402867   b   
+    ##  1.402867   b   
+    ##  1.402867   b   
+    ## 
+    ## Results are averaged over the levels of: VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP 
+    ## Confidence level used: 0.95 
+    ## P value adjustment: tukey method for comparing a family of 6 estimates 
+    ## significance level used: alpha = 0.05
 
 ### One Way ANOVA of Differences between Families
 
@@ -1496,6 +1535,26 @@ Percent Live Agranular Hemocytes
     ## Multiple R-squared:  0.3309, Adjusted R-squared:  0.1514 
     ## F-statistic: 1.844 on 11 and 41 DF,  p-value: 0.07747
 
+    ##  VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY   lsmean         SE df lower.CL
+    ##  L                                         1.468807 0.01763355 41 1.433195
+    ##  J                                         1.510747 0.02493761 41 1.460384
+    ##  E                                         1.513704 0.01490307 41 1.483607
+    ##  A                                         1.516661 0.01632550 41 1.483691
+    ##  B                                         1.516661 0.01632550 41 1.483691
+    ##  D                                         1.516661 0.01632550 41 1.483691
+    ##  upper.CL .group
+    ##  1.504418  a    
+    ##  1.561110  a    
+    ##  1.543802  a    
+    ##  1.549631  a    
+    ##  1.549631  a    
+    ##  1.549631  a    
+    ## 
+    ## Results are averaged over the levels of: VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$GROUP 
+    ## Confidence level used: 0.95 
+    ## P value adjustment: tukey method for comparing a family of 6 estimates 
+    ## significance level used: alpha = 0.05
+
 ### One Way ANOVA of Differences between Families
 
 Analyzing difference between Live Agranular and Granular
@@ -1685,9 +1744,37 @@ summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov)
     ## F-statistic:   214 on 11 and 94 DF,  p-value: < 2.2e-16
 
 ``` r
-#VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction <- lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, adjust="tukey")
-#cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction, alpha=0.05, Letters=letters)
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction <- lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, adjust="tukey")
+cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction, alpha=0.05, Letters=letters)
+```
 
+    ##  VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE
+    ##                                           89.47479
+    ##                                           89.47479
+    ##                                           89.47479
+    ##                                           89.47479
+    ##                                           89.47479
+    ##                                           89.47479
+    ##  VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY   lsmean         SE df
+    ##  J                                           1.068968 0.02691487 94
+    ##  B                                           1.160929 0.02061720 94
+    ##  A                                           1.206876 0.01768448 94
+    ##  D                                           1.355899 0.01091503 94
+    ##  L                                           1.361177 0.01081971 94
+    ##  E                                           1.410318 0.01065322 94
+    ##  lower.CL upper.CL .group 
+    ##  1.015528 1.122408  a     
+    ##  1.119993 1.201865   b    
+    ##  1.171763 1.241989    c   
+    ##  1.334227 1.377571     d  
+    ##  1.339695 1.382660      e 
+    ##  1.389166 1.431470       f
+    ## 
+    ## Confidence level used: 0.95 
+    ## P value adjustment: tukey method for comparing a family of 6 estimates 
+    ## significance level used: alpha = 0.05
+
+``` r
 #Plotting
 ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=PLOT)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
 ```
@@ -2444,9 +2531,22 @@ summary(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm) # significance for GAT
     ## F-statistic: 46.74 on 6 and 141 DF,  p-value: < 2.2e-16
 
 ``` r
-#VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm, "VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE", adjust="tukey")
-#cld(VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
+VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm, "VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE", adjust="tukey")
+cld(VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
+```
 
+    ##  VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE    lsmean         SE  df
+    ##  E1                                         0.6144713 0.02559375 141
+    ##  E3                                         0.6144713 0.02559375 141
+    ##   lower.CL  upper.CL .group
+    ##  0.5638742 0.6650684  a    
+    ##  0.5638742 0.6650684  a    
+    ## 
+    ## Results are averaged over the levels of: VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY 
+    ## Confidence level used: 0.95 
+    ## significance level used: alpha = 0.05
+
+``` r
 VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm_interaction <- lm(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$Arcsine ~ VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE + VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY + VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY:VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE, data=VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED)
 Anova(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm_interaction, type="II")
 ```
@@ -2790,6 +2890,26 @@ ggplot(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED, aes(x=GROUP, y=P
     ## Multiple R-squared:  0.1847, Adjusted R-squared:  0.1117 
     ## F-statistic:  2.53 on 6 and 67 DF,  p-value: 0.02875
 
+    ##  VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY   lsmean         SE df
+    ##  A                                              1.289134 0.02831666 67
+    ##  B                                              1.289134 0.02831666 67
+    ##  D                                              1.313483 0.02430280 67
+    ##  E                                              1.313483 0.02430280 67
+    ##  J                                              1.313483 0.02430280 67
+    ##  L                                              1.313483 0.02430280 67
+    ##  lower.CL upper.CL .group
+    ##  1.232614 1.345654  a    
+    ##  1.232614 1.345654  a    
+    ##  1.264975 1.361992   b   
+    ##  1.264975 1.361992   b   
+    ##  1.264975 1.361992   b   
+    ##  1.264975 1.361992   b   
+    ## 
+    ## Results are averaged over the levels of: VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP 
+    ## Confidence level used: 0.95 
+    ## P value adjustment: tukey method for comparing a family of 6 estimates 
+    ## significance level used: alpha = 5
+
     ## Anova Table (Type II tests)
     ## 
     ## Response: VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine
@@ -2862,6 +2982,26 @@ ggplot(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED, aes(x=GROUP, y=P
     ## Residual standard error: 0.08778 on 67 degrees of freedom
     ## Multiple R-squared:  0.1847, Adjusted R-squared:  0.1117 
     ## F-statistic:  2.53 on 6 and 67 DF,  p-value: 0.02875
+
+    ##  VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY   lsmean         SE df
+    ##  A                                              1.215734 0.04304051 62
+    ##  B                                              1.215734 0.04304051 62
+    ##  D                                              1.342843 0.02722121 62
+    ##  E                                              1.342843 0.02722121 62
+    ##  J                                              1.342843 0.02722121 62
+    ##  L                                              1.342843 0.02722121 62
+    ##  lower.CL upper.CL .group
+    ##  1.129697 1.301771  a    
+    ##  1.129697 1.301771  a    
+    ##  1.288429 1.397258   b   
+    ##  1.288429 1.397258   b   
+    ##  1.288429 1.397258   b   
+    ##  1.288429 1.397258   b   
+    ## 
+    ## Results are averaged over the levels of: VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP 
+    ## Confidence level used: 0.95 
+    ## P value adjustment: tukey method for comparing a family of 6 estimates 
+    ## significance level used: alpha = 5
 
 ### One Way ANOVA of Differences between Families
 
@@ -3368,12 +3508,45 @@ Anova(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction , 
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
-#VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY", adjust="tukey")
-#cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares, alpha=0.05, Letters=letters)
-
-#VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE", adjust="tukey")
-#cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate, alpha=0.05, Letters=letters)
+VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY", adjust="tukey")
+cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares, alpha=0.05, Letters=letters)
 ```
+
+    ##  VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY   lsmean
+    ##  A                                                              1.529424
+    ##  B                                                              1.529424
+    ##  D                                                              1.529424
+    ##  E                                                              1.529424
+    ##  J                                                              1.529424
+    ##  L                                                              1.529424
+    ##          SE  df lower.CL upper.CL .group
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ## 
+    ## Results are averaged over the levels of: VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE 
+    ## Confidence level used: 0.95 
+    ## P value adjustment: tukey method for comparing a family of 6 estimates 
+    ## significance level used: alpha = 0.05
+
+``` r
+VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE", adjust="tukey")
+cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate, alpha=0.05, Letters=letters)
+```
+
+    ##  VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE   lsmean
+    ##  agranular                                                    1.529424
+    ##  granular                                                     1.529424
+    ##          SE  df lower.CL upper.CL .group
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ##  0.01705522 136 1.495697 1.563152  a    
+    ## 
+    ## Results are averaged over the levels of: VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY 
+    ## Confidence level used: 0.95 
+    ## significance level used: alpha = 0.05
 
 Summary Statistics Day 50
 -------------------------
