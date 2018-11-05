@@ -232,19 +232,22 @@ Percent LIVE apoptotic granular hemocytes (PLOT4, Q2-LR)
 ``` r
 APOP_live_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \n Low Quality Not Removed") +
     xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
-
-APOP_live_apoptotic_granular_BAD_NOT_REMOVED
+ggsave(filename = "./Figures/APOP_live_apoptotic_granular_BAD_NOT_REMOVED.png",plot=APOP_live_apoptotic_granular_BAD_NOT_REMOVED)
 ```
 
-![](Dermo_Apoptosis_Assay_Data_analysis_files/figure-markdown_github/LIVE_apoptotic_Granula_plot4r-1.png)
+    ## Saving 7 x 5 in image
+
+![Percent of Live Apoptotic Granular Hemocytes Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/APOP_live_apoptotic_granular_BAD_NOT_REMOVED.png)
 
 ``` r
 APOP_live_apoptotic_granular_BAD_REMOVED <- ggplot(data= APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Granular Hemocytes \nLow Quality Removed") +
   xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
-APOP_live_apoptotic_granular_BAD_REMOVED
+ggsave(filename="./Figures/APOP_live_apoptotic_granular_BAD_REMOVED.png",plot=APOP_live_apoptotic_granular_BAD_REMOVED)
 ```
 
-![](Dermo_Apoptosis_Assay_Data_analysis_files/figure-markdown_github/LIVE_apoptotic_Granula_plot4r-2.png)
+    ## Saving 7 x 5 in image
+
+![Percent of Live Apoptotic Granular Hemocytes Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/APOP_live_apoptotic_granular_BAD_REMOVED.png)
 
 ### FAMILY A
 
@@ -762,18 +765,22 @@ Percent LIVE apoptotic agranular hemocytes (PLOT7, Q1-LR)
 ``` r
 APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 
-APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED
+ggsave(filename="./Figures/APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED.png",plot=APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED)
 ```
 
-![](Dermo_Apoptosis_Assay_Data_analysis_files/figure-markdown_github/live_apoptotic_agranular-1.png)
+    ## Saving 7 x 5 in image
+
+![APOP\_live\_apoptotic\_Agranular\_BAD\_NOT\_REMOVED](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED.png)
 
 ``` r
 APOP_live_apoptotic_Agranular_BAD_REMOVED <- ggplot(data= APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q1.LR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Live Apoptotic Agranular Hemocytes \nLow Quality Removed") +
   xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
-APOP_live_apoptotic_Agranular_BAD_REMOVED
+ggsave(filename="./Figures/APOP_live_apoptotic_Agranular_BAD_REMOVED.png",plot=APOP_live_apoptotic_Agranular_BAD_NOT_REMOVED)
 ```
 
-![](Dermo_Apoptosis_Assay_Data_analysis_files/figure-markdown_github/live_apoptotic_agranular-2.png)
+    ## Saving 7 x 5 in image
+
+![Percent of Live Apoptotic Agranular Hemocytes Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/APOP_live_apoptotic_Agranular_BAD_REMOVED.png)
 
 ### FAMILY A
 
