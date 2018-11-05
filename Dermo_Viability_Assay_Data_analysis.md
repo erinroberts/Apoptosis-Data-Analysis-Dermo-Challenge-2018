@@ -239,12 +239,6 @@ Percent Granular Hemocytes out of all hemocytes
 
 ``` r
 VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Not Removed") +xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
-VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED
-```
-
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_granular_hemocytes-1.png)
-
-``` r
 ggsave(filename = "./Figures/VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED.png", plot=VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED)
 ```
 
@@ -255,7 +249,6 @@ ggsave(filename = "./Figures/VI_Percent_Granular_Hemocytes_BAD_NOT_REMOVED.png",
 ``` r
 VI_Percent_Granular_Hemocytes_BAD_REMOVED <- ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E1_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Granular Hemocyte \n Events Low Quality Removed") +
   xlab("Family") + ylab("Percent of Live and Dead Granular Hemocytes") + ylim(0,100)
-
 ggsave(filename = "./Figures/VI_Percent_Granular_Hemocytes_BAD_REMOVED.png", plot=VI_Percent_Granular_Hemocytes_BAD_REMOVED)
 ```
 
@@ -535,18 +528,22 @@ Percent Agranular Hemocytes out of all hemocytes
 ``` r
 VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events \n Low Quality Not Removed") +
   xlab("Family") + ylab("Percent of Live and Dead Agranular Hemocytes") + ylim(0,100)
-VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED
+ggsave(filename="./Figures/VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED.png", plot=VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED)
 ```
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_agranular_hemocytes-1.png)
+    ## Saving 7 x 5 in image
+
+![VI\_Percent\_Agranular\_Hemocytes\_BAD\_NOT\_REMOVED](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/Figures/VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED.png)
 
 ``` r
 VI_Percent_Agranular_Hemocytes_BAD_REMOVED <-  ggplot(data=VI_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(y=E3_PERCENT_OF_THIS_PLOT, x=FAMILY, by=GROUP, color=GROUP)) + geom_boxplot() + ggtitle("Percent of Agranular Hemocyte Events") +
   xlab("Family") + ylab("Percent of Live and Dead \n Agranular Hemocytes Low Quality Removed") + ylim(0,100)
-VI_Percent_Agranular_Hemocytes_BAD_REMOVED
+ggsave(filename="./Figures/VI_Percent_Agranular_Hemocytes_BAD_REMOVED.png", plot=VI_Percent_Agranular_Hemocytes_BAD_NOT_REMOVED)
 ```
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_agranular_hemocytes-2.png)
+    ## Saving 7 x 5 in image
+
+![VI\_Percent\_Agranular\_Hemocytes\_BAD\_NOT\_REMOVED](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_Agranular_Hemocytes_BAD_REMOVED.png)
 
 ### FAMILY A
 
@@ -726,13 +723,8 @@ Two Way ANOVA of Granular vs. Agranular
 
 ``` r
 # Plotting
-ggplot(VI_PLOT4_restructured_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=E1_E3)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Hemocytes (low quality removed)") +
+VI_PLOT4_restructured_BAD_REMOVED_plot <- ggplot(VI_PLOT4_restructured_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=E1_E3)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Hemocytes (low quality removed)") +
   ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Granular Hemocytes", "Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
-```
-
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/granular_agranular_percentage-1.png)
-
-``` r
 VI_PLOT4_agranular_granular_lm <- lm(VI_PLOT4_restructured_BAD_REMOVED$Arcsine ~ VI_PLOT4_restructured_BAD_REMOVED$E1_E3 + VI_PLOT4_restructured_BAD_REMOVED$FAMILY, data=VI_PLOT4_restructured_BAD_REMOVED)
 Anova(VI_PLOT4_agranular_granular_lm, type="II")
 ```
@@ -922,6 +914,14 @@ cld(VI_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters
     ## Results are averaged over the levels of: VI_PLOT4_restructured_BAD_REMOVED$FAMILY 
     ## Confidence level used: 0.95 
     ## significance level used: alpha = 0.05
+
+``` r
+ggsave(filename = "./Figures/VI_PLOT4_restructured_BAD_REMOVED_plot.png",plot= VI_PLOT4_restructured_BAD_REMOVED_plot)
+```
+
+    ## Saving 7 x 5 in image
+
+![VI\_PLOT4\_restructured\_BAD\_REMOVED\_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/Figures/VI_PLOT4_restructured_BAD_REMOVED_plot.png)
 
 Percent of Live Granular Hemocytes
 ==================================
