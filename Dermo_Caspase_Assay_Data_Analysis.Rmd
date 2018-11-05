@@ -85,10 +85,6 @@ CAS_PLOT10_live_dead_GATE_ADDED$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "
 # Arc sine Percentage data
 
 ```{r arcsine, echo=TRUE}
-
-# NOTE: NA's produced whenever the percentages were above 100%
-VI_PLOT2_hemocytes$Arcsine <- transf.arcsin(VI_PLOT2_hemocytes$M4_PERCENT_OF_THIS_PLOT*.01)
-
 CAS_PLOT4_granular_quad_plot$Q3.UL_Arcsine<- transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.UL_Percent_of_this_plot*0.01)
 CAS_PLOT4_granular_quad_plot$Q3.UR_Arcsine <-  transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.UR_Percent_of_this_plot*0.01)
 CAS_PLOT4_granular_quad_plot$Q3.LL_Arcsine <- transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.LL_Percent_of_this_plot*0.01)
@@ -306,4 +302,333 @@ total_caspase_statistics <- summarySE(data=CAS_live_apoptotic_granular_agranular
 
 ```
 
+#### Day 50 Caspase Assay Data ####
 
+
+## Load in data for each plot
+
+```{r load_day50, echo=TRUE}
+#Load in the Data for each plot on a separate spreadsheet
+
+DAY50_CAS_P1_hemocytes <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/PLOT3.csv", header=TRUE)
+DAY50_CAS_PLOT4_granular_quad_plot <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/PLOT4.csv", header=TRUE)
+DAY50_CAS_PLOT7_agranular_quad_plot <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/PLOT7.csv", header=TRUE)
+DAY50_CAS_PLOT8_granular_agranular <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/PLOT8.csv", header=TRUE)
+DAY50_CAS_PLOT10_live_dead <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/PLOT10.csv", header=TRUE)
+
+# Remove rows with na's with the remove.na function from rgr
+DAY50_CAS_P1_hemocytes <- na.omit(DAY50_CAS_P1_hemocytes)
+DAY50_CAS_PLOT4_granular_quad_plot <-na.omit(DAY50_CAS_PLOT4_granular_quad_plot)
+DAY50_CAS_PLOT7_agranular_quad_plot <- na.omit(DAY50_CAS_PLOT7_agranular_quad_plot)
+DAY50_CAS_PLOT8_granular_agranular <- na.omit(DAY50_CAS_PLOT8_granular_agranular)
+DAY50_CAS_PLOT10_live_dead <- na.omit(DAY50_CAS_PLOT10_live_dead)
+
+## Remove percent symbol from columns 
+DAY50_CAS_P1_hemocytes$P1_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", DAY50_CAS_P1_hemocytes$P1_PERCENT_OF_THIS_PLOT))
+DAY50_CAS_PLOT4_granular_quad_plot$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", DAY50_CAS_PLOT4_granular_quad_plot$PERCENT_OF_THIS_PLOT))
+DAY50_CAS_PLOT7_agranular_quad_plot$PERCENT_OF_THIS_PLOT<- as.numeric(gsub("\\%", "", DAY50_CAS_PLOT7_agranular_quad_plot$PERCENT_OF_THIS_PLOT))
+DAY50_CAS_PLOT8_granular_agranular$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", DAY50_CAS_PLOT8_granular_agranular$PERCENT_OF_THIS_PLOT))
+DAY50_CAS_PLOT10_live_dead$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", DAY50_CAS_PLOT10_live_dead$PERCENT_OF_THIS_PLOT))
+
+# Removing Samples that were removed for the other data
+# Load in Data for the samples to remove 
+Caspase_assay_Samples_Remove_day50 <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/Caspase_assay_remove.csv", header=TRUE)
+
+# Data Frame with bad samples removed
+DAY50_CAS_P1_hemocytes_BAD_REMOVED <- DAY50_CAS_P1_hemocytes[!DAY50_CAS_P1_hemocytes$SAMPLE_ID %in% Caspase_assay_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
+
+DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED <- DAY50_CAS_PLOT4_granular_quad_plot[!DAY50_CAS_PLOT4_granular_quad_plot$SAMPLE_ID %in% Caspase_assay_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
+DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED <-  DAY50_CAS_PLOT7_agranular_quad_plot[!DAY50_CAS_PLOT7_agranular_quad_plot$SAMPLE_ID %in% Caspase_assay_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
+DAY50_CAS_PLOT8_granular_agranular_BAD_REMOVED <-  DAY50_CAS_PLOT8_granular_agranular[!DAY50_CAS_PLOT8_granular_agranular$SAMPLE_ID %in% Caspase_assay_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
+DAY50_CAS_PLOT10_live_dead_BAD_REMOVED <-  DAY50_CAS_PLOT10_live_dead[!DAY50_CAS_PLOT10_live_dead$SAMPLE_ID %in% Caspase_assay_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
+
+```
+
+
+# Arc sine Percentage data
+
+```{r arcsine_day50, echo=TRUE}
+DAY50_CAS_P1_hemocytes$Arcsine <- transf.arcsin(DAY50_CAS_P1_hemocytes$P1_PERCENT_OF_THIS_PLOT*0.01) 
+DAY50_CAS_PLOT4_granular_quad_plot$Arcsine <- transf.arcsin(DAY50_CAS_PLOT4_granular_quad_plot$PERCENT_OF_THIS_PLOT*0.01)
+DAY50_CAS_PLOT7_agranular_quad_plot$Arcsine <- transf.arcsin(DAY50_CAS_PLOT7_agranular_quad_plot$PERCENT_OF_THIS_PLOT*0.01)
+DAY50_CAS_PLOT8_granular_agranular$Arcsine <- transf.arcsin(DAY50_CAS_PLOT8_granular_agranular$PERCENT_OF_THIS_PLOT*0.01)
+DAY50_CAS_PLOT10_live_dead$Arcsine <- transf.arcsin(DAY50_CAS_PLOT10_live_dead$PERCENT_OF_THIS_PLOT*0.01)
+
+# Arcsine Transform the BAD REMOVED SAMPLES 
+DAY50_CAS_P1_hemocytes_BAD_REMOVED$Arcsine <- transf.arcsin(DAY50_CAS_P1_hemocytes_BAD_REMOVED$P1_PERCENT_OF_THIS_PLOT*0.01) 
+DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$Arcsine <- transf.arcsin(DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$PERCENT_OF_THIS_PLOT*0.01)
+DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$Arcsine <- transf.arcsin(DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$PERCENT_OF_THIS_PLOT*0.01)
+DAY50_CAS_PLOT8_granular_agranular_BAD_REMOVED$Arcsine <- transf.arcsin(DAY50_CAS_PLOT8_granular_agranular_BAD_REMOVED$PERCENT_OF_THIS_PLOT*0.01)
+DAY50_CAS_PLOT10_live_dead_BAD_REMOVED$Arcsine <- transf.arcsin(DAY50_CAS_PLOT10_live_dead_BAD_REMOVED$PERCENT_OF_THIS_PLOT*0.01)
+```
+
+## Basic plots showing the data across families
+
+# LIVE Apoptotic Granular hemocytes compared to Live and Necrotic hemocytes
+```{r apoptosis_granular_compared_DAY50, echo=TRUE}
+
+ggplot(DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular Caspase-dependent Apoptotic Day 50, \n Necrotic, and Live Hemocytes") + ylab("Percent of Granular Hemocyte Events") + scale_fill_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q3_LL"="#738488","Q3_LR"="#8f50ab","Q3-UL"="#99c161", "Q3-UR"="#b65a49")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+```
+
+# LIVE Apoptotic Agranular hemocytes compared to Live and Necrotic hemocytes
+```{r apoptosis_granular_compared_day50, echo=TRUE}
+
+ggplot(DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Agranular Caspase-dependent Apoptotic DAY50, \n Necrotic, and Live Hemocytes") + ylab("Percent of Agranular Hemocyte Events") + scale_fill_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q4_LL"="#738488","Q4_LR"="#8f50ab","Q4_UL"="#99c161", "Q4_UR"="#b65a49")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+
+```
+
+## Family A
+```{r DAY50_CAS_live_apoptotic_familyA, echo=TRUE}
+DAY50_CAS_live_apoptotic_granular_FamilyA <- DAY50_CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="A") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_FamilyA_aov <- aov(DAY50_CAS_live_apoptotic_granular_FamilyA$Arcsine ~ DAY50_CAS_live_apoptotic_granular_FamilyA$GROUP, data= DAY50_CAS_live_apoptotic_granular_FamilyA)
+summary(DAY50_CAS_live_apoptotic_granular_FamilyA_aov)
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyA <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="A") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyA_aov <- aov(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyA$Arcsine ~ DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyA$GROUP, data= DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyA)
+summary(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyA_aov)
+```
+
+
+### Family B
+
+```{r DAY50_CAS_live_apoptotic_familyB, echo=TRUE}
+DAY50_CAS_live_apoptotic_granular_FamilyB <- DAY50_CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="B") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_FamilyB_aov <- aov(DAY50_CAS_live_apoptotic_granular_FamilyB$Arcsine ~ DAY50_CAS_live_apoptotic_granular_FamilyB$GROUP, data= DAY50_CAS_live_apoptotic_granular_FamilyB)
+summary(DAY50_CAS_live_apoptotic_granular_FamilyB_aov)
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyB <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="B") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyB_aov <- aov(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyB$Arcsine ~ DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyB$GROUP, data= DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyB)
+summary(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyB_aov)
+```
+
+
+### Family D
+
+```{r DAY50_CAS_live_apoptotic_familyD, echo=TRUE}
+DAY50_CAS_live_apoptotic_granular_FamilyD <- DAY50_CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="D") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_FamilyD_aov <- aov(DAY50_CAS_live_apoptotic_granular_FamilyD$Arcsine ~ DAY50_CAS_live_apoptotic_granular_FamilyD$GROUP, data= DAY50_CAS_live_apoptotic_granular_FamilyD)
+summary(DAY50_CAS_live_apoptotic_granular_FamilyD_aov)
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyD <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="D") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyD_aov <- aov(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyD$Arcsine ~ DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyD$GROUP, data= DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyD)
+summary(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyD_aov)
+```
+
+### Family E
+
+```{r DAY50_CAS_live_apoptotic_familyE, echo=TRUE}
+DAY50_CAS_live_apoptotic_granular_FamilyE <- DAY50_CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="E") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_FamilyE_aov <- aov(DAY50_CAS_live_apoptotic_granular_FamilyE$Arcsine ~ DAY50_CAS_live_apoptotic_granular_FamilyE$GROUP, data= DAY50_CAS_live_apoptotic_granular_FamilyE)
+summary(DAY50_CAS_live_apoptotic_granular_FamilyE_aov)
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyE <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="E") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyE_aov <- aov(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyE$Arcsine ~ DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyE$GROUP, data= DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyE)
+summary(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyE_aov)
+```
+
+### Family J
+
+```{r DAY50_CAS_live_apoptotic_familyJ, echo=TRUE}
+DAY50_CAS_live_apoptotic_granular_FamilyJ <- DAY50_CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="J") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_FamilyJ_aov <- aov(DAY50_CAS_live_apoptotic_granular_FamilyJ$Arcsine ~ DAY50_CAS_live_apoptotic_granular_FamilyJ$GROUP, data= DAY50_CAS_live_apoptotic_granular_FamilyJ)
+summary(DAY50_CAS_live_apoptotic_granular_FamilyJ_aov)
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyJ <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="J") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyJ_aov <- aov(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyJ$Arcsine ~ DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyJ$GROUP, data= DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyJ)
+summary(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyJ_aov)
+```
+
+### Family L 
+```{r DAY50_CAS_live_apoptotic_familyL, echo=TRUE}
+DAY50_CAS_live_apoptotic_granular_FamilyL <- DAY50_CAS_PLOT4_granular_quad_plot %>% filter(FAMILY=="L") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_FamilyL_aov <- aov(DAY50_CAS_live_apoptotic_granular_FamilyL$Arcsine ~ DAY50_CAS_live_apoptotic_granular_FamilyL$GROUP, data= DAY50_CAS_live_apoptotic_granular_FamilyL)
+summary(DAY50_CAS_live_apoptotic_granular_FamilyL_aov)
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyL <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="L") %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyL_aov <- aov(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyL$Arcsine ~ DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyL$GROUP, data= DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyL)
+summary(DAY50_CAS_live_apoptotic_granular_BAD_REMOVED_FamilyL_aov)
+```
+
+# Two-Way ANOVA of Live Apoptotic Granular Hemocytes
+```{r DAY50_CAS_twoway_aov_live_apoptotic_granular, echo=TRUE}
+DAY50_CAS_live_apoptotic_granular_twoway_aov <- lm(DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$Arcsine ~ DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$FAMILY + DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$GROUP, data= DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED)
+Anova(DAY50_CAS_live_apoptotic_granular_twoway_aov, type="II")
+summary(DAY50_CAS_live_apoptotic_granular_twoway_aov)
+```
+
+# One Way ANOVA between Live Apoptotic Just Challenged 
+
+```{r day50_live_apoptotic_challenged, echo=TRUE}
+DAY50_CAS_PLOT4_granular_quad_plot_Challenge <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED[!grepl("control", DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$GROUP),]
+
+DAY50_CAS_PLOT4_granular_quad_plot_Challenge_oneway_aov <- aov(DAY50_CAS_PLOT4_granular_quad_plot_Challenge$Arcsine ~ DAY50_CAS_PLOT4_granular_quad_plot_Challenge$FAMILY, data=DAY50_CAS_PLOT4_granular_quad_plot_Challenge)
+summary(DAY50_CAS_PLOT4_granular_quad_plot_Challenge_oneway_aov)
+
+```
+
+#### Live Apoptotic Agranular Hemocytes ####
+## Family A
+```{r DAY50_CAS_live_apoptotic_agranular_familyA, echo=TRUE}
+DAY50_CAS_live_apoptotic_agranular_FamilyA <- DAY50_CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="A") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_FamilyA_aov <- aov(DAY50_CAS_live_apoptotic_agranular_FamilyA$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_FamilyA$GROUP, data= DAY50_CAS_live_apoptotic_agranular_FamilyA)
+summary(DAY50_CAS_live_apoptotic_agranular_FamilyA_aov)
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyA <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="A") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyA_aov <- aov(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyA$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyA$GROUP, data= DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyA)
+summary(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyA_aov)
+```
+
+
+### Family B
+
+```{r DAY50_CAS_live_apoptotic_agranular_familyB, echo=TRUE}
+DAY50_CAS_live_apoptotic_agranular_FamilyB <- DAY50_CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="B") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_FamilyB_aov <- aov(DAY50_CAS_live_apoptotic_agranular_FamilyB$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_FamilyB$GROUP, data= DAY50_CAS_live_apoptotic_agranular_FamilyB)
+summary(DAY50_CAS_live_apoptotic_agranular_FamilyB_aov)
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyB <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="B") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyB_aov <- aov(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyB$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyB$GROUP, data= DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyB)
+summary(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyB_aov)
+```
+
+
+### Family D
+
+```{r DAY50_CAS_live_apoptotic_agranular_familyD, echo=TRUE}
+DAY50_CAS_live_apoptotic_agranular_FamilyD <- DAY50_CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="D") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_FamilyD_aov <- aov(DAY50_CAS_live_apoptotic_agranular_FamilyD$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_FamilyD$GROUP, data= DAY50_CAS_live_apoptotic_agranular_FamilyD)
+summary(DAY50_CAS_live_apoptotic_agranular_FamilyD_aov)
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyD <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="D") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyD_aov <- aov(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyD$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyD$GROUP, data= DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyD)
+summary(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyD_aov)
+```
+
+### Family E
+
+```{r DAY50_CAS_live_apoptotic_agranular_familyE, echo=TRUE}
+DAY50_CAS_live_apoptotic_agranular_FamilyE <- DAY50_CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="E") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_FamilyE_aov <- aov(DAY50_CAS_live_apoptotic_agranular_FamilyE$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_FamilyE$GROUP, data= DAY50_CAS_live_apoptotic_agranular_FamilyE)
+summary(DAY50_CAS_live_apoptotic_agranular_FamilyE_aov)
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyE <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="E") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyE_aov <- aov(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyE$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyE$GROUP, data= DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyE)
+summary(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyE_aov)
+```
+
+### Family J
+
+```{r DAY50_CAS_live_apoptotic_agranular_familyJ, echo=TRUE}
+DAY50_CAS_live_apoptotic_agranular_FamilyJ <- DAY50_CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="J") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_FamilyJ_aov <- aov(DAY50_CAS_live_apoptotic_agranular_FamilyJ$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_FamilyJ$GROUP, data= DAY50_CAS_live_apoptotic_agranular_FamilyJ)
+summary(DAY50_CAS_live_apoptotic_agranular_FamilyJ_aov)
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyJ <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="J") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyJ_aov <- aov(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyJ$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyJ$GROUP, data= DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyJ)
+summary(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyJ_aov)
+```
+
+### Family L 
+```{r DAY50_CAS_live_apoptotic_agranular_familyL, echo=TRUE}
+DAY50_CAS_live_apoptotic_agranular_FamilyL <- DAY50_CAS_PLOT7_agranular_quad_plot %>% filter(FAMILY=="L") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_FamilyL_aov <- aov(DAY50_CAS_live_apoptotic_agranular_FamilyL$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_FamilyL$GROUP, data= DAY50_CAS_live_apoptotic_agranular_FamilyL)
+summary(DAY50_CAS_live_apoptotic_agranular_FamilyL_aov)
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyL <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED %>% filter(FAMILY=="L") %>% filter(GATE=="Q4_LR")
+
+DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyL_aov <- aov(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyL$Arcsine ~ DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyL$GROUP, data= DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyL)
+summary(DAY50_CAS_live_apoptotic_agranular_BAD_REMOVED_FamilyL_aov)
+```
+
+# Two-Way ANOVA of Live Apoptotic Granular Hemocytes
+```{r DAY50_CAS_twoway_aov_live_apoptotic_Agranular, echo=TRUE}
+DAY50_CAS_live_apoptotic_Agranular_twoway_aov <- lm(DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$Arcsine ~ DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$FAMILY + DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$GROUP, data= DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED)
+Anova(DAY50_CAS_live_apoptotic_Agranular_twoway_aov, type="II")
+summary(DAY50_CAS_live_apoptotic_Agranular_twoway_aov)
+```
+
+# One Way ANOVA between Live Apoptotic Just Challenged 
+
+```{r day50_live_apoptotic_agranular_challenged, echo=TRUE}
+DAY50_CAS_PLOT7_agranular_quad_plot_Challenge <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED[!grepl("control", DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$GROUP),]
+
+DAY50_CAS_PLOT7_agranular_quad_plot_Challenge_oneway_aov <- aov(DAY50_CAS_PLOT7_agranular_quad_plot_Challenge$Arcsine ~ DAY50_CAS_PLOT7_agranular_quad_plot_Challenge$FAMILY, data=DAY50_CAS_PLOT7_agranular_quad_plot_Challenge)
+summary(DAY50_CAS_PLOT7_agranular_quad_plot_Challenge_oneway_aov)
+
+```
+
+## Two-Way ANOVA between Live Apoptotic Gate and Family ##
+
+```{r day50_twoway_live_apoptotic, echo=TRUE}
+DAY50_CAS_PLOT7_live_apoptotic_agranular_quad_plot_BAD_REMOVED <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED %>% filter(GATE=="Q4_LR")
+DAY50_CAS_PLOT4_live_apoptotic_granular_quad_plot_BAD_REMOVED <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED %>% filter(GATE=="Q3_LR")
+
+DAY50_CAS_live_apoptotic_combined <- rbind(DAY50_CAS_PLOT7_live_apoptotic_agranular_quad_plot_BAD_REMOVED, DAY50_CAS_PLOT4_live_apoptotic_granular_quad_plot_BAD_REMOVED) 
+
+DAY50_CAS_live_apoptotic_combined_twoway_anova <- lm(DAY50_CAS_live_apoptotic_combined$Arcsine ~ DAY50_CAS_live_apoptotic_combined$GATE + DAY50_CAS_live_apoptotic_combined$FAMILY, data=DAY50_CAS_live_apoptotic_combined)
+Anova(DAY50_CAS_live_apoptotic_combined_twoway_anova, type="II")
+summary(DAY50_CAS_live_apoptotic_combined_twoway_anova)
+
+# Interaction term
+DAY50_CAS_live_apoptotic_combined_twoway_anova_interaction <- lm(DAY50_CAS_live_apoptotic_combined$Arcsine ~ DAY50_CAS_live_apoptotic_combined$GATE + DAY50_CAS_live_apoptotic_combined$FAMILY + DAY50_CAS_live_apoptotic_combined$GATE:DAY50_CAS_live_apoptotic_combined$FAMILY, data=DAY50_CAS_live_apoptotic_combined)
+Anova(DAY50_CAS_live_apoptotic_combined_twoway_anova_interaction, type="II")
+summary(DAY50_CAS_live_apoptotic_combined_twoway_anova)
+
+# Analyzing significant difference
+DA50CAS_live_apoptotic_combined_twoway_aov_interaction_leastsquares <- lsmeans(DAY50_CAS_live_apoptotic_combined_twoway_anova_interaction,"DAY50_CAS_live_apoptotic_combined$GATE", adjust="tukey" )
+cld(DA50CAS_live_apoptotic_combined_twoway_aov_interaction_leastsquares, alpha=0.05, Letters=letters)
+
+DA50CAS_live_apoptotic_combined_twoway_aov_interaction_leastsquares <- lsmeans(DAY50_CAS_live_apoptotic_combined_twoway_anova_interaction,"DAY50_CAS_live_apoptotic_combined$FAMILY", adjust="tukey" )
+cld(DA50CAS_live_apoptotic_combined_twoway_aov_interaction_leastsquares, alpha=0.05, Letters=letters)
+
+```
+
+
+##### Compiled Graphing ######
+
+```{r graph,echo=TRUE}
+
+DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$DAY <-"50"
+DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$DAY <-"50"
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED$DAY <- "7"
+CAS_PLOT4_granular_quad_plot_GATE_ADDED$DAY <- "7"
+
+DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
+DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED_subset <- CAS_PLOT7_agranular_quad_plot_GATE_ADDED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
+CAS_PLOT4_granular_quad_plot_GATE_ADDED_subset <- CAS_PLOT4_granular_quad_plot_GATE_ADDED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
+
+
+all_caspase_granular_agranular_DAY7_DAY50 <-rbind(CAS_PLOT7_agranular_quad_plot_GATE_ADDED_subset,CAS_PLOT4_granular_quad_plot_GATE_ADDED_subset,DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED_subset,DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED_subset)
+write.csv(file="all_caspase_granular_agranular_DAY7_DAY50.csv",all_caspase_granular_agranular_DAY7_DAY50)
+all_caspase_granular_agranular_DAY7_DAY50 <- read.csv(file="all_caspase_granular_agranular_DAY7_DAY50.csv",header=TRUE)
+#BEST PLOT 
+  ggplot(all_caspase_granular_agranular_DAY7_DAY50, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + 
+  geom_col(position=position_fill()) + 
+  ggtitle("Percent of Granular and Agranular Hemocytes from Challenged Oysters \n on Day 7 and Day 50 in Caspase Assay(low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
+  facet_grid(DAY~PLOT+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Aranular","Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular", "Live Non-Apoptotic Granular", "Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular"), values=c("Q4_LL"="#7d7f77","Q4_LR"="#33362f", "Q4_UL"="#d1c9b8","Q4_UR"="#accccf","Q3_LL"="#488772", "Q3_LR"="#52d79b","Q3_UL"="#a5d4c1","Q3_UR"="#62dccc"))  
+ 
+```

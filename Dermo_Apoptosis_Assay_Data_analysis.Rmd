@@ -2180,10 +2180,10 @@ APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED$DAY <- "07"
 APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED$CELL <- "agranular"
 
 
-DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED_subset <- DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL")]
-DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED_subset<- DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL")]
-APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_subset <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL")]
-APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_subset <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL")]
+DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED_subset <- DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL","Arcsine")]
+DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED_subset<- DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL","Arcsine")]
+APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_subset <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL","Arcsine")]
+APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_subset <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","ASSAY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","CELL","Arcsine")]
 
 all_granular_agranular_DAY7_DAY50 <- rbind(DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED_subset,DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED_subset,APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_subset,APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_subset)
 
@@ -2198,9 +2198,16 @@ all_granular_agranular_DAY7_DAY50_challenge <- all_granular_agranular_DAY7_DAY50
 #just_challenge<-
   ggplot(all_granular_agranular_DAY7_DAY50_challenge, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + 
   geom_col(position=position_fill()) + 
-  ggtitle("Percent of Granular and Agranular Hemocytes \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
+  ggtitle("Percent of Granular and Agranular Hemocytes from Challenged Oysters \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
   facet_grid(DAY~CELL+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Granular","Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular", "Live Non-Apoptotic Agranular", "Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular"), values=c("Q2_LL"="#7d7f77","Q2_LR"="#33362f", "Q2_UL"="#d1c9b8","Q2_UR"="#accccf","Q1_LL"="#488772", "Q1_LR"="#52d79b","Q1_UL"="#a5d4c1","Q1_UR"="#62dccc")) 
   
+```
+
+#### Two-Way ANOVA of GATE and DAY ####
+```{r gate_day_anova, echo=TRUE}
+
+all_granular_agranular_DAY7_DAY50_lm <- lm(all_granular_agranular_DAY7_DAY50$Arcsine ~ all_granular_agranular_DAY7_DAY50$GATE + all_granular_agranular_DAY7_DAY50$DAY + all_granular_agranular_DAY7_DAY50$GATE:all_granular_agranular_DAY7_DAY50$DAY, data=all_granular_agranular_DAY7_DAY50)
+Anova(all_granular_agranular_DAY7_DAY50_lm, type="II")
 ```
 
 ### Summary Statistics Day 50 ###

@@ -546,23 +546,22 @@ TukeyHSD(VI_PLOT10_LIVE_AGranular_hemocytes_oneway_aov)
 ```{r difference_between_cells, include=TRUE}
 
 ## Statistical difference between Live agranular cells and granular cells 
-VI_PLOT9_PLOT10_combined <-rbind(VI_PLOT9_E1_MINUS_V1R, VI_PLOT10_E3_MINUS_V1R)
 VI_PLOT9_PLOT10_BAD_REMOVED_combined <-rbind(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED, VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
 
-VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov <- lm(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3 +  VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY,data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov <- lm(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE +VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
 Anova(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov)
 summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_aov)
 
 # Plus an interaction term
-VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov <- lm(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3 + VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY + VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov <- lm(VI_PLOT9_PLOT10_BAD_REMOVED_combined$Arcsine ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE + VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY + VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, data=VI_PLOT9_PLOT10_BAD_REMOVED_combined)
 Anova(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, type="II")
 summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov)
 
-VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction <- lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$E1_E3:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, adjust="tukey")
+VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction <- lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, adjust="tukey")
 cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction, alpha=0.05, Letters=letters)
 
 #Plotting
-ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=E1_E3)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=PLOT)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
 ```
 
 #### Calculate Summary Statistics ####
@@ -1129,3 +1128,40 @@ mean_size_statistics <- summarySE(data=mean_size_BAD_REMOVED, "MEAN", groupvars=
 
 ```
 
+
+### Compiled Graphing ###
+
+```{r viability_assay_compiled_graphing}
+#Plotting all granular agranular 
+subset_day50_agranular_granular <- VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED[,c(1,2,5,7,10,11,12)]
+subset_day50_agranular_granular$DAY <- "50"
+subset_day7_agranular_granular <- VI_PLOT4_restructured_BAD_REMOVED[,c(1,2,6,5,11,10,12)]
+subset_day7_agranular_granular$DAY <- "7"
+
+colnames(subset_day7_agranular_granular) <- c("SAMPLE_ID","FAMILY","GROUP","PLOT","GATE","PERCENT_OF_THIS_PLOT","Arcsine","DAY")
+compiled_day7_day_50_all_agranular_granular <- rbind(subset_day7_agranular_granular, subset_day50_agranular_granular )
+
+ggplot(compiled_day7_day_50_all_agranular_granular, aes(x=GROUP,y=PERCENT_OF_THIS_PLOT, fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Hemocytes \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + facet_grid(DAY~FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Granular Hemocytes", "Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) 
+
+# Plotting all live agranular and granular
+subset_day7_live_agranular_granular <- VI_PLOT9_PLOT10_BAD_REMOVED_combined[,c(1,2,5,6,9,10)]
+subset_day7_live_agranular_granular$DAY <- "7"
+subset_day50_live_agranular_granular <- VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED[,c(1,2,7,5,10,11)]
+subset_day50_live_agranular_granular$DAY <- "50"
+
+compiled_day7_day50_live_agranular_granular <- rbind(subset_day7_live_agranular_granular, subset_day50_live_agranular_granular)
+
+ggplot(compiled_day7_day50_live_agranular_granular, aes(x=GROUP, y=PERCENT_LIVE, fill=PLOT)) + 
+  geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
+  facet_grid(DAY~FAMILY, scales="free")  + scale_fill_manual(name="Hemocyte Type", labels=c("Granular Hemocytes", "Agranular Hemocytes"), values=c("PLOT9_FL3-A"="#99a765","PLOT10_FL3-A"="#96578a"))
+
+```
+
+### Two Way ANOVA of GATE and DAY
+```{r day_Gate, echo=TRUE}
+compiled_agranular_granular_lm <- lm(compiled_day7_day_50_all_agranular_granular$Arcsine ~ compiled_day7_day_50_all_agranular_granular$GATE + compiled_day7_day_50_all_agranular_granular$DAY + compiled_day7_day_50_all_agranular_granular$GATE:compiled_day7_day_50_all_agranular_granular$DAY, data=compiled_day7_day_50_all_agranular_granular)
+Anova(compiled_agranular_granular_lm, type="II")
+
+compiled_day7_day50_live_agranular_granular_lm <- lm(compiled_day7_day50_live_agranular_granular$Arcsine ~ compiled_day7_day50_live_agranular_granular$PLOT + compiled_day7_day50_live_agranular_granular$DAY + compiled_day7_day50_live_agranular_granular$PLOT:compiled_day7_day50_live_agranular_granular$DAY, data=compiled_day7_day50_live_agranular_granular)
+Anova(compiled_day7_day50_live_agranular_granular_lm, type="II")
+```
