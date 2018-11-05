@@ -2028,12 +2028,17 @@ cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_int
 
 ``` r
 #Plotting
-ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=PLOT)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+VI_PLOT9_PLOT10_BAD_REMOVED_combined_plotting <- ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=PLOT)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot")+
+scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("PLOT9_FL3-A"="#99a765","PLOT10_FL3-A"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+ggsave(filename="./Figures/VI_PLOT9_PLOT10_BAD_REMOVED_combined_plotting.png", plot=VI_PLOT9_PLOT10_BAD_REMOVED_combined_plotting)
 ```
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/difference_between_cells-1.png)
+    ## Saving 7 x 5 in image
 
-#### Calculate Summary Statistics
+![VI\_PLOT9\_PLOT10\_BAD\_REMOVED\_combined\_plotting](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_PLOT9_PLOT10_BAD_REMOVED_combined_plotting.png)
+
+Calculate Summary Statistics
+----------------------------
 
 ``` r
 # Summary Statistics for Percentages 
