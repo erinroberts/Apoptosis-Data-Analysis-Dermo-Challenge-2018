@@ -2172,10 +2172,13 @@ Plotting of Total Granular and Agranular Hemocytes
 --------------------------------------------------
 
 ``` r
-ggplot(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + geom_boxplot() + ggtitle("Percent Total Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Granular Hemocytes", "Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+total_granular_agranular_day50 <- ggplot(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + geom_boxplot() + ggtitle("Percent Total Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Granular Hemocytes", "Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+ggsave(filename="./Figures/total_granular_agranular_day50.png", plot=total_granular_agranular_day50)
 ```
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/day50_plotting-1.png)
+    ## Saving 7 x 5 in image
+
+![total\_granular\_agranular\_day50](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/total_granular_agranular_day50.png)
 
 Percent of granular hemocytes (E1)
 ----------------------------------
