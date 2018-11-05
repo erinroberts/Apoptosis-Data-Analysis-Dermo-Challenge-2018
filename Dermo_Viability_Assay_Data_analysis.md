@@ -238,12 +238,12 @@ Percent Total Hemocytes out of all events
 ``` r
 VI_Percent_total_hemocytes_BAD_NOT_REMOVED <- ggplot(data= VI_PLOT2_hemocytes, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \n Low Quality Not Removed") +
     xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
-ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf", plot = VI_Percent_total_hemocytes_BAD_NOT_REMOVED)
+ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.png", plot = VI_Percent_total_hemocytes_BAD_NOT_REMOVED)
 ```
 
     ## Saving 7 x 5 in image
 
-![Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf "Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed")
+![Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.png "Percent of Hemocyte Events in Total Sample Events Low Quality Not Removed")
 
 ``` r
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
