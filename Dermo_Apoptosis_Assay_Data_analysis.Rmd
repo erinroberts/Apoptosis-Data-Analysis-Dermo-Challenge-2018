@@ -391,10 +391,11 @@ agranular_live_apoptotic_all <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_RE
 granular_live_apoptotic_all <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED %>% filter(GATE=="Q2_LR")
 APOP_Live_apoptotic_combined_all <- rbind(agranular_live_apoptotic_all,granular_live_apoptotic_all)
 
-ggplot(APOP_Live_apoptotic_combined_all, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live Apoptotic Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Apoptotic Agranular", "Live Apoptotic Granular"), values=c("Q2_LR"="#99a765","Q1_LR"="#96578a")) 
+APOP_Live_apoptotic_combined_all_plot <-ggplot(APOP_Live_apoptotic_combined_all, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live Apoptotic Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Apoptotic Agranular", "Live Apoptotic Granular"), values=c("Q2_LR"="#99a765","Q1_LR"="#96578a")) 
+ggsave(filename = "./Figures/APOP_Live_apoptotic_combined_all_plot.png",plot=APOP_Live_apoptotic_combined_all_plot)
 
 # Graph for abstract
-ggplot(APOP_Live_apoptotic_combined_all, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + theme(strip.text = element_text(size=15), axis.text = element_text(size=15, face="bold"), axis.title = element_text(size=15, face="bold"), plot.title = element_text(size=20, face="bold"),legend.text = element_text(size=15, face="bold"), legend.title = element_text(size=15, face="bold")) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live Apoptotic Hemocytes at Day 7 Post-Challenge") + ylab("Percent of Hemocyte Events") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Apoptotic Agranular", "Live Apoptotic Granular"), values=c("Q2_LR"="black","Q1_LR"="grey"))
+APOP_Live_apoptotic_combined_all_plot_abstract <- ggplot(APOP_Live_apoptotic_combined_all, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + theme(strip.text = element_text(size=15), axis.text = element_text(size=15, face="bold"), axis.title = element_text(size=15, face="bold"), plot.title = element_text(size=20, face="bold"),legend.text = element_text(size=15, face="bold"), legend.title = element_text(size=15, face="bold")) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Live Apoptotic Hemocytes at Day 7 Post-Challenge") + ylab("Percent of Hemocyte Events") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Apoptotic Agranular", "Live Apoptotic Granular"), values=c("Q2_LR"="black","Q1_LR"="grey"))
 
 
 # Two-Way ANOVA
@@ -415,6 +416,7 @@ APOP_Live_apoptotic_combined_all_aov_interaction_leastsquare_gate <- lsmeans(APO
 cld(APOP_Live_apoptotic_combined_all_aov_interaction_leastsquare_gate, alpha=0.05, Letters=letters) #the two gates are significantly different 
 
 ```
+![APOP_Live_apoptotic_combined_all_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/APOP_Live_apoptotic_combined_all_plot.png)
 
 ## % DEAD apoptotic granular hemocytes (PLOT4, Q2-UR)
 
@@ -422,16 +424,15 @@ cld(APOP_Live_apoptotic_combined_all_aov_interaction_leastsquare_gate, alpha=0.0
 
 ```{r dead_apoptotic_granular, echo=TRUE}
 APOP_dead_apoptotic_granular_BAD_NOT_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \n Low Quality Not Removed") + xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
-
-APOP_dead_apoptotic_granular_BAD_NOT_REMOVED
+ggsave(filename= "./Figures/APOP_dead_apoptotic_granular_BAD_NOT_REMOVED.png", plot=APOP_dead_apoptotic_granular_BAD_NOT_REMOVED)
 
 APOP_dead_apoptotic_granular_BAD_REMOVED <- ggplot(data=APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED, aes(x=FAMILY, y=Q2.UR_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Dead Apoptotic Granular Hemocytes \nLow Quality Removed") +
   xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
-APOP_dead_apoptotic_granular_BAD_REMOVED
+ggsave(filename="./Figures/APOP_dead_apoptotic_granular_BAD_REMOVED.png", plot=APOP_dead_apoptotic_granular_BAD_REMOVED) 
 
 ```
-
-
+![Percent of Dead Apoptotic Granular Hemocytes Low Quality Not Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/APOP_dead_apoptotic_granular_BAD_NOT_REMOVED.png)
+![Percent of Dead Apoptotic Granular Hemocytes Low Quality Removed](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/APOP_dead_apoptotic_granular_BAD_REMOVED.png)
 ### FAMILY A
 ```{r dead_apoptotic_granular_aov_A, echo=TRUE}
 
