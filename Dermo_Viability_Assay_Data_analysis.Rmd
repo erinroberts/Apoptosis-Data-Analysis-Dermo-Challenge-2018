@@ -2,9 +2,7 @@
 title: "Dermo Viability Assay Data Analysis"
 author: "Erin Roberts"
 date: "7/27/2018"
-output:
-  word_document: default
-  pdf_document: default
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -86,7 +84,7 @@ VI_PLOT4_restructured_BAD_REMOVED <- VI_PLOT4_restructured[!VI_PLOT4_restructure
 
 # Arc sine Percentage data
 
-```{r arcsine, echo=TRUE}
+```{r arcsine_1, echo=TRUE}
 # Calculate Percent Live Granulocytes 
   # Take cells here and make a percentage out of GRANULAR hemocyte count from VI_PLOT3_P1_GATE P1_COUNT
   # These commands only work correctly if the csv has all the commas removed from the numbers for the thousands separator
@@ -346,8 +344,8 @@ VI_PLOT4_agranular_granular_lm_interaction <- lm(VI_PLOT4_restructured_BAD_REMOV
 Anova(VI_PLOT4_agranular_granular_lm_interaction, type="II")
 summary(VI_PLOT4_agranular_granular_lm_interaction)
 
-VI_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_PLOT4_agranular_granular_lm_interaction, "VI_PLOT4_restructured_BAD_REMOVED$E1_E3", adjust="tukey")
-cld(VI_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
+#VI_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_PLOT4_agranular_granular_lm_interaction, "VI_PLOT4_restructured_BAD_REMOVED$E1_E3", adjust="tukey")
+#cld(VI_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
 
 ```
 
@@ -438,8 +436,8 @@ summary(VI_PLOT9_LIVE_granular_hemocytes_AOV_BAD_REMOVED)
 VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov <- lm(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$Arcsine ~ VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP + VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY:VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP)
 Anova(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov , type="II")
 summary(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov)
-VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares <- lsmeans(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov, "VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
-cld(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares, alpha=0.05, Letters=letters)
+#VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares <- lsmeans(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov, "VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
+#cld(VI_PLOT9_LIVE_granular_hemocytes_INTERACTION_aov_leastsquares, alpha=0.05, Letters=letters)
 
 ```
 
@@ -537,8 +535,8 @@ VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction <- lm(VI_PLOT10_E
 Anova(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction, type="II")
 summary(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction)
 
-VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_leastsquares <- lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction, "VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
-cld(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_leastsquares, alpha=0.05, Letters=letters)
+#VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_leastsquares <- lsmeans(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_interaction, "VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
+#cld(VI_PLOT10_LIVE_AGranular_hemocytes_AOV_BAD_REMOVED_leastsquares, alpha=0.05, Letters=letters)
 
 ```
 
@@ -567,8 +565,8 @@ VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov <- lm(VI_PLOT9_PLOT
 Anova(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, type="II")
 summary(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov)
 
-VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction <- lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, adjust="tukey")
-cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction, alpha=0.05, Letters=letters)
+#VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction <- lsmeans(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov, pairwise ~ VI_PLOT9_PLOT10_BAD_REMOVED_combined$PERCENT_LIVE:VI_PLOT9_PLOT10_BAD_REMOVED_combined$FAMILY, adjust="tukey")
+#cld(VI_PLOT9_PLOT10_granular_vs_agranular_twoway_interaction_aov_leastsquare_interaction, alpha=0.05, Letters=letters)
 
 #Plotting
 ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=PLOT)) + geom_boxplot() + ggtitle("Percent of Live Granular and Agranular Hemocytes (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Granular Hemocytes", "Live Agranular Hemocytes"), values=c("E1"="#99a765","E3"="#96578a")) + facet_grid(.~FAMILY+GROUP, scales="free") 
@@ -580,7 +578,7 @@ ggplot(VI_PLOT9_PLOT10_BAD_REMOVED_combined, aes(x=GROUP, y=PERCENT_LIVE, fill=P
 # Summary Statistics for Percentages 
 total_viabaility_statistics <- summarySE(data=VI_PLOT4_restructured_BAD_REMOVED, "PERCENT_OF_THIS_PLOT", groupvars=c("GROUP", "E1_E3","FAMILY"))
 
-viability_statistics_live <- summarySE(data=VI_PLOT9_PLOT10_BAD_REMOVED_combined, "PERCENT_LIVE", groupvars=c("GROUP", "E1_E3","FAMILY"), conf.interval= 0.95)
+viability_statistics_live <- summarySE(data=VI_PLOT9_PLOT10_BAD_REMOVED_combined, "PERCENT_LIVE", groupvars=c("GROUP", "PERCENT_LIVE","FAMILY"), conf.interval= 0.95)
 
 # Summary Statistics for size
 mean_size <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_ASSAY_MEAN_VALUES_CORRECTED_EDITED.csv", header=TRUE)
@@ -884,8 +882,8 @@ VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm <- lm(VI_DAY50_PLOT4_E1_E3_GATE
 Anova(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm, type="II")
 summary(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm) # significance for GATE
 
-VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm, "VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE", adjust="tukey")
-cld(VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
+#VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm, "VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE", adjust="tukey")
+#cld(VI_DAY50_PLOT4_agranular_granular_lm_interaction_leastsquares, alpha=0.05, Letters=letters)
 
 VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm_interaction <- lm(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$Arcsine ~ VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE + VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY + VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$FAMILY:VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED$GATE, data=VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED)
 Anova(VI_DAY50_PLOT4_agranular_granular_BAD_REMOVED_lm_interaction, type="II")
@@ -963,7 +961,7 @@ summary(VI_DAY50_PLOT9_E1_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY L
-```{r DAY50_live_granular_J, echo=FALSE}
+```{r DAY50_live_granular_L, echo=FALSE}
 VI_DAY50_PLOT9_E1_MINUS_V1R_FAMILY_L <- VI_DAY50_PLOT9_E1_MINUS_V1R %>% filter(FAMILY=="L")
 VI_DAY50_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV <- aov(VI_DAY50_PLOT9_E1_MINUS_V1R_FAMILY_L$Arcsine ~ VI_DAY50_PLOT9_E1_MINUS_V1R_FAMILY_L$GROUP, data= VI_DAY50_PLOT9_E1_MINUS_V1R_FAMILY_L)
 summary(VI_DAY50_PLOT9_E1_MINUS_V1R_FAMILY_L_AOV)
@@ -984,8 +982,8 @@ VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED <- lm(VI_DAY50_PLOT9_E1_MINUS_
 Anova(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED, type="II")
 summary(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED) # significant difference between FAMILY
 
-VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_leastsquares <- lsmeans(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED, "VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
-cld(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_leastsquares, alpha=005, Letters=letters)
+#VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_leastsquares <- lsmeans(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED, "VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
+#cld(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_leastsquares, alpha=005, Letters=letters)
 
 # Adding the Interaction Term
 
@@ -993,13 +991,13 @@ VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction <- lm(VI_DAY50_PLO
 Anova(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction, type="II")
 summary(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED) # significant difference between FAMILY
 
-VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
-cld(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction_leastsquares, alpha=005, Letters=letters)
+#VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$FAMILY", adjust="tukey")
+#cld(VI_DAY50_PLOT9_Granular_hemocytes_AOV_BAD_REMOVED_interaction_leastsquares, alpha=005, Letters=letters)
 ```
 
 ### One Way ANOVA of Differences between Families
 
-```{r DAY50_oneway_live_granular, echo=TRUE}
+```{r DAY50_oneway_live_granular_diff, echo=TRUE}
 
 VI_DAY50_PLOT9_V1R_BAD_REMOVED_CHALLENGE <- VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED[!grepl("control", VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED$GROUP),]
 
@@ -1016,7 +1014,7 @@ VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV <- aov(VI_DAY50_PLOT10_E3_MINUS_V1R_FA
 summary(VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV)
 
 VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED <- VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED %>% filter(FAMILY=="A")
-VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED <- aov(VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED$Arcsine ~ VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVEDD$GROUP, data= VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED)
+VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED <- aov(VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED$Arcsine ~ VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED$GROUP, data= VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_BAD_REMOVED)
 summary(VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_A_AOV_BAD_REMOVED)
 ```
 
@@ -1065,7 +1063,7 @@ summary(VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_J_AOV_BAD_REMOVED)
 ```
 
 ### FAMILY L
-```{r DAY50_live_agranular_J, echo=FALSE}
+```{r DAY50_live_agranular_L, echo=FALSE}
 VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_L <- VI_DAY50_PLOT10_E3_MINUS_V1R %>% filter(FAMILY=="L")
 VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_L_AOV <- aov(VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_L$Arcsine ~ VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_L$GROUP, data= VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_L)
 summary(VI_DAY50_PLOT10_E3_MINUS_V1R_FAMILY_L_AOV)
@@ -1113,17 +1111,17 @@ summary(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV)
 VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction <- lm(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$Arcsine ~ VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY + VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE + VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY:VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE, data=VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED )
 Anova(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction , type="II")
 
-VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY", adjust="tukey")
-cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares, alpha=0.05, Letters=letters)
+#VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$FAMILY", adjust="tukey")
+#cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares, alpha=0.05, Letters=letters)
 
-VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE", adjust="tukey")
-cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate, alpha=0.05, Letters=letters)
+#VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate <- lsmeans(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction, "VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED$GATE", adjust="tukey")
+#cld(VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED_AOV_interaction_leastsquares_gate, alpha=0.05, Letters=letters)
 
 ```
 
 ## Summary Statistics Day 50 
 
-```{r summary_stats, echo=TRUE}
+```{r summary_stats_2, echo=TRUE}
 
 # Summary Statistics for Percentages 
 total_viabaility_statistics_day50 <- summarySE(data=VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED, "PERCENT_OF_THIS_PLOT", groupvars=c("GROUP", "GATE","FAMILY"))
