@@ -34,6 +34,8 @@ Viability_assay_GATE_KEY <- as.data.frame(Viability_assay_GATE_KEY)
 Viability_assay_GATE_KEY
 kable(Viability_assay_GATE_KEY, caption = "Table of Gate Key")
 ```
+
+
 ## Load in data for each plot
 
 ```{r load, echo=TRUE}

@@ -120,16 +120,18 @@ Viability_assay_GATE_KEY
 kable(Viability_assay_GATE_KEY, caption = "Table of Gate Key")
 ```
 
-| PLOT.NUMBER      | AXES           | GATES.CREATED.or.USED                         | PLOT.DESCRIPTION                                                                                  |
-|:-----------------|:---------------|:----------------------------------------------|:--------------------------------------------------------------------------------------------------|
-| PLOT 2           | FL1-H          | CREATED: M4                                   | M4 gate surrounds hemocytes on the plot                                                           |
-| PLOT 3           | FSC-H/SSC-H    | CREATED: P1 USED: M4                          | P1 surrounds all hemocytes                                                                        |
-| PLOT4            | FSC-H/SSC-H    | CREATED: E1,E3; USED: P1 (IN M4 IN ALL))      | E1 surrounds all granular hemocytes, E3 surrounds all agranular hemocytes                         |
-| PLOT 5           | FSC-H/SSC-H    | USED: P1, V1-R                                | Shows hemocytes in P1 with the dead hemocytes removed                                             |
-| PLOT 9           | FL3-A          | USED: E1 in (P1 in (M4in all)) EXCEPT V1-R    | Shows LIVE granular hemocytes (dead removed)                                                      |
-| PLOT 10          | FL3-A          | USED: E3 in (p1 in ( M4 in all)), EXCEPT V1-R | Shows LIVE agranular hemocytes (dead removed)                                                     |
-| PLOT 12          | FL3-A          | CREATED: V1-R, V1-L; USED: P1 in all          | Shows all hemocytes that fluoresce with PI, but only those to the right of vertical gate are dead |
-| \#\# Load in dat | a for each plo | t                                             |                                                                                                   |
+| PLOT.NUMBER | AXES        | GATES.CREATED.or.USED                         | PLOT.DESCRIPTION                                                                                  |
+|:------------|:------------|:----------------------------------------------|:--------------------------------------------------------------------------------------------------|
+| PLOT 2      | FL1-H       | CREATED: M4                                   | M4 gate surrounds hemocytes on the plot                                                           |
+| PLOT 3      | FSC-H/SSC-H | CREATED: P1 USED: M4                          | P1 surrounds all hemocytes                                                                        |
+| PLOT4       | FSC-H/SSC-H | CREATED: E1,E3; USED: P1 (IN M4 IN ALL))      | E1 surrounds all granular hemocytes, E3 surrounds all agranular hemocytes                         |
+| PLOT 5      | FSC-H/SSC-H | USED: P1, V1-R                                | Shows hemocytes in P1 with the dead hemocytes removed                                             |
+| PLOT 9      | FL3-A       | USED: E1 in (P1 in (M4in all)) EXCEPT V1-R    | Shows LIVE granular hemocytes (dead removed)                                                      |
+| PLOT 10     | FL3-A       | USED: E3 in (p1 in ( M4 in all)), EXCEPT V1-R | Shows LIVE agranular hemocytes (dead removed)                                                     |
+| PLOT 12     | FL3-A       | CREATED: V1-R, V1-L; USED: P1 in all          | Shows all hemocytes that fluoresce with PI, but only those to the right of vertical gate are dead |
+
+Load in data for each plot
+--------------------------
 
 ``` r
 #Load in the Data for each plot on a separate spreadsheet
