@@ -244,12 +244,24 @@ VI_Percent_total_hemocytes_BAD_NOT_REMOVED
 ![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_total_hemocytes-1.png)
 
 ``` r
+ggsave(filename = "./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf", plot = VI_Percent_total_hemocytes_BAD_NOT_REMOVED)
+```
+
+    ## Saving 7 x 5 in image
+
+``` r
+knitr::include_graphics("./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf")
+```
+
+![](./Figures/VI_Percent_total_hemocytes_BAD_NOT_REMOVED.pdf)
+
+``` r
 VI_Percent_total_hemocytes_BAD_REMOVED <- ggplot(data= VI_PLOT2_hemocytes_BAD_REMOVED, aes(x=FAMILY, y=M4_PERCENT_OF_THIS_PLOT, color=GROUP, by=GROUP)) + geom_boxplot() + ggtitle("Percent of Hemocyte Events in Total Sample Events \nLow Quality Removed") +
   xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 VI_Percent_total_hemocytes_BAD_REMOVED
 ```
 
-![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_total_hemocytes-2.png)
+![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/percent_total_hemocytes-3.png)
 
 Percent Granular Hemocytes out of all hemocytes
 -----------------------------------------------
