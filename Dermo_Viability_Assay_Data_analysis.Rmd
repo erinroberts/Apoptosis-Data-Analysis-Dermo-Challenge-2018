@@ -20,12 +20,22 @@ library(dplyr)
 library(car)
 library(lsmeans)
 library(rgr)
-library(multcompView)
+# library(multcompView) not available in 3.5.1
 library(Rmisc)
+library(knitr)
 ```
 
 # VIABILITY ASSAY ANALYSIS 
 
+## Key for GATE Names used in Analysis 
+
+#Load in Data for GATE_KEY
+```{r load_ley, echo=TRUE}
+Viability_assay_GATE_KEY <- read.csv("../ANALYSIS_CSVs/VIABILITY_ASSAY/Viability_assay_GATE_KEY.csv",header=TRUE, stringsAsFactors = FALSE)
+Viability_assay_GATE_KEY <- as.data.frame(Viability_assay_GATE_KEY)
+Viability_assay_GATE_KEY
+kable(Viability_assay_GATE_KEY, caption = "Table of Gate Key")
+```
 ## Load in data for each plot
 
 ```{r load, echo=TRUE}
@@ -59,7 +69,7 @@ VI_PLOT12_P1_PerCP$V1_L_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PL
 VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT12_P1_PerCP$V1_R_PERCENT_OF_THIS_PLOT))
 VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", VI_PLOT4_restructured$PERCENT_OF_THIS_PLOT))
 
-# Load in Data for the samples to remove 
+# Load in Data for the samples to remove (these were samples with lots of bacterial contamination and/or few hemocytes)
 Viability_Samples_Remove <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_SAMPLES_REMOVE.csv", header=TRUE)
 
 # Data Frame with bad samples removed
