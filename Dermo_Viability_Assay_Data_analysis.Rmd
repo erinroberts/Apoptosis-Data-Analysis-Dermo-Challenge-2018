@@ -2,7 +2,7 @@
 title: "Dermo Viability Assay Data Analysis"
 author: "Erin Roberts"
 date: "7/27/2018"
-output: rmarkdown::github_document
+output: github_document
 
 ---
 
