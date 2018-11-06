@@ -1396,6 +1396,326 @@ cld(APOP_Live_apoptotic_combined_all_aov_interaction_leastsquare_gate, alpha=0.0
 
 ![APOP\_Live\_apoptotic\_combined\_all\_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/APOP_Live_apoptotic_combined_all_plot.png)
 
+### One Way ANOVA Combined Live Apoptotic Granular Agranular
+
+``` r
+APOP_Live_apoptotic_combined_all
+```
+
+    ##     SAMPLE_ID FAMILY FLOW_CODE ASSAY COUNT PERCENT_OF_THIS_PLOT
+    ## 1      A-01-A      A         1     A   139                 4.21
+    ## 2      A-02-A      A         2     A    20                 1.55
+    ## 3      A-03-A      A         3     A    39                 2.35
+    ## 4      A-04-A      A         4     A   101                 7.68
+    ## 5      A-05-A      A         5     A    67                 2.96
+    ## 6      A-06-A      A         6     A    22                 2.30
+    ## 7      A-08-A      A         8     A    69                 2.17
+    ## 8      A-10-A      A        10     A    40                 3.20
+    ## 9      A-11-A      A        11     A   217                 8.90
+    ## 10     A-12-A      A        12     A   206                 7.08
+    ## 11     A-13-A      A        13     A    53                 1.51
+    ## 12     B-01-A      B         1     A   106                 4.64
+    ## 13     B-02-A      B         2     A    85                 8.81
+    ## 14     B-04-A      B         4     A    43                 3.00
+    ## 15     B-05-A      B         5     A    27                 1.85
+    ## 16     B-07-A      B         7     A    45                 9.39
+    ## 17     B-09-A      B         9     A    82                 2.81
+    ## 18     B-10-A      B        10     A   151                13.67
+    ## 19     B-11-A      B        11     A    76                 8.52
+    ## 20     B-12-A      B        12     A    21                 0.67
+    ## 21     D-01-A      D         1     A    27                 5.57
+    ## 22     D-02-A      D         2     A    35                 6.86
+    ## 23     D-06-A      D         6     A    27                 5.72
+    ## 24     D-07-A      D         7     A    41                 8.25
+    ## 25     D-08-A      D         8     A    20                 2.41
+    ## 26     D-10-A      D        10     A    23                 1.09
+    ## 27     D-11-A      D        11     A    44                13.29
+    ## 28     D-12-A      D        12     A    48                 6.84
+    ## 29     E-02-A      E         2     A    12                 3.36
+    ## 30     E-03-A      E         3     A    39                18.84
+    ## 31     E-04-A      E         4     A    20                 4.23
+    ## 32     E-06-A      E         6     A    14                 3.61
+    ## 33     E-07-A      E         7     A     6                 2.03
+    ## 34     E-08-A      E         8     A     8                 1.52
+    ## 35     E-10-A      E        10     A    18                 1.22
+    ## 36     E-11-A      E        11     A     0                 0.00
+    ## 37     E-13-A      E        13     A    16                 4.61
+    ## 38     J-01-A      J         1     A     5                 0.33
+    ## 39     J-02-A      J         2     A    65                 3.76
+    ## 40     J-03-A      J         3     A     6                 2.17
+    ## 41     J-04-A      J         4     A    54                 4.63
+    ## 42     J-05-A      J         5     A    73                 6.58
+    ## 43     J-06-A      J         6     A   136                15.80
+    ## 44     J-07-A      J         7     A    52                 6.30
+    ## 45     J-08-A      J         8     A    67                14.02
+    ## 46     J-10-A      J        10     A    56                 7.35
+    ## 47     J-11-A      J        11     A    60                11.21
+    ## 48     J-13-A      J        13     A    65                12.04
+    ## 49     L-01-A      L         1     A    10                 0.45
+    ## 50     L-02-A      L         2     A    14                 2.11
+    ## 51     L-03-A      L         3     A    23                 3.38
+    ## 52     L-04-A      L         4     A    22                 3.24
+    ## 53     L-06-A      L         6     A    26                 6.36
+    ## 54     L-08-A      L         8     A     1                 0.17
+    ## 55     L-10-A      L        10     A    20                 0.72
+    ## 56     L-11-A      L        11     A     5                 0.10
+    ## 57     L-12-A      L        12     A    37                 4.84
+    ## 58     A-01-A      A         1     A   547                 4.90
+    ## 59     A-02-A      A         2     A   149                 2.25
+    ## 60     A-03-A      A         3     A   282                 3.14
+    ## 61     A-04-A      A         4     A   474                 6.58
+    ## 62     A-05-A      A         5     A   378                 4.21
+    ## 63     A-06-A      A         6     A   125                 3.88
+    ## 64     A-08-A      A         8     A    84                 2.12
+    ## 65     A-10-A      A        10     A   246                 4.21
+    ## 66     A-11-A      A        11     A   627                11.18
+    ## 67     A-12-A      A        12     A  1071                 7.77
+    ## 68     A-13-A      A        13     A   259                 4.29
+    ## 69     B-01-A      B         1     A   570                10.43
+    ## 70     B-02-A      B         2     A   633                13.74
+    ## 71     B-04-A      B         4     A   727                 8.96
+    ## 72     B-05-A      B         5     A   254                 7.73
+    ## 73     B-07-A      B         7     A   587                11.72
+    ## 74     B-09-A      B         9     A   344                 9.28
+    ## 75     B-10-A      B        10     A   637                12.63
+    ## 76     B-11-A      B        11     A   461                14.52
+    ## 77     B-12-A      B        12     A   262                 6.34
+    ## 78     D-01-A      D         1     A   179                 6.92
+    ## 79     D-02-A      D         2     A   230                 9.45
+    ## 80     D-06-A      D         6     A   285                 7.43
+    ## 81     D-07-A      D         7     A   143                15.63
+    ## 82     D-08-A      D         8     A   166                 6.15
+    ## 83     D-10-A      D        10     A   115                 4.03
+    ## 84     D-11-A      D        11     A    62                 6.62
+    ## 85     D-12-A      D        12     A   173                 7.25
+    ## 86     E-02-A      E         2     A    72                 7.87
+    ## 87     E-03-A      E         3     A   146                 9.78
+    ## 88     E-04-A      E         4     A   107                 7.87
+    ## 89     E-06-A      E         6     A    50                 3.74
+    ## 90     E-07-A      E         7     A    71                 3.49
+    ## 91     E-08-A      E         8     A    53                 2.81
+    ## 92     E-10-A      E        10     A    79                 2.57
+    ## 93     E-11-A      E        11     A    20                 1.35
+    ## 94     E-13-A      E        13     A   133                 5.99
+    ## 95     J-01-A      J         1     A    76                 1.17
+    ## 96     J-02-A      J         2     A   230                 5.13
+    ## 97     J-03-A      J         3     A    46                 3.77
+    ## 98     J-04-A      J         4     A    87                 5.71
+    ## 99     J-05-A      J         5     A   167                 9.11
+    ## 100    J-06-A      J         6     A   106                 9.01
+    ## 101    J-07-A      J         7     A   153                 6.61
+    ## 102    J-08-A      J         8     A   187                 7.81
+    ## 103    J-10-A      J        10     A   293                10.35
+    ## 104    J-11-A      J        11     A   283                 6.51
+    ## 105    J-13-A      J        13     A   247                10.11
+    ## 106    L-01-A      L         1     A    65                 2.79
+    ## 107    L-02-A      L         2     A    72                 1.63
+    ## 108    L-03-A      L         3     A   152                 7.67
+    ## 109    L-04-A      L         4     A    95                 5.15
+    ## 110    L-06-A      L         6     A   157                 6.87
+    ## 111    L-08-A      L         8     A    17                 0.35
+    ## 112    L-10-A      L        10     A    34                 0.25
+    ## 113    L-11-A      L        11     A     6                 0.03
+    ## 114    L-12-A      L        12     A   211                 8.38
+    ##              PLOT     GROUP OYTER_ID  GATE    Arcsine
+    ## 1   PLOT7_FL1-FL3 treatment    A-142 Q1_LR 0.20665052
+    ## 2   PLOT7_FL1-FL3 treatment    A-147 Q1_LR 0.12482288
+    ## 3   PLOT7_FL1-FL3 treatment    A-152 Q1_LR 0.15390395
+    ## 4   PLOT7_FL1-FL3 treatment    A-158 Q1_LR 0.28080388
+    ## 5   PLOT7_FL1-FL3 treatment    A-163 Q1_LR 0.17290678
+    ## 6   PLOT7_FL1-FL3 treatment    A-166 Q1_LR 0.15224496
+    ## 7   PLOT7_FL1-FL3 treatment    A-180 Q1_LR 0.14784724
+    ## 8   PLOT7_FL1-FL3 treatment    A-189 Q1_LR 0.17985350
+    ## 9   PLOT7_FL1-FL3   control     A-15 Q1_LR 0.30294111
+    ## 10  PLOT7_FL1-FL3   control     A-23 Q1_LR 0.26932693
+    ## 11  PLOT7_FL1-FL3   control     A-36 Q1_LR 0.12319343
+    ## 12  PLOT7_FL1-FL3 treatment    B-141 Q1_LR 0.21710818
+    ## 13  PLOT7_FL1-FL3 treatment    B-146 Q1_LR 0.30135712
+    ## 14  PLOT7_FL1-FL3 treatment    B-155 Q1_LR 0.17408301
+    ## 15  PLOT7_FL1-FL3 treatment    B-159 Q1_LR 0.13643761
+    ## 16  PLOT7_FL1-FL3 treatment    B-171 Q1_LR 0.31144146
+    ## 17  PLOT7_FL1-FL3 treatment    B-183 Q1_LR 0.16842571
+    ## 18  PLOT7_FL1-FL3 treatment    B-188 Q1_LR 0.37871802
+    ## 19  PLOT7_FL1-FL3   control     B-14 Q1_LR 0.29620271
+    ## 20  PLOT7_FL1-FL3   control     B-20 Q1_LR 0.08194521
+    ## 21  PLOT7_FL1-FL3 treatment    D-141 Q1_LR 0.23825623
+    ## 22  PLOT7_FL1-FL3 treatment    D-147 Q1_LR 0.26500699
+    ## 23  PLOT7_FL1-FL3 treatment    D-168 Q1_LR 0.24150602
+    ## 24  PLOT7_FL1-FL3 treatment    D-171 Q1_LR 0.29133177
+    ## 25  PLOT7_FL1-FL3 treatment    D-177 Q1_LR 0.15587216
+    ## 26  PLOT7_FL1-FL3 treatment    D-186 Q1_LR 0.10459367
+    ## 27  PLOT7_FL1-FL3   control     D-14 Q1_LR 0.37315436
+    ## 28  PLOT7_FL1-FL3   control     D-24 Q1_LR 0.26461111
+    ## 29  PLOT7_FL1-FL3 treatment    E-147 Q1_LR 0.18434536
+    ## 30  PLOT7_FL1-FL3 treatment    E-152 Q1_LR 0.44898426
+    ## 31  PLOT7_FL1-FL3 treatment    E-155 Q1_LR 0.20714792
+    ## 32  PLOT7_FL1-FL3 treatment    E-166 Q1_LR 0.19116215
+    ## 33  PLOT7_FL1-FL3 treatment    E-169 Q1_LR 0.14296458
+    ## 34  PLOT7_FL1-FL3 treatment    E-176 Q1_LR 0.12360277
+    ## 35  PLOT7_FL1-FL3 treatment    E-187 Q1_LR 0.11067944
+    ## 36  PLOT7_FL1-FL3   control     E-13 Q1_LR 0.00000000
+    ## 37  PLOT7_FL1-FL3   control     E-39 Q1_LR 0.21639398
+    ## 38  PLOT7_FL1-FL3 treatment    J-144 Q1_LR 0.05747727
+    ## 39  PLOT7_FL1-FL3 treatment    J-148 Q1_LR 0.19514338
+    ## 40  PLOT7_FL1-FL3 treatment    J-151 Q1_LR 0.14784724
+    ## 41  PLOT7_FL1-FL3 treatment    J-155 Q1_LR 0.21687036
+    ## 42  PLOT7_FL1-FL3 treatment    J-165 Q1_LR 0.25941493
+    ## 43  PLOT7_FL1-FL3 treatment    J-168 Q1_LR 0.40878217
+    ## 44  PLOT7_FL1-FL3 treatment    J-172 Q1_LR 0.25371113
+    ## 45  PLOT7_FL1-FL3 treatment    J-177 Q1_LR 0.38378511
+    ## 46  PLOT7_FL1-FL3 treatment    J-188 Q1_LR 0.27454482
+    ## 47  PLOT7_FL1-FL3   control     J-18 Q1_LR 0.34140717
+    ## 48  PLOT7_FL1-FL3   control     J-36 Q1_LR 0.35435662
+    ## 49  PLOT7_FL1-FL3 treatment    L-142 Q1_LR 0.06713245
+    ## 50  PLOT7_FL1-FL3 treatment    L-146 Q1_LR 0.14577413
+    ## 51  PLOT7_FL1-FL3 treatment    L-152 Q1_LR 0.18489952
+    ## 52  PLOT7_FL1-FL3 treatment    L-157 Q1_LR 0.18098645
+    ## 53  PLOT7_FL1-FL3 treatment    L-168 Q1_LR 0.25494316
+    ## 54  PLOT7_FL1-FL3 treatment    L-177 Q1_LR 0.04124275
+    ## 55  PLOT7_FL1-FL3 treatment    L-187 Q1_LR 0.08495497
+    ## 56  PLOT7_FL1-FL3   control     L-20 Q1_LR 0.03162805
+    ## 57  PLOT7_FL1-FL3   control     L-24 Q1_LR 0.22181447
+    ## 58  PLOT4_FL1-FL3 treatment    A-142 Q2_LR 0.22320827
+    ## 59  PLOT4_FL1-FL3 treatment    A-147 Q2_LR 0.15056827
+    ## 60  PLOT4_FL1-FL3 treatment    A-152 Q2_LR 0.17814115
+    ## 61  PLOT4_FL1-FL3 treatment    A-158 Q2_LR 0.25941493
+    ## 62  PLOT4_FL1-FL3 treatment    A-163 Q2_LR 0.20665052
+    ## 63  PLOT4_FL1-FL3 treatment    A-166 Q2_LR 0.19827371
+    ## 64  PLOT4_FL1-FL3 treatment    A-180 Q2_LR 0.14612163
+    ## 65  PLOT4_FL1-FL3 treatment    A-189 Q2_LR 0.20665052
+    ## 66  PLOT4_FL1-FL3   control     A-15 Q2_LR 0.34093144
+    ## 67  PLOT4_FL1-FL3   control     A-23 Q2_LR 0.28248935
+    ## 68  PLOT4_FL1-FL3   control     A-36 Q2_LR 0.20863342
+    ## 69  PLOT4_FL1-FL3 treatment    B-141 Q2_LR 0.32885025
+    ## 70  PLOT4_FL1-FL3 treatment    B-146 Q2_LR 0.37973575
+    ## 71  PLOT4_FL1-FL3 treatment    B-155 Q2_LR 0.30399310
+    ## 72  PLOT4_FL1-FL3 treatment    B-159 Q2_LR 0.28174136
+    ## 73  PLOT4_FL1-FL3 treatment    B-171 Q2_LR 0.34941142
+    ## 74  PLOT4_FL1-FL3 treatment    B-183 Q2_LR 0.30955091
+    ## 75  PLOT4_FL1-FL3 treatment    B-188 Q2_LR 0.36332818
+    ## 76  PLOT4_FL1-FL3   control     B-14 Q2_LR 0.39093299
+    ## 77  PLOT4_FL1-FL3   control     B-20 Q2_LR 0.25453309
+    ## 78  PLOT4_FL1-FL3 treatment    D-141 Q2_LR 0.26619144
+    ## 79  PLOT4_FL1-FL3 treatment    D-147 Q2_LR 0.31246848
+    ## 80  PLOT4_FL1-FL3 treatment    D-168 Q2_LR 0.27607383
+    ## 81  PLOT4_FL1-FL3 treatment    D-171 Q2_LR 0.40644663
+    ## 82  PLOT4_FL1-FL3 treatment    D-177 Q2_LR 0.25060689
+    ## 83  PLOT4_FL1-FL3 treatment    D-186 Q2_LR 0.20212202
+    ## 84  PLOT4_FL1-FL3   control     D-14 Q2_LR 0.26022047
+    ## 85  PLOT4_FL1-FL3   control     D-24 Q2_LR 0.27262274
+    ## 86  PLOT4_FL1-FL3 treatment    E-147 Q2_LR 0.28435166
+    ## 87  PLOT4_FL1-FL3 treatment    E-152 Q2_LR 0.31806575
+    ## 88  PLOT4_FL1-FL3 treatment    E-155 Q2_LR 0.28435166
+    ## 89  PLOT4_FL1-FL3 treatment    E-166 Q2_LR 0.19461702
+    ## 90  PLOT4_FL1-FL3 treatment    E-169 Q2_LR 0.18791949
+    ## 91  PLOT4_FL1-FL3 treatment    E-176 Q2_LR 0.16842571
+    ## 92  PLOT4_FL1-FL3 treatment    E-187 Q2_LR 0.16100693
+    ## 93  PLOT4_FL1-FL3   control     E-13 Q2_LR 0.11645253
+    ## 94  PLOT4_FL1-FL3   control     E-39 Q2_LR 0.24725644
+    ## 95  PLOT4_FL1-FL3 treatment    J-144 Q2_LR 0.10837858
+    ## 96  PLOT4_FL1-FL3 treatment    J-148 Q2_LR 0.22847769
+    ## 97  PLOT4_FL1-FL3 treatment    J-151 Q2_LR 0.19540606
+    ## 98  PLOT4_FL1-FL3 treatment    J-155 Q2_LR 0.24129063
+    ## 99  PLOT4_FL1-FL3 treatment    J-165 Q2_LR 0.30660925
+    ## 100 PLOT4_FL1-FL3 treatment    J-168 Q2_LR 0.30486732
+    ## 101 PLOT4_FL1-FL3 treatment    J-172 Q2_LR 0.26001930
+    ## 102 PLOT4_FL1-FL3 treatment    J-177 Q2_LR 0.28323558
+    ## 103 PLOT4_FL1-FL3 treatment    J-188 Q2_LR 0.32753934
+    ## 104 PLOT4_FL1-FL3   control     J-18 Q2_LR 0.25799975
+    ## 105 PLOT4_FL1-FL3   control     J-36 Q2_LR 0.32357943
+    ## 106 PLOT4_FL1-FL3 treatment    L-142 Q2_LR 0.16781955
+    ## 107 PLOT4_FL1-FL3 treatment    L-146 Q2_LR 0.12802086
+    ## 108 PLOT4_FL1-FL3 treatment    L-152 Q2_LR 0.28061604
+    ## 109 PLOT4_FL1-FL3 treatment    L-157 Q2_LR 0.22893056
+    ## 110 PLOT4_FL1-FL3 treatment    L-168 Q2_LR 0.26520473
+    ## 111 PLOT4_FL1-FL3 treatment    L-177 Q2_LR 0.05919536
+    ## 112 PLOT4_FL1-FL3 treatment    L-187 Q2_LR 0.05002086
+    ## 113 PLOT4_FL1-FL3   control     L-20 Q2_LR 0.01732137
+    ## 114 PLOT4_FL1-FL3   control     L-24 Q2_LR 0.29368593
+
+``` r
+# Family A 
+APOP_Live_apoptotic_combined_all_A <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="A")
+APOP_Live_apoptotic_combined_all_A_aov <- aov(APOP_Live_apoptotic_combined_all_A$Arcsine ~ APOP_Live_apoptotic_combined_all_A$GROUP, data=APOP_Live_apoptotic_combined_all_A)
+summary(APOP_Live_apoptotic_combined_all_A_aov)
+```
+
+    ##                                          Df  Sum Sq  Mean Sq F value
+    ## APOP_Live_apoptotic_combined_all_A$GROUP  1 0.02008 0.020078   6.943
+    ## Residuals                                20 0.05783 0.002892        
+    ##                                          Pr(>F)  
+    ## APOP_Live_apoptotic_combined_all_A$GROUP 0.0159 *
+    ## Residuals                                        
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Family B 
+APOP_Live_apoptotic_combined_all_B <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="B")
+APOP_Live_apoptotic_combined_all_B_aov <- aov(APOP_Live_apoptotic_combined_all_B$Arcsine ~ APOP_Live_apoptotic_combined_all_B$GROUP, data=APOP_Live_apoptotic_combined_all_B)
+summary(APOP_Live_apoptotic_combined_all_B_aov)
+```
+
+    ##                                          Df  Sum Sq  Mean Sq F value
+    ## APOP_Live_apoptotic_combined_all_B$GROUP  1 0.00282 0.002820   0.335
+    ## Residuals                                16 0.13458 0.008411        
+    ##                                          Pr(>F)
+    ## APOP_Live_apoptotic_combined_all_B$GROUP  0.571
+    ## Residuals
+
+``` r
+# Family D
+APOP_Live_apoptotic_combined_all_D <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="D")
+APOP_Live_apoptotic_combined_all_D_aov <- aov(APOP_Live_apoptotic_combined_all_D$Arcsine ~ APOP_Live_apoptotic_combined_all_D$GROUP, data=APOP_Live_apoptotic_combined_all_D)
+summary(APOP_Live_apoptotic_combined_all_D_aov)
+```
+
+    ##                                          Df  Sum Sq  Mean Sq F value
+    ## APOP_Live_apoptotic_combined_all_D$GROUP  1 0.00524 0.005236   1.012
+    ## Residuals                                14 0.07247 0.005176        
+    ##                                          Pr(>F)
+    ## APOP_Live_apoptotic_combined_all_D$GROUP  0.332
+    ## Residuals
+
+``` r
+# Family E
+APOP_Live_apoptotic_combined_all_E <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="E")
+APOP_Live_apoptotic_combined_all_E_aov <- aov(APOP_Live_apoptotic_combined_all_E$Arcsine ~ APOP_Live_apoptotic_combined_all_E$GROUP, data=APOP_Live_apoptotic_combined_all_E)
+summary(APOP_Live_apoptotic_combined_all_E_aov)
+```
+
+    ##                                          Df  Sum Sq  Mean Sq F value
+    ## APOP_Live_apoptotic_combined_all_E$GROUP  1 0.01516 0.015159   1.677
+    ## Residuals                                16 0.14461 0.009038        
+    ##                                          Pr(>F)
+    ## APOP_Live_apoptotic_combined_all_E$GROUP  0.214
+    ## Residuals
+
+``` r
+# Family J
+APOP_Live_apoptotic_combined_all_J <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="J")
+APOP_Live_apoptotic_combined_all_J_aov <- aov(APOP_Live_apoptotic_combined_all_J$Arcsine ~ APOP_Live_apoptotic_combined_all_J$GROUP, data=APOP_Live_apoptotic_combined_all_J)
+summary(APOP_Live_apoptotic_combined_all_J_aov)
+```
+
+    ##                                          Df  Sum Sq Mean Sq F value Pr(>F)
+    ## APOP_Live_apoptotic_combined_all_J$GROUP  1 0.01693 0.01693   2.457  0.133
+    ## Residuals                                20 0.13780 0.00689
+
+``` r
+# Family L 
+APOP_Live_apoptotic_combined_all_L <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="L")
+APOP_Live_apoptotic_combined_all_L_aov <- aov(APOP_Live_apoptotic_combined_all_L$Arcsine ~ APOP_Live_apoptotic_combined_all_L$GROUP, data=APOP_Live_apoptotic_combined_all_L)
+summary(APOP_Live_apoptotic_combined_all_L_aov)
+```
+
+    ##                                          Df  Sum Sq  Mean Sq F value
+    ## APOP_Live_apoptotic_combined_all_L$GROUP  1 0.00043 0.000428   0.046
+    ## Residuals                                16 0.14873 0.009296        
+    ##                                          Pr(>F)
+    ## APOP_Live_apoptotic_combined_all_L$GROUP  0.833
+    ## Residuals
+
 % DEAD apoptotic granular hemocytes (PLOT4, Q2-UR)
 --------------------------------------------------
 
@@ -2579,8 +2899,370 @@ cld(combined_dead_apoptotic_agranular_granular_aov_interaction_leastsquares_gate
 
 ![combined\_dead\_apoptotic\_agranular\_granular\_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/combined_dead_apoptotic_agranular_granular_plot.png)
 
-Percent necrotic granular hemocytes (PLOT 4, Q2-UL)
----------------------------------------------------
+### Combined Dead Apoptotic Granular Agranular
+
+``` r
+combined_dead_apoptotic_agranular_granular
+```
+
+    ##     SAMPLE_ID FAMILY FLOW_CODE ASSAY COUNT PERCENT_OF_THIS_PLOT
+    ## 1      A-01-A      A         1     A   169                 1.51
+    ## 2      A-02-A      A         2     A    49                 0.74
+    ## 3      A-03-A      A         3     A    77                 0.86
+    ## 4      A-04-A      A         4     A   186                 2.58
+    ## 5      A-05-A      A         5     A    82                 0.91
+    ## 6      A-06-A      A         6     A    66                 2.05
+    ## 7      A-08-A      A         8     A    54                 1.36
+    ## 8      A-09-A      A         9     A   123                 1.71
+    ## 9      A-10-A      A        10     A   112                 1.91
+    ## 10     A-11-A      A        11     A   288                 5.14
+    ## 11     A-12-A      A        12     A   352                 2.55
+    ## 12     A-13-A      A        13     A   126                 2.09
+    ## 13     B-01-A      B         1     A   175                 3.20
+    ## 14     B-02-A      B         2     A   119                 2.58
+    ## 15     B-04-A      B         4     A   478                 5.89
+    ## 16     B-05-A      B         5     A   184                 5.60
+    ## 17     B-07-A      B         7     A   276                 5.51
+    ## 18     B-08-A      B         8     A   353                 8.00
+    ## 19     B-09-A      B         9     A   111                 3.00
+    ## 20     B-10-A      B        10     A   231                 4.58
+    ## 21     B-11-A      B        11     A   237                 7.46
+    ## 22     B-12-A      B        12     A   172                 4.16
+    ## 23     D-01-A      D         1     A   103                 3.98
+    ## 24     D-02-A      D         2     A    73                 3.00
+    ## 25     D-04-A      D         4     A    79                 2.55
+    ## 26     D-06-A      D         6     A    93                 2.42
+    ## 27     D-07-A      D         7     A    29                 3.17
+    ## 28     D-08-A      D         8     A    94                 3.48
+    ## 29     D-10-A      D        10     A    39                 1.37
+    ## 30     D-11-A      D        11     A    12                 1.28
+    ## 31     D-12-A      D        12     A    42                 1.76
+    ## 32     E-02-A      E         2     A    57                 6.23
+    ## 33     E-03-A      E         3     A    20                 1.34
+    ## 34     E-04-A      E         4     A    72                 5.29
+    ## 35     E-05-A      E         5     A    27                 0.93
+    ## 36     E-06-A      E         6     A    27                 2.02
+    ## 37     E-07-A      E         7     A    24                 1.18
+    ## 38     E-08-A      E         8     A    15                 0.79
+    ## 39     E-09-A      E         9     A    11                 0.66
+    ## 40     E-10-A      E        10     A    18                 0.58
+    ## 41     E-11-A      E        11     A    79                 5.33
+    ## 42     E-13-A      E        13     A    82                 3.69
+    ## 43     J-01-A      J         1     A    46                 0.71
+    ## 44     J-02-A      J         2     A    85                 1.90
+    ## 45     J-03-A      J         3     A    12                 0.98
+    ## 46     J-04-A      J         4     A   185                12.15
+    ## 47     J-05-A      J         5     A   141                 7.69
+    ## 48     J-06-A      J         6     A    38                 3.23
+    ## 49     J-07-A      J         7     A    30                 1.30
+    ## 50     J-08-A      J         8     A    50                 2.09
+    ## 51     J-09-A      J         9     A     7                 1.83
+    ## 52     J-10-A      J        10     A    85                 3.00
+    ## 53     J-11-A      J        11     A    53                 1.22
+    ## 54     J-12-A      J        12     A    35                 1.43
+    ## 55     J-13-A      J        13     A    55                 2.25
+    ## 56     L-01-A      L         1     A     2                 0.09
+    ## 57     L-02-A      L         2     A     4                 0.09
+    ## 58     L-03-A      L         3     A    47                 2.37
+    ## 59     L-04-A      L         4     A    62                 3.36
+    ## 60     L-05-A      L         5     A   157                 8.13
+    ## 61     L-06-A      L         6     A    68                 2.97
+    ## 62     L-07-A      L         7     A     1                 0.02
+    ## 63     L-08-A      L         8     A     0                 0.00
+    ## 64     L-09-A      L         9     A     0                 0.00
+    ## 65     L-10-A      L        10     A     3                 0.02
+    ## 66     L-11-A      L        11     A     0                 0.00
+    ## 67     L-12-A      L        12     A   106                 4.21
+    ## 68     L-13-A      L        13     A   125                 2.86
+    ## 69     A-01-A      A         1     A   293                 8.87
+    ## 70     A-02-A      A         2     A   119                 9.21
+    ## 71     A-03-A      A         3     A   122                 7.35
+    ## 72     A-04-A      A         4     A   265                20.15
+    ## 73     A-05-A      A         5     A   148                 6.53
+    ## 74     A-06-A      A         6     A   187                19.58
+    ## 75     A-08-A      A         8     A   199                 6.25
+    ## 76     A-09-A      A         9     A   264                26.61
+    ## 77     A-10-A      A        10     A   224                17.93
+    ## 78     A-11-A      A        11     A   639                26.20
+    ## 79     A-12-A      A        12     A   651                22.36
+    ## 80     A-13-A      A        13     A   208                 5.92
+    ## 81     B-01-A      B         1     A   177                 7.74
+    ## 82     B-02-A      B         2     A   325                33.68
+    ## 83     B-04-A      B         4     A   154                10.74
+    ## 84     B-05-A      B         5     A   437                29.97
+    ## 85     B-07-A      B         7     A   198                41.34
+    ## 86     B-08-A      B         8     A   677                41.61
+    ## 87     B-09-A      B         9     A   225                 7.71
+    ## 88     B-10-A      B        10     A   318                28.78
+    ## 89     B-11-A      B        11     A   292                32.74
+    ## 90     B-12-A      B        12     A   315                10.07
+    ## 91     D-01-A      D         1     A   129                26.60
+    ## 92     D-02-A      D         2     A   126                24.71
+    ## 93     D-04-A      D         4     A   119                13.51
+    ## 94     D-06-A      D         6     A   148                31.36
+    ## 95     D-07-A      D         7     A   188                37.83
+    ## 96     D-08-A      D         8     A   243                29.31
+    ## 97     D-10-A      D        10     A   156                 7.41
+    ## 98     D-11-A      D        11     A   100                30.21
+    ## 99     D-12-A      D        12     A   155                22.08
+    ## 100    E-02-A      E         2     A   103                28.85
+    ## 101    E-03-A      E         3     A    40                19.32
+    ## 102    E-04-A      E         4     A   131                27.70
+    ## 103    E-05-A      E         5     A    36                 4.54
+    ## 104    E-06-A      E         6     A    78                20.10
+    ## 105    E-07-A      E         7     A    39                13.22
+    ## 106    E-08-A      E         8     A    62                11.81
+    ## 107    E-09-A      E         9     A    30                 7.26
+    ## 108    E-10-A      E        10     A    33                 2.24
+    ## 109    E-11-A      E        11     A   102                18.28
+    ## 110    E-13-A      E        13     A    77                22.19
+    ## 111    J-01-A      J         1     A    48                 3.20
+    ## 112    J-02-A      J         2     A   279                16.12
+    ## 113    J-03-A      J         3     A    26                 9.39
+    ## 114    J-04-A      J         4     A   376                32.22
+    ## 115    J-05-A      J         5     A   264                23.81
+    ## 116    J-06-A      J         6     A   190                22.07
+    ## 117    J-07-A      J         7     A   178                21.58
+    ## 118    J-08-A      J         8     A   120                25.10
+    ## 119    J-09-A      J         9     A    14                12.28
+    ## 120    J-10-A      J        10     A   159                20.87
+    ## 121    J-11-A      J        11     A    68                12.71
+    ## 122    J-12-A      J        12     A   134                22.45
+    ## 123    J-13-A      J        13     A   165                30.56
+    ## 124    L-01-A      L         1     A    56                 2.50
+    ## 125    L-02-A      L         2     A    11                 1.66
+    ## 126    L-03-A      L         3     A    90                13.22
+    ## 127    L-04-A      L         4     A    66                 9.72
+    ## 128    L-05-A      L         5     A    75                21.07
+    ## 129    L-06-A      L         6     A   100                24.45
+    ## 130    L-07-A      L         7     A     5                 0.34
+    ## 131    L-08-A      L         8     A     2                 0.34
+    ## 132    L-09-A      L         9     A     1                 0.04
+    ## 133    L-10-A      L        10     A    32                 1.16
+    ## 134    L-11-A      L        11     A     4                 0.08
+    ## 135    L-12-A      L        12     A   151                19.74
+    ## 136    L-13-A      L        13     A   111                15.04
+    ##              PLOT     GROUP OYTER_ID  GATE    Arcsine
+    ## 1   PLOT4_FL1-FL3 treatment    A-142 Q2_UR 0.12319343
+    ## 2   PLOT4_FL1-FL3 treatment    A-147 Q2_UR 0.08612970
+    ## 3   PLOT4_FL1-FL3 treatment    A-152 Q2_UR 0.09286962
+    ## 4   PLOT4_FL1-FL3 treatment    A-158 Q2_UR 0.16132261
+    ## 5   PLOT4_FL1-FL3 treatment    A-163 Q2_UR 0.09553920
+    ## 6   PLOT4_FL1-FL3 treatment    A-166 Q2_UR 0.14367197
+    ## 7   PLOT4_FL1-FL3 treatment    A-180 Q2_UR 0.11688501
+    ## 8   PLOT4_FL1-FL3 treatment    A-186 Q2_UR 0.13114255
+    ## 9   PLOT4_FL1-FL3 treatment    A-189 Q2_UR 0.13864652
+    ## 10  PLOT4_FL1-FL3   control     A-15 Q2_UR 0.22870423
+    ## 11  PLOT4_FL1-FL3   control     A-23 Q2_UR 0.16037377
+    ## 12  PLOT4_FL1-FL3   control     A-36 Q2_UR 0.14507670
+    ## 13  PLOT4_FL1-FL3 treatment    B-141 Q2_UR 0.17985350
+    ## 14  PLOT4_FL1-FL3 treatment    B-146 Q2_UR 0.16132261
+    ## 15  PLOT4_FL1-FL3 treatment    B-155 Q2_UR 0.24514111
+    ## 16  PLOT4_FL1-FL3 treatment    B-159 Q2_UR 0.23890945
+    ## 17  PLOT4_FL1-FL3 treatment    B-171 Q2_UR 0.23694480
+    ## 18  PLOT4_FL1-FL3 treatment    B-176 Q2_UR 0.28675655
+    ## 19  PLOT4_FL1-FL3 treatment    B-183 Q2_UR 0.17408301
+    ## 20  PLOT4_FL1-FL3 treatment    B-188 Q2_UR 0.21567757
+    ## 21  PLOT4_FL1-FL3   control     B-14 Q2_UR 0.27664526
+    ## 22  PLOT4_FL1-FL3   control     B-20 Q2_UR 0.20540206
+    ## 23  PLOT4_FL1-FL3 treatment    D-141 Q2_UR 0.20084700
+    ## 24  PLOT4_FL1-FL3 treatment    D-147 Q2_UR 0.17408301
+    ## 25  PLOT4_FL1-FL3 treatment    D-158 Q2_UR 0.16037377
+    ## 26  PLOT4_FL1-FL3 treatment    D-168 Q2_UR 0.15619786
+    ## 27  PLOT4_FL1-FL3 treatment    D-171 Q2_UR 0.17899929
+    ## 28  PLOT4_FL1-FL3 treatment    D-177 Q2_UR 0.18764686
+    ## 29  PLOT4_FL1-FL3 treatment    D-186 Q2_UR 0.11731592
+    ## 30  PLOT4_FL1-FL3   control     D-14 Q2_UR 0.11337985
+    ## 31  PLOT4_FL1-FL3   control     D-24 Q2_UR 0.13305726
+    ## 32  PLOT4_FL1-FL3 treatment    E-147 Q2_UR 0.25226683
+    ## 33  PLOT4_FL1-FL3 treatment    E-152 Q2_UR 0.11601847
+    ## 34  PLOT4_FL1-FL3 treatment    E-155 Q2_UR 0.23207768
+    ## 35  PLOT4_FL1-FL3 treatment    E-159 Q2_UR 0.09658661
+    ## 36  PLOT4_FL1-FL3 treatment    E-166 Q2_UR 0.14260960
+    ## 37  PLOT4_FL1-FL3 treatment    E-169 Q2_UR 0.10884258
+    ## 38  PLOT4_FL1-FL3 treatment    E-176 Q2_UR 0.08899939
+    ## 39  PLOT4_FL1-FL3 treatment    E-182 Q2_UR 0.08133001
+    ## 40  PLOT4_FL1-FL3 treatment    E-187 Q2_UR 0.07623154
+    ## 41  PLOT4_FL1-FL3   control     E-13 Q2_UR 0.23296961
+    ## 42  PLOT4_FL1-FL3   control     E-39 Q2_UR 0.19329516
+    ## 43  PLOT4_FL1-FL3 treatment    J-144 Q2_UR 0.08436153
+    ## 44  PLOT4_FL1-FL3 treatment    J-148 Q2_UR 0.13828076
+    ## 45  PLOT4_FL1-FL3 treatment    J-151 Q2_UR 0.09915736
+    ## 46  PLOT4_FL1-FL3 treatment    J-155 Q2_UR 0.35604338
+    ## 47  PLOT4_FL1-FL3 treatment    J-165 Q2_UR 0.28099160
+    ## 48  PLOT4_FL1-FL3 treatment    J-168 Q2_UR 0.18070385
+    ## 49  PLOT4_FL1-FL3 treatment    J-172 Q2_UR 0.11426604
+    ## 50  PLOT4_FL1-FL3 treatment    J-177 Q2_UR 0.14507670
+    ## 51  PLOT4_FL1-FL3 treatment    J-184 Q2_UR 0.13569352
+    ## 52  PLOT4_FL1-FL3 treatment    J-188 Q2_UR 0.17408301
+    ## 53  PLOT4_FL1-FL3   control     J-18 Q2_UR 0.11067944
+    ## 54  PLOT4_FL1-FL3   control     J-27 Q2_UR 0.11986946
+    ## 55  PLOT4_FL1-FL3   control     J-36 Q2_UR 0.15056827
+    ## 56  PLOT4_FL1-FL3 treatment    L-142 Q2_UR 0.03000450
+    ## 57  PLOT4_FL1-FL3 treatment    L-146 Q2_UR 0.03000450
+    ## 58  PLOT4_FL1-FL3 treatment    L-152 Q2_UR 0.15456272
+    ## 59  PLOT4_FL1-FL3 treatment    L-157 Q2_UR 0.18434536
+    ## 60  PLOT4_FL1-FL3 treatment    L-165 Q2_UR 0.28914367
+    ## 61  PLOT4_FL1-FL3 treatment    L-168 Q2_UR 0.17320155
+    ## 62  PLOT4_FL1-FL3 treatment    L-173 Q2_UR 0.01414261
+    ## 63  PLOT4_FL1-FL3 treatment    L-177 Q2_UR 0.00000000
+    ## 64  PLOT4_FL1-FL3 treatment    L-181 Q2_UR 0.00000000
+    ## 65  PLOT4_FL1-FL3 treatment    L-187 Q2_UR 0.01414261
+    ## 66  PLOT4_FL1-FL3   control     L-20 Q2_UR 0.00000000
+    ## 67  PLOT4_FL1-FL3   control     L-24 Q2_UR 0.20665052
+    ## 68  PLOT4_FL1-FL3   control     L-38 Q2_UR 0.16993202
+    ## 69  PLOT7_FL1-FL3 treatment    A-142 Q1_UR 0.30241392
+    ## 70  PLOT7_FL1-FL3 treatment    A-147 Q1_UR 0.30834260
+    ## 71  PLOT7_FL1-FL3 treatment    A-152 Q1_UR 0.27454482
+    ## 72  PLOT7_FL1-FL3 treatment    A-158 Q1_UR 0.46551998
+    ## 73  PLOT7_FL1-FL3 treatment    A-163 Q1_UR 0.25840481
+    ## 74  PLOT7_FL1-FL3 treatment    A-166 Q1_UR 0.45837667
+    ## 75  PLOT7_FL1-FL3 treatment    A-180 Q1_UR 0.25268026
+    ## 76  PLOT7_FL1-FL3 treatment    A-186 Q1_UR 0.54199817
+    ## 77  PLOT7_FL1-FL3 treatment    A-189 Q1_UR 0.43723732
+    ## 78  PLOT7_FL1-FL3   control     A-15 Q1_UR 0.53734778
+    ## 79  PLOT7_FL1-FL3   control     A-23 Q1_UR 0.49253787
+    ## 80  PLOT7_FL1-FL3   control     A-36 Q1_UR 0.24577747
+    ## 81  PLOT7_FL1-FL3 treatment    B-141 Q1_UR 0.28192853
+    ## 82  PLOT7_FL1-FL3 treatment    B-146 Q1_UR 0.61915193
+    ## 83  PLOT7_FL1-FL3 treatment    B-155 Q1_UR 0.33388865
+    ## 84  PLOT7_FL1-FL3 treatment    B-159 Q1_UR 0.57931237
+    ## 85  PLOT7_FL1-FL3 treatment    B-171 Q1_UR 0.69835924
+    ## 86  PLOT7_FL1-FL3 treatment    B-176 Q1_UR 0.70109936
+    ## 87  PLOT7_FL1-FL3 treatment    B-183 Q1_UR 0.28136670
+    ## 88  PLOT7_FL1-FL3 treatment    B-188 Q1_UR 0.56624859
+    ## 89  PLOT7_FL1-FL3   control     B-14 Q1_UR 0.60917223
+    ## 90  PLOT7_FL1-FL3   control     B-20 Q1_UR 0.32291541
+    ## 91  PLOT7_FL1-FL3 treatment    D-141 Q1_UR 0.54188502
+    ## 92  PLOT7_FL1-FL3 treatment    D-147 Q1_UR 0.52024362
+    ## 93  PLOT7_FL1-FL3 treatment    D-158 Q1_UR 0.37638348
+    ## 94  PLOT7_FL1-FL3 treatment    D-168 Q1_UR 0.59438580
+    ## 95  PLOT7_FL1-FL3 treatment    D-171 Q1_UR 0.66246329
+    ## 96  PLOT7_FL1-FL3 treatment    D-177 Q1_UR 0.57208603
+    ## 97  PLOT7_FL1-FL3 treatment    D-186 Q1_UR 0.27569229
+    ## 98  PLOT7_FL1-FL3   control     D-14 Q1_UR 0.58192875
+    ## 99  PLOT7_FL1-FL3   control     D-24 Q1_UR 0.48917024
+    ## 100 PLOT7_FL1-FL3 treatment    E-147 Q1_UR 0.56702139
+    ## 101 PLOT7_FL1-FL3 treatment    E-152 Q1_UR 0.45509230
+    ## 102 PLOT7_FL1-FL3 treatment    E-155 Q1_UR 0.55425255
+    ## 103 PLOT7_FL1-FL3 treatment    E-159 Q1_UR 0.21471886
+    ## 104 PLOT7_FL1-FL3 treatment    E-166 Q1_UR 0.46489644
+    ## 105 PLOT7_FL1-FL3 treatment    E-169 Q1_UR 0.37212218
+    ## 106 PLOT7_FL1-FL3 treatment    E-176 Q1_UR 0.35080810
+    ## 107 PLOT7_FL1-FL3 treatment    E-182 Q1_UR 0.27281550
+    ## 108 PLOT7_FL1-FL3 treatment    E-187 Q1_UR 0.15023076
+    ## 109 PLOT7_FL1-FL3   control     E-13 Q1_UR 0.44178212
+    ## 110 PLOT7_FL1-FL3   control     E-39 Q1_UR 0.49049505
+    ## 111 PLOT7_FL1-FL3 treatment    J-144 Q1_UR 0.17985350
+    ## 112 PLOT7_FL1-FL3 treatment    J-148 Q1_UR 0.41315101
+    ## 113 PLOT7_FL1-FL3 treatment    J-151 Q1_UR 0.31144146
+    ## 114 PLOT7_FL1-FL3 treatment    J-155 Q1_UR 0.60362019
+    ## 115 PLOT7_FL1-FL3 treatment    J-165 Q1_UR 0.50974527
+    ## 116 PLOT7_FL1-FL3 treatment    J-168 Q1_UR 0.48904969
+    ## 117 PLOT7_FL1-FL3 treatment    J-172 Q1_UR 0.48311824
+    ## 118 PLOT7_FL1-FL3 treatment    J-177 Q1_UR 0.52475271
+    ## 119 PLOT7_FL1-FL3 treatment    J-184 Q1_UR 0.35802837
+    ## 120 PLOT7_FL1-FL3 treatment    J-188 Q1_UR 0.47443615
+    ## 121 PLOT7_FL1-FL3   control     J-18 Q1_UR 0.36453070
+    ## 122 PLOT7_FL1-FL3   control     J-27 Q1_UR 0.49361712
+    ## 123 PLOT7_FL1-FL3   control     J-36 Q1_UR 0.58573378
+    ## 124 PLOT7_FL1-FL3 treatment    L-142 Q1_UR 0.15878021
+    ## 125 PLOT7_FL1-FL3 treatment    L-146 Q1_UR 0.12920014
+    ## 126 PLOT7_FL1-FL3 treatment    L-152 Q1_UR 0.37212218
+    ## 127 PLOT7_FL1-FL3 treatment    L-157 Q1_UR 0.31705441
+    ## 128 PLOT7_FL1-FL3 treatment    L-165 Q1_UR 0.47689259
+    ## 129 PLOT7_FL1-FL3 treatment    L-168 Q1_UR 0.51722429
+    ## 130 PLOT7_FL1-FL3 treatment    L-173 Q1_UR 0.05834261
+    ## 131 PLOT7_FL1-FL3 treatment    L-177 Q1_UR 0.05834261
+    ## 132 PLOT7_FL1-FL3 treatment    L-181 Q1_UR 0.02000133
+    ## 133 PLOT7_FL1-FL3 treatment    L-187 Q1_UR 0.10791262
+    ## 134 PLOT7_FL1-FL3   control     L-20 Q1_UR 0.02828804
+    ## 135 PLOT7_FL1-FL3   control     L-24 Q1_UR 0.46038963
+    ## 136 PLOT7_FL1-FL3   control     L-38 Q1_UR 0.39825922
+
+``` r
+# Family A 
+combined_dead_apoptotic_agranular_granular_A <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="A")
+combined_dead_apoptotic_agranular_granular_A_aov <- aov(combined_dead_apoptotic_agranular_granular_A$Arcsine ~ combined_dead_apoptotic_agranular_granular_A$GROUP, data=combined_dead_apoptotic_agranular_granular_A)
+summary(combined_dead_apoptotic_agranular_granular_A_aov)
+```
+
+    ##                                                    Df Sum Sq Mean Sq
+    ## combined_dead_apoptotic_agranular_granular_A$GROUP  1 0.0150 0.01504
+    ## Residuals                                          22 0.5161 0.02346
+    ##                                                    F value Pr(>F)
+    ## combined_dead_apoptotic_agranular_granular_A$GROUP   0.641  0.432
+    ## Residuals
+
+``` r
+# Family B
+combined_dead_apoptotic_agranular_granular_B <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="B")
+combined_dead_apoptotic_agranular_granular_B_aov <- aov(combined_dead_apoptotic_agranular_granular_B$Arcsine ~ combined_dead_apoptotic_agranular_granular_B$GROUP, data=combined_dead_apoptotic_agranular_granular_B)
+summary(combined_dead_apoptotic_agranular_granular_B_aov)
+```
+
+    ##                                                    Df Sum Sq Mean Sq
+    ## combined_dead_apoptotic_agranular_granular_B$GROUP  1 0.0003 0.00026
+    ## Residuals                                          18 0.6713 0.03730
+    ##                                                    F value Pr(>F)
+    ## combined_dead_apoptotic_agranular_granular_B$GROUP   0.007  0.935
+    ## Residuals
+
+``` r
+# Family D
+combined_dead_apoptotic_agranular_granular_D <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="D")
+combined_dead_apoptotic_agranular_granular_D_aov <- aov(combined_dead_apoptotic_agranular_granular_D$Arcsine ~ combined_dead_apoptotic_agranular_granular_D$GROUP, data=combined_dead_apoptotic_agranular_granular_D)
+summary(combined_dead_apoptotic_agranular_granular_D_aov)
+```
+
+    ##                                                    Df Sum Sq Mean Sq
+    ## combined_dead_apoptotic_agranular_granular_D$GROUP  1 0.0002 0.00018
+    ## Residuals                                          16 0.6873 0.04296
+    ##                                                    F value Pr(>F)
+    ## combined_dead_apoptotic_agranular_granular_D$GROUP   0.004  0.949
+    ## Residuals
+
+``` r
+# Family E
+combined_dead_apoptotic_agranular_granular_E <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="E")
+combined_dead_apoptotic_agranular_granular_E_aov <- aov(combined_dead_apoptotic_agranular_granular_E$Arcsine ~ combined_dead_apoptotic_agranular_granular_E$GROUP, data=combined_dead_apoptotic_agranular_granular_E)
+summary(combined_dead_apoptotic_agranular_granular_E_aov)
+```
+
+    ##                                                    Df Sum Sq Mean Sq
+    ## combined_dead_apoptotic_agranular_granular_E$GROUP  1 0.0232 0.02323
+    ## Residuals                                          20 0.5414 0.02707
+    ##                                                    F value Pr(>F)
+    ## combined_dead_apoptotic_agranular_granular_E$GROUP   0.858  0.365
+    ## Residuals
+
+``` r
+# Family J
+combined_dead_apoptotic_agranular_granular_J <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="J")
+combined_dead_apoptotic_agranular_granular_J_aov <- aov(combined_dead_apoptotic_agranular_granular_J$Arcsine ~ combined_dead_apoptotic_agranular_granular_J$GROUP, data=combined_dead_apoptotic_agranular_granular_J)
+summary(combined_dead_apoptotic_agranular_granular_J_aov)
+```
+
+    ##                                                    Df Sum Sq Mean Sq
+    ## combined_dead_apoptotic_agranular_granular_J$GROUP  1 0.0000 0.00001
+    ## Residuals                                          24 0.7629 0.03179
+    ##                                                    F value Pr(>F)
+    ## combined_dead_apoptotic_agranular_granular_J$GROUP       0  0.987
+    ## Residuals
+
+``` r
+# Family L 
+combined_dead_apoptotic_agranular_granular_L <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="L")
+combined_dead_apoptotic_agranular_granular_L_aov <- aov(combined_dead_apoptotic_agranular_granular_L$Arcsine ~ combined_dead_apoptotic_agranular_granular_L$GROUP, data=combined_dead_apoptotic_agranular_granular_L)
+summary(combined_dead_apoptotic_agranular_granular_L_aov)
+```
+
+    ##                                                    Df Sum Sq Mean Sq
+    ## combined_dead_apoptotic_agranular_granular_L$GROUP  1 0.0141 0.01412
+    ## Residuals                                          24 0.6631 0.02763
+    ##                                                    F value Pr(>F)
+    ## combined_dead_apoptotic_agranular_granular_L$GROUP   0.511  0.482
+    ## Residuals
 
 Percent Necrotic granular hemocytes (PLOT 4, Q2-UL)
 ---------------------------------------------------
@@ -3576,10 +4258,95 @@ cld(necrotic_granular_agranula_aov_interaction_leastsquares, alpha=0.05, Letters
     ## Confidence level used: 0.95 
     ## significance level used: alpha = 0.05
 
-![necrotic\_granular\_agranular\_combined\_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/necrotic_granular_agranular_combined_plot.png)
+![necrotic\_granular\_agranular\_combined\_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/necrotic_granular_agranular_combined_plot.png) \#\#\# One Way ANOVA of Combined Necrotic Granular and Agranular \#\#\#
 
-Combined Faceted all parameters by cell type
---------------------------------------------
+``` r
+# Family A
+necrotic_granular_agranular_combined_A <- necrotic_granular_agranular_combined %>% filter(FAMILY == "A")
+necrotic_granular_agranular_combined_A_AOV <- aov(necrotic_granular_agranular_combined_A$Arcsine ~ necrotic_granular_agranular_combined_A$GROUP, data=necrotic_granular_agranular_combined_A)
+summary(necrotic_granular_agranular_combined_A_AOV)
+```
+
+    ##                                              Df Sum Sq Mean Sq F value
+    ## necrotic_granular_agranular_combined_A$GROUP  1 0.0143 0.01434   0.689
+    ## Residuals                                    20 0.4164 0.02082        
+    ##                                              Pr(>F)
+    ## necrotic_granular_agranular_combined_A$GROUP  0.416
+    ## Residuals
+
+``` r
+# Family B
+necrotic_granular_agranular_combined_B <- necrotic_granular_agranular_combined %>% filter(FAMILY == "B")
+necrotic_granular_agranular_combined_B_AOV <- aov(necrotic_granular_agranular_combined_B$Arcsine ~ necrotic_granular_agranular_combined_B$GROUP, data=necrotic_granular_agranular_combined_B)
+summary(necrotic_granular_agranular_combined_B_AOV)
+```
+
+    ##                                              Df  Sum Sq Mean Sq F value
+    ## necrotic_granular_agranular_combined_B$GROUP  1 0.03134 0.03134   1.946
+    ## Residuals                                    16 0.25768 0.01611        
+    ##                                              Pr(>F)
+    ## necrotic_granular_agranular_combined_B$GROUP  0.182
+    ## Residuals
+
+``` r
+# Family D
+necrotic_granular_agranular_combined_D <- necrotic_granular_agranular_combined %>% filter(FAMILY == "D")
+necrotic_granular_agranular_combined_D_AOV <- aov(necrotic_granular_agranular_combined_D$Arcsine ~ necrotic_granular_agranular_combined_D$GROUP, data=necrotic_granular_agranular_combined_D)
+summary(necrotic_granular_agranular_combined_D_AOV)
+```
+
+    ##                                              Df Sum Sq Mean Sq F value
+    ## necrotic_granular_agranular_combined_D$GROUP  1 0.0200 0.02005    0.55
+    ## Residuals                                    14 0.5107 0.03648        
+    ##                                              Pr(>F)
+    ## necrotic_granular_agranular_combined_D$GROUP  0.471
+    ## Residuals
+
+``` r
+# Family E
+necrotic_granular_agranular_combined_E <- necrotic_granular_agranular_combined %>% filter(FAMILY == "E")
+necrotic_granular_agranular_combined_E_AOV <- aov(necrotic_granular_agranular_combined_E$Arcsine ~ necrotic_granular_agranular_combined_E$GROUP, data=necrotic_granular_agranular_combined_E)
+summary(necrotic_granular_agranular_combined_E_AOV)
+```
+
+    ##                                              Df Sum Sq Mean Sq F value
+    ## necrotic_granular_agranular_combined_E$GROUP  1 0.1802 0.18024   4.026
+    ## Residuals                                    16 0.7162 0.04476        
+    ##                                              Pr(>F)  
+    ## necrotic_granular_agranular_combined_E$GROUP  0.062 .
+    ## Residuals                                            
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# Family J
+necrotic_granular_agranular_combined_J <- necrotic_granular_agranular_combined %>% filter(FAMILY == "J")
+necrotic_granular_agranular_combined_J_AOV <- aov(necrotic_granular_agranular_combined_J$Arcsine ~ necrotic_granular_agranular_combined_J$GROUP, data=necrotic_granular_agranular_combined_J)
+summary(necrotic_granular_agranular_combined_J_AOV)
+```
+
+    ##                                              Df  Sum Sq Mean Sq F value
+    ## necrotic_granular_agranular_combined_J$GROUP  1 0.01416 0.01416   1.055
+    ## Residuals                                    20 0.26846 0.01342        
+    ##                                              Pr(>F)
+    ## necrotic_granular_agranular_combined_J$GROUP  0.317
+    ## Residuals
+
+``` r
+# Family L 
+necrotic_granular_agranular_combined_L <- necrotic_granular_agranular_combined %>% filter(FAMILY == "L")
+necrotic_granular_agranular_combined_L_AOV <- aov(necrotic_granular_agranular_combined_L$Arcsine ~ necrotic_granular_agranular_combined_L$GROUP, data=necrotic_granular_agranular_combined_L)
+summary(necrotic_granular_agranular_combined_L_AOV)
+```
+
+    ##                                              Df Sum Sq  Mean Sq F value
+    ## necrotic_granular_agranular_combined_L$GROUP  1 0.0012 0.001199   0.068
+    ## Residuals                                    16 0.2817 0.017607        
+    ##                                              Pr(>F)
+    ## necrotic_granular_agranular_combined_L$GROUP  0.797
+    ## Residuals
+
+### Combined Faceted all parameters by cell type
 
 ``` r
 ggplot(APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + geom_boxplot() + ggtitle("Percent of Granular Hemocytes in each Quadrant (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic", "Live Apoptotic", "Dead Apoptotic", "Necrotic"), values=c("Q2_LL"="red","Q2_LR"="green", "Q2_UL"="purple", "Q2_UR"="blue")) 
@@ -4001,7 +4768,9 @@ ggsave(filename="./Figures/APOP_live_agranular_plotting.png", plot=APOP_live_agr
 
     ## Saving 7 x 5 in image
 
-![APOP\_live\_agranular\_plotting](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/) \#\#\# Family A
+![APOP\_live\_agranular\_plotting](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/APOP_live_agranular_plotting.png)
+
+### Family A
 
 ``` r
 APOP_PLOT_7_live_agranular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED)
@@ -4593,6 +5362,74 @@ cld(live_granular_agranula_aov_interaction_leastsquares_family, alpha=0.05, Lett
     ## Confidence level used: 0.95 
     ## P value adjustment: tukey method for comparing a family of 6 estimates 
     ## significance level used: alpha = 0.05
+
+#### One Way ANOVA of Live Granular Agranular
+
+``` r
+# Family A
+live_granular_agranular_combined_A <- live_granular_agranular_combined %>% filter(FAMILY =="A")
+live_granular_agranular_combined_A_AOV <- aov(live_granular_agranular_combined_A$Arcsine ~ live_granular_agranular_combined_A$GROUP, data=live_granular_agranular_combined_A)
+summary(live_granular_agranular_combined_A_AOV)
+```
+
+    ##                                          Df Sum Sq Mean Sq F value Pr(>F)
+    ## live_granular_agranular_combined_A$GROUP  1 0.0128 0.01282   0.402  0.533
+    ## Residuals                                20 0.6380 0.03190
+
+``` r
+# Family B 
+live_granular_agranular_combined_B <- live_granular_agranular_combined %>% filter(FAMILY =="B")
+live_granular_agranular_combined_B_AOV <- aov(live_granular_agranular_combined_B$Arcsine ~ live_granular_agranular_combined_B$GROUP, data=live_granular_agranular_combined_B)
+summary(live_granular_agranular_combined_B_AOV)
+```
+
+    ##                                          Df Sum Sq Mean Sq F value Pr(>F)
+    ## live_granular_agranular_combined_B$GROUP  1 0.0111 0.01113   0.323  0.578
+    ## Residuals                                16 0.5516 0.03448
+
+``` r
+# Family D 
+live_granular_agranular_combined_D <- live_granular_agranular_combined %>% filter(FAMILY =="D")
+live_granular_agranular_combined_D_AOV <- aov(live_granular_agranular_combined_D$Arcsine ~ live_granular_agranular_combined_D$GROUP, data=live_granular_agranular_combined_D)
+summary(live_granular_agranular_combined_D_AOV)
+```
+
+    ##                                          Df Sum Sq Mean Sq F value Pr(>F)
+    ## live_granular_agranular_combined_D$GROUP  1 0.0062 0.00618   0.112  0.743
+    ## Residuals                                14 0.7730 0.05521
+
+``` r
+# Family E
+live_granular_agranular_combined_E <- live_granular_agranular_combined %>% filter(FAMILY =="E")
+live_granular_agranular_combined_E_AOV <- aov(live_granular_agranular_combined_E$Arcsine ~ live_granular_agranular_combined_E$GROUP, data=live_granular_agranular_combined_E)
+summary(live_granular_agranular_combined_E_AOV)
+```
+
+    ##                                          Df Sum Sq Mean Sq F value Pr(>F)
+    ## live_granular_agranular_combined_E$GROUP  1 0.1439 0.14392   2.249  0.153
+    ## Residuals                                16 1.0239 0.06399
+
+``` r
+# Family J
+live_granular_agranular_combined_J <- live_granular_agranular_combined %>% filter(FAMILY =="J")
+live_granular_agranular_combinedJ_AOV <- aov(live_granular_agranular_combined_J$Arcsine ~ live_granular_agranular_combined_J$GROUP, data=live_granular_agranular_combined_J)
+summary(live_granular_agranular_combinedJ_AOV)
+```
+
+    ##                                          Df Sum Sq Mean Sq F value Pr(>F)
+    ## live_granular_agranular_combined_J$GROUP  1 0.0001 0.00015   0.004  0.951
+    ## Residuals                                20 0.7624 0.03812
+
+``` r
+# Family L 
+live_granular_agranular_combined_L <- live_granular_agranular_combined %>% filter(FAMILY =="L")
+live_granular_agranular_combined_L_AOV <- aov(live_granular_agranular_combined_L$Arcsine ~ live_granular_agranular_combined_L$GROUP, data=live_granular_agranular_combined_L)
+summary(live_granular_agranular_combined_L_AOV)
+```
+
+    ##                                          Df Sum Sq Mean Sq F value Pr(>F)
+    ## live_granular_agranular_combined_L$GROUP  1 0.0042 0.00419   0.119  0.735
+    ## Residuals                                16 0.5634 0.03521
 
 #### Calculate Summary Statistics
 

@@ -418,6 +418,44 @@ cld(APOP_Live_apoptotic_combined_all_aov_interaction_leastsquare_gate, alpha=0.0
 ```
 ![APOP_Live_apoptotic_combined_all_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/blob/master/Figures/APOP_Live_apoptotic_combined_all_plot.png)
 
+### One Way ANOVA Combined Live Apoptotic Granular Agranular ###
+```{r live_apoptotic_combined_granular_agranular_oneway, echo=TRUE}
+
+APOP_Live_apoptotic_combined_all
+
+# Family A 
+APOP_Live_apoptotic_combined_all_A <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="A")
+APOP_Live_apoptotic_combined_all_A_aov <- aov(APOP_Live_apoptotic_combined_all_A$Arcsine ~ APOP_Live_apoptotic_combined_all_A$GROUP, data=APOP_Live_apoptotic_combined_all_A)
+summary(APOP_Live_apoptotic_combined_all_A_aov)
+
+# Family B 
+APOP_Live_apoptotic_combined_all_B <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="B")
+APOP_Live_apoptotic_combined_all_B_aov <- aov(APOP_Live_apoptotic_combined_all_B$Arcsine ~ APOP_Live_apoptotic_combined_all_B$GROUP, data=APOP_Live_apoptotic_combined_all_B)
+summary(APOP_Live_apoptotic_combined_all_B_aov)
+
+# Family D
+APOP_Live_apoptotic_combined_all_D <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="D")
+APOP_Live_apoptotic_combined_all_D_aov <- aov(APOP_Live_apoptotic_combined_all_D$Arcsine ~ APOP_Live_apoptotic_combined_all_D$GROUP, data=APOP_Live_apoptotic_combined_all_D)
+summary(APOP_Live_apoptotic_combined_all_D_aov)
+
+# Family E
+APOP_Live_apoptotic_combined_all_E <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="E")
+APOP_Live_apoptotic_combined_all_E_aov <- aov(APOP_Live_apoptotic_combined_all_E$Arcsine ~ APOP_Live_apoptotic_combined_all_E$GROUP, data=APOP_Live_apoptotic_combined_all_E)
+summary(APOP_Live_apoptotic_combined_all_E_aov)
+
+# Family J
+APOP_Live_apoptotic_combined_all_J <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="J")
+APOP_Live_apoptotic_combined_all_J_aov <- aov(APOP_Live_apoptotic_combined_all_J$Arcsine ~ APOP_Live_apoptotic_combined_all_J$GROUP, data=APOP_Live_apoptotic_combined_all_J)
+summary(APOP_Live_apoptotic_combined_all_J_aov)
+
+# Family L 
+APOP_Live_apoptotic_combined_all_L <- APOP_Live_apoptotic_combined_all %>% filter(FAMILY=="L")
+APOP_Live_apoptotic_combined_all_L_aov <- aov(APOP_Live_apoptotic_combined_all_L$Arcsine ~ APOP_Live_apoptotic_combined_all_L$GROUP, data=APOP_Live_apoptotic_combined_all_L)
+summary(APOP_Live_apoptotic_combined_all_L_aov)
+
+
+```
+
 ## % DEAD apoptotic granular hemocytes (PLOT4, Q2-UR)
 
 ## Percent DEAD apoptotic granular hemocytes (PLOT4, Q1-UR)
@@ -676,7 +714,41 @@ cld(combined_dead_apoptotic_agranular_granular_aov_interaction_leastsquares_gate
 ```
 ![combined_dead_apoptotic_agranular_granular_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/combined_dead_apoptotic_agranular_granular_plot.png)
 
-## Percent necrotic granular hemocytes (PLOT 4, Q2-UL)
+### Combined Dead Apoptotic Granular Agranular ###
+```{r combined_granular_agranular_dead_apoptotic, echo=TRUE}
+combined_dead_apoptotic_agranular_granular
+
+# Family A 
+combined_dead_apoptotic_agranular_granular_A <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="A")
+combined_dead_apoptotic_agranular_granular_A_aov <- aov(combined_dead_apoptotic_agranular_granular_A$Arcsine ~ combined_dead_apoptotic_agranular_granular_A$GROUP, data=combined_dead_apoptotic_agranular_granular_A)
+summary(combined_dead_apoptotic_agranular_granular_A_aov)
+
+# Family B
+combined_dead_apoptotic_agranular_granular_B <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="B")
+combined_dead_apoptotic_agranular_granular_B_aov <- aov(combined_dead_apoptotic_agranular_granular_B$Arcsine ~ combined_dead_apoptotic_agranular_granular_B$GROUP, data=combined_dead_apoptotic_agranular_granular_B)
+summary(combined_dead_apoptotic_agranular_granular_B_aov)
+
+# Family D
+combined_dead_apoptotic_agranular_granular_D <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="D")
+combined_dead_apoptotic_agranular_granular_D_aov <- aov(combined_dead_apoptotic_agranular_granular_D$Arcsine ~ combined_dead_apoptotic_agranular_granular_D$GROUP, data=combined_dead_apoptotic_agranular_granular_D)
+summary(combined_dead_apoptotic_agranular_granular_D_aov)
+
+# Family E
+combined_dead_apoptotic_agranular_granular_E <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="E")
+combined_dead_apoptotic_agranular_granular_E_aov <- aov(combined_dead_apoptotic_agranular_granular_E$Arcsine ~ combined_dead_apoptotic_agranular_granular_E$GROUP, data=combined_dead_apoptotic_agranular_granular_E)
+summary(combined_dead_apoptotic_agranular_granular_E_aov)
+
+# Family J
+combined_dead_apoptotic_agranular_granular_J <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="J")
+combined_dead_apoptotic_agranular_granular_J_aov <- aov(combined_dead_apoptotic_agranular_granular_J$Arcsine ~ combined_dead_apoptotic_agranular_granular_J$GROUP, data=combined_dead_apoptotic_agranular_granular_J)
+summary(combined_dead_apoptotic_agranular_granular_J_aov)
+
+# Family L 
+combined_dead_apoptotic_agranular_granular_L <- combined_dead_apoptotic_agranular_granular %>% filter(FAMILY=="L")
+combined_dead_apoptotic_agranular_granular_L_aov <- aov(combined_dead_apoptotic_agranular_granular_L$Arcsine ~ combined_dead_apoptotic_agranular_granular_L$GROUP, data=combined_dead_apoptotic_agranular_granular_L)
+summary(combined_dead_apoptotic_agranular_granular_L_aov)
+
+```
 
 ## Percent Necrotic granular hemocytes (PLOT 4, Q2-UL)
 
@@ -924,8 +996,42 @@ cld(necrotic_granular_agranula_aov_interaction_leastsquares, alpha=0.05, Letters
 
 ```
 ![necrotic_granular_agranular_combined_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/necrotic_granular_agranular_combined_plot.png)
+### One Way ANOVA of Combined Necrotic Granular and Agranular ###
+```{r combined_necrotic_granular_agranluar, echo=TRUE}
 
-## Combined Faceted all parameters by cell type
+# Family A
+necrotic_granular_agranular_combined_A <- necrotic_granular_agranular_combined %>% filter(FAMILY == "A")
+necrotic_granular_agranular_combined_A_AOV <- aov(necrotic_granular_agranular_combined_A$Arcsine ~ necrotic_granular_agranular_combined_A$GROUP, data=necrotic_granular_agranular_combined_A)
+summary(necrotic_granular_agranular_combined_A_AOV)
+
+# Family B
+necrotic_granular_agranular_combined_B <- necrotic_granular_agranular_combined %>% filter(FAMILY == "B")
+necrotic_granular_agranular_combined_B_AOV <- aov(necrotic_granular_agranular_combined_B$Arcsine ~ necrotic_granular_agranular_combined_B$GROUP, data=necrotic_granular_agranular_combined_B)
+summary(necrotic_granular_agranular_combined_B_AOV)
+
+# Family D
+necrotic_granular_agranular_combined_D <- necrotic_granular_agranular_combined %>% filter(FAMILY == "D")
+necrotic_granular_agranular_combined_D_AOV <- aov(necrotic_granular_agranular_combined_D$Arcsine ~ necrotic_granular_agranular_combined_D$GROUP, data=necrotic_granular_agranular_combined_D)
+summary(necrotic_granular_agranular_combined_D_AOV)
+
+# Family E
+necrotic_granular_agranular_combined_E <- necrotic_granular_agranular_combined %>% filter(FAMILY == "E")
+necrotic_granular_agranular_combined_E_AOV <- aov(necrotic_granular_agranular_combined_E$Arcsine ~ necrotic_granular_agranular_combined_E$GROUP, data=necrotic_granular_agranular_combined_E)
+summary(necrotic_granular_agranular_combined_E_AOV)
+
+# Family J
+necrotic_granular_agranular_combined_J <- necrotic_granular_agranular_combined %>% filter(FAMILY == "J")
+necrotic_granular_agranular_combined_J_AOV <- aov(necrotic_granular_agranular_combined_J$Arcsine ~ necrotic_granular_agranular_combined_J$GROUP, data=necrotic_granular_agranular_combined_J)
+summary(necrotic_granular_agranular_combined_J_AOV)
+
+# Family L 
+necrotic_granular_agranular_combined_L <- necrotic_granular_agranular_combined %>% filter(FAMILY == "L")
+necrotic_granular_agranular_combined_L_AOV <- aov(necrotic_granular_agranular_combined_L$Arcsine ~ necrotic_granular_agranular_combined_L$GROUP, data=necrotic_granular_agranular_combined_L)
+summary(necrotic_granular_agranular_combined_L_AOV)
+```
+
+
+### Combined Faceted all parameters by cell type
 
 ```{r graphing_granular, echo=TRUE}
 ggplot(APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + facet_grid(.~FAMILY+GROUP, scales="free") + geom_boxplot() + ggtitle("Percent of Granular Hemocytes in each Quadrant (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic", "Live Apoptotic", "Dead Apoptotic", "Necrotic"), values=c("Q2_LL"="red","Q2_LR"="green", "Q2_UL"="purple", "Q2_UR"="blue")) 
@@ -1019,6 +1125,8 @@ APOP_PLOT_4_granular_oneway_aov <- aov(APOP_PLOT_4_granular_hemocytes_BAD_REMOVE
 summary(APOP_PLOT_4_granular_oneway_aov)
 TukeyHSD(APOP_PLOT_4_granular_oneway_aov)
 ```
+
+
 #### Percent Live Agranular Hemocytes 
 
 ## Plotting
@@ -1027,7 +1135,9 @@ APOP_live_agranular_plotting <- ggplot(data=APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_R
   xlab("Family") + ylab("Percent of Hemocyte Events") + ylim(0,100)
 ggsave(filename="./Figures/APOP_live_agranular_plotting.png", plot=APOP_live_agranular_plotting)
 ```
-![APOP_live_agranular_plotting](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/)
+![APOP_live_agranular_plotting](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/APOP_live_agranular_plotting.png)
+
+
 ### Family A
 ```{r live_agranular_A, echo=TRUE}
 APOP_PLOT_7_live_agranular_FAMILY_A_AOV_BAD_REMOVED <- aov(APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$Q1.LL_Arcsine ~ APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED$GROUP, data=APOP_PLOT_7_agranular_FAMILY_A_BAD_REMOVED)
@@ -1111,10 +1221,41 @@ cld(live_granular_agranula_aov_interaction_leastsquares, alpha=0.05, Letters=let
 live_granular_agranula_aov_interaction_leastsquares_family <- lsmeans(live_granular_agranular_aov_interaction, "live_granular_agranular_combined$FAMILY", adjust="tukey")
 cld(live_granular_agranula_aov_interaction_leastsquares_family, alpha=0.05, Letters=letters) # the means of the two groups are not significantly different 
 
-
-
 ```
 
+#### One Way ANOVA of Live Granular Agranular ####
+```{r live_granular_agranular, echo=TRUE}
+# Family A
+live_granular_agranular_combined_A <- live_granular_agranular_combined %>% filter(FAMILY =="A")
+live_granular_agranular_combined_A_AOV <- aov(live_granular_agranular_combined_A$Arcsine ~ live_granular_agranular_combined_A$GROUP, data=live_granular_agranular_combined_A)
+summary(live_granular_agranular_combined_A_AOV)
+
+# Family B 
+live_granular_agranular_combined_B <- live_granular_agranular_combined %>% filter(FAMILY =="B")
+live_granular_agranular_combined_B_AOV <- aov(live_granular_agranular_combined_B$Arcsine ~ live_granular_agranular_combined_B$GROUP, data=live_granular_agranular_combined_B)
+summary(live_granular_agranular_combined_B_AOV)
+
+# Family D 
+live_granular_agranular_combined_D <- live_granular_agranular_combined %>% filter(FAMILY =="D")
+live_granular_agranular_combined_D_AOV <- aov(live_granular_agranular_combined_D$Arcsine ~ live_granular_agranular_combined_D$GROUP, data=live_granular_agranular_combined_D)
+summary(live_granular_agranular_combined_D_AOV)
+
+# Family E
+live_granular_agranular_combined_E <- live_granular_agranular_combined %>% filter(FAMILY =="E")
+live_granular_agranular_combined_E_AOV <- aov(live_granular_agranular_combined_E$Arcsine ~ live_granular_agranular_combined_E$GROUP, data=live_granular_agranular_combined_E)
+summary(live_granular_agranular_combined_E_AOV)
+
+# Family J
+live_granular_agranular_combined_J <- live_granular_agranular_combined %>% filter(FAMILY =="J")
+live_granular_agranular_combinedJ_AOV <- aov(live_granular_agranular_combined_J$Arcsine ~ live_granular_agranular_combined_J$GROUP, data=live_granular_agranular_combined_J)
+summary(live_granular_agranular_combinedJ_AOV)
+
+# Family L 
+live_granular_agranular_combined_L <- live_granular_agranular_combined %>% filter(FAMILY =="L")
+live_granular_agranular_combined_L_AOV <- aov(live_granular_agranular_combined_L$Arcsine ~ live_granular_agranular_combined_L$GROUP, data=live_granular_agranular_combined_L)
+summary(live_granular_agranular_combined_L_AOV)
+
+```
 
 #### Calculate Summary Statistics ####
 ```{r summary_stats, echo=TRUE}
