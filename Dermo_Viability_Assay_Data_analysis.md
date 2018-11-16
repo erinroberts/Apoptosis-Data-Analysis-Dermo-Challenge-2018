@@ -88,6 +88,59 @@ R version being used is 3.4.1
 
     ## Warning: package 'knitr' was built under R version 3.4.3
 
+    ## Warning: package 'tidyr' was built under R version 3.4.3
+
+    ## 
+    ## Attaching package: 'tidyr'
+
+    ## The following object is masked from 'package:Matrix':
+    ## 
+    ##     expand
+
+    ## Warning: package 'readxl' was built under R version 3.4.4
+
+    ## Warning: package 'purrr' was built under R version 3.4.2
+
+    ## 
+    ## Attaching package: 'purrr'
+
+    ## The following object is masked from 'package:plyr':
+    ## 
+    ##     compact
+
+    ## The following object is masked from 'package:car':
+    ## 
+    ##     some
+
+    ## 
+    ## Attaching package: 'reshape'
+
+    ## The following objects are masked from 'package:tidyr':
+    ## 
+    ##     expand, smiths
+
+    ## The following objects are masked from 'package:plyr':
+    ## 
+    ##     rename, round_any
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     rename
+
+    ## The following object is masked from 'package:Matrix':
+    ## 
+    ##     expand
+
+    ## Warning: package 'stringr' was built under R version 3.4.3
+
+    ## Loading required package: Formula
+
+    ## Warning: package 'Formula' was built under R version 3.4.2
+
+    ## Loading required package: rgl
+
+    ## Warning: package 'rgl' was built under R version 3.4.4
+
 VIABILITY ASSAY ANALYSIS
 ========================
 
@@ -2048,15 +2101,18 @@ total_viabaility_statistics <- summarySE(data=VI_PLOT4_restructured_BAD_REMOVED,
     ## Warning in qt(conf.interval/2 + 0.5, datac$N - 1): NaNs produced
 
 ``` r
-viability_statistics_live <- summarySE(data=VI_PLOT9_PLOT10_BAD_REMOVED_combined, "PERCENT_LIVE", groupvars=c("GROUP", "PERCENT_LIVE","FAMILY"), conf.interval= 0.95)
+# export as csv file
+write.csv(file="total_viabaility_statistics_day7", total_viabaility_statistics)
+
+viability_statistics_live <- summarySE(data=VI_PLOT9_PLOT10_BAD_REMOVED_combined, "PERCENT_LIVE", groupvars=c("GROUP","FAMILY", "PLOT"), conf.interval= 0.95)
 ```
 
-    ## Warning: The plyr::rename operation has created duplicates for the
-    ## following name(s): (`PERCENT_LIVE`)
-
-    ## Warning: NaNs produced
+    ## Warning in qt(conf.interval/2 + 0.5, datac$N - 1): NaNs produced
 
 ``` r
+# export as csv file
+write.csv(file="viability_statistics_live_day7.csv", viability_statistics_live)
+
 # Summary Statistics for size
 mean_size <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_ASSAY_MEAN_VALUES_CORRECTED_EDITED.csv", header=TRUE)
 class(mean_size$MEAN)
@@ -3814,8 +3870,10 @@ Summary Statistics Day 50
 ``` r
 # Summary Statistics for Percentages 
 total_viabaility_statistics_day50 <- summarySE(data=VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED, "PERCENT_OF_THIS_PLOT", groupvars=c("GROUP", "GATE","FAMILY"))
+write.csv(file="total_viabaility_statistics_day50.csv", total_viabaility_statistics_day50)
 
 viability_statistics_live_day50 <- summarySE(data=VI_DAY50_PLOT9_E1_MINUS_V1R_PLOT10_combined_BAD_REMOVED, "PERCENT_LIVE", groupvars=c("GROUP", "GATE","FAMILY"), conf.interval= 0.95)
+write.csv(file="viability_statistics_live_day50.csv", viability_statistics_live_day50)
 
 # Summary Statistics for size #need to get this document from Hannah
 mean_size <- read.csv(file="../ANALYSIS_CSVs/VIABILITY_ASSAY/DAY7/VIABILITY_ASSAY_MEAN_VALUES_CORRECTED_EDITED.csv", header=TRUE)
@@ -3867,6 +3925,7 @@ ggplot(compiled_day7_day50_live_agranular_granular, aes(x=GROUP, y=PERCENT_LIVE,
 ### Two Way ANOVA of GATE and DAY
 
 ``` r
+#Total
 compiled_agranular_granular_lm <- lm(compiled_day7_day_50_all_agranular_granular$Arcsine ~ compiled_day7_day_50_all_agranular_granular$GATE + compiled_day7_day_50_all_agranular_granular$DAY + compiled_day7_day_50_all_agranular_granular$GATE:compiled_day7_day_50_all_agranular_granular$DAY, data=compiled_day7_day_50_all_agranular_granular)
 Anova(compiled_agranular_granular_lm, type="II")
 ```
@@ -3903,6 +3962,71 @@ Anova(compiled_agranular_granular_lm, type="II")
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ``` r
+summary(compiled_agranular_granular_lm)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = compiled_day7_day_50_all_agranular_granular$Arcsine ~ 
+    ##     compiled_day7_day_50_all_agranular_granular$GATE + compiled_day7_day_50_all_agranular_granular$DAY + 
+    ##         compiled_day7_day_50_all_agranular_granular$GATE:compiled_day7_day_50_all_agranular_granular$DAY, 
+    ##     data = compiled_day7_day_50_all_agranular_granular)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.44575 -0.07842 -0.00210  0.07984  0.44242 
+    ## 
+    ## Coefficients:
+    ##                                                                                                     Estimate
+    ## (Intercept)                                                                                          0.61394
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3                                                   0.34191
+    ## compiled_day7_day_50_all_agranular_granular$DAY7                                                    -0.13976
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3:compiled_day7_day_50_all_agranular_granular$DAY7  0.23515
+    ##                                                                                                     Std. Error
+    ## (Intercept)                                                                                            0.01441
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3                                                     0.02038
+    ## compiled_day7_day_50_all_agranular_granular$DAY7                                                       0.02230
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3:compiled_day7_day_50_all_agranular_granular$DAY7    0.03154
+    ##                                                                                                     t value
+    ## (Intercept)                                                                                          42.613
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3                                                   16.781
+    ## compiled_day7_day_50_all_agranular_granular$DAY7                                                     -6.267
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3:compiled_day7_day_50_all_agranular_granular$DAY7   7.456
+    ##                                                                                                     Pr(>|t|)
+    ## (Intercept)                                                                                          < 2e-16
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3                                                   < 2e-16
+    ## compiled_day7_day_50_all_agranular_granular$DAY7                                                    1.60e-09
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3:compiled_day7_day_50_all_agranular_granular$DAY7 1.46e-12
+    ##                                                                                                        
+    ## (Intercept)                                                                                         ***
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3                                                  ***
+    ## compiled_day7_day_50_all_agranular_granular$DAY7                                                    ***
+    ## compiled_day7_day_50_all_agranular_granular$GATEE3:compiled_day7_day_50_all_agranular_granular$DAY7 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.1239 on 250 degrees of freedom
+    ## Multiple R-squared:  0.7744, Adjusted R-squared:  0.7717 
+    ## F-statistic:   286 on 3 and 250 DF,  p-value: < 2.2e-16
+
+``` r
+compiled_agranular_granular_lm_leastsquares <- lsmeans(compiled_agranular_granular_lm , "compiled_day7_day_50_all_agranular_granular$GATE", adjust="tukey")
+cld(compiled_agranular_granular_lm_leastsquares, alpha=0.05, Letters=letters)
+```
+
+    ##  compiled_day7_day_50_all_agranular_granular$GATE    lsmean       SE  df
+    ##  E1                                               0.4741816 0.017024 250
+    ##  E3                                               0.4741816 0.017024 250
+    ##   lower.CL  upper.CL .group
+    ##  0.4406529 0.5077103  a    
+    ##  0.4406529 0.5077103  a    
+    ## 
+    ## Results are averaged over the levels of: compiled_day7_day_50_all_agranular_granular$DAY 
+    ## Confidence level used: 0.95 
+    ## significance level used: alpha = 0.05
+
+``` r
+#Live 
 compiled_day7_day50_live_agranular_granular_lm <- lm(compiled_day7_day50_live_agranular_granular$Arcsine ~ compiled_day7_day50_live_agranular_granular$PLOT + compiled_day7_day50_live_agranular_granular$DAY + compiled_day7_day50_live_agranular_granular$PLOT:compiled_day7_day50_live_agranular_granular$DAY, data=compiled_day7_day50_live_agranular_granular)
 Anova(compiled_day7_day50_live_agranular_granular_lm, type="II")
 ```
@@ -3937,3 +4061,414 @@ Anova(compiled_day7_day50_live_agranular_granular_lm, type="II")
     ## Residuals                                                                                           
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+REGRESSION MODELING WITH MASTER DATA
+====================================
+
+Loading in data
+
+``` r
+# Use tidyr to read in excel spreadsheet and purrr to iterate over multiple sheets
+Master_Data <- read.csv("../ANALYSIS_CSVs/MASTER_DATA/MasterData.csv",header=TRUE)
+MortDataQAed <- read.csv("../ANALYSIS_CSVs/MASTER_DATA/MortDataQAed.csv",header=TRUE, skip=2)
+PreExperimentData <- read.csv("../ANALYSIS_CSVs/MASTER_DATA/PreExperimentData.csv",header=TRUE, skip=2)
+
+# QPCR data sheet was edited so that the first row was split into multiple rows and the FamCode was split by "-"
+QPCRDataQAed_edited <- read.csv("../ANALYSIS_CSVs/MASTER_DATA/QPCRDataQAed_edited.csv",header=TRUE)
+
+# Make Fam Code Column for PreExperimentData via lookup table and dply left join 
+FamCodeLookupTable <- Master_Data[,c(1,2)] %>% unique()
+PreExperimentData_FamCode <- PreExperimentData %>% left_join(FamCodeLookupTable)
+```
+
+    ## Joining, by = "Fam"
+
+``` r
+# Subset Data for Families that were used in Apoptosis Assays
+FamCodes <- c("A","B","D","E","J","L")
+Master_Data_Assay_Subset <- Master_Data %>% filter(FamCode %in% FamCodes)
+MortDataQAed_Assay_Subset <- MortDataQAed %>% filter(Fam.Code %in% FamCodes)
+PreExperimentData_Assay_Subset <- PreExperimentData_FamCode %>% filter(FamCode %in% FamCodes)
+QPCRDataQAed_Assay_Subset <- QPCRDataQAed_edited %>% filter(FamCode %in% FamCodes) %>% filter(Dose %in% c("10^7","CNTRLS")) %>% filter(FED_INJECTED %in% c("INJ", "CNTRLS"))
+```
+
+qPCR Data Summary Statistics
+----------------------------
+
+``` r
+# Need to convert the ave.log.pconc column into a numeric value but not mess with the other columns, do this with transform 
+QPCRDataQAed_Assay_Subset2 <- transform(QPCRDataQAed_Assay_Subset, ave.log.pconc = as.numeric(ave.log.pconc))
+QPCRDataQAed_Assay_Subset_summary <- summarySE(data=QPCRDataQAed_Assay_Subset2, "ave.log.pconc", groupvars=c("FamCode","Plate_Condition","Dose"), conf.interval = 0.95)
+```
+
+### Assemble data frame with pieces of information for modeling
+
+``` r
+# Variables of interest: Family, Live, Dead
+```
+
+Regression Analysis
+-------------------
+
+<http://r-statistics.co/Dirichlet-Regression-With-R.html>
+
+### Dirichlet multinomial regression potential
+
+Use a Dirichlet multinomial regression for compositional data when the dependent variable is the sum total contribution from multiple components. Multiple dependent Y variables and one predictor variable. To use the data it must be separated into fractions that sum up to 1.
+
+Setting up data with ratios that can be used for the Dirichlet Multinomial Distribution
+
+``` r
+# Assemble plot from Plot 4 but separate into live and dead for both granular and agranular cells 
+#library(DirechletReg)
+
+# DEAD Granular Cells = PLOT4 E1 Count - PLOT9 Count
+# DEAD Agranular Cells = PLOT4 E3 Count - PLOT10
+# LIVE Granular Cells = PLOT9 
+# LIVE Agranular Cells = PLOT10 
+
+# Check that number of rows are compatible
+nrow(VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
+```
+
+    ## [1] 53
+
+``` r
+nrow(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
+```
+
+    ## [1] 53
+
+``` r
+nrow(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
+```
+
+    ## [1] 53
+
+``` r
+E1_plot4_count_day50 <- VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(GATE=="E1") 
+nrow(E1_plot4_count_day50)
+```
+
+    ## [1] 74
+
+``` r
+E3_plot4_count_day50 <- VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(GATE=="E3") 
+nrow(E3_plot4_count_day50)
+```
+
+    ## [1] 74
+
+``` r
+nrow(VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
+```
+
+    ## [1] 74
+
+``` r
+nrow(VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
+```
+
+    ## [1] 74
+
+``` r
+# Merge data frames Subtract # live from total number to get number of dead cells
+# first change colnames so that they can be merged with new column but same sample IDs
+colnames(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)[8] <- "E1_LIVE_COUNT_THIS_PLOT"
+colnames(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)[8] <- "E3_LIVE_COUNT_THIS_PLOT"
+colnames(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)[9] <- "E1_PERCENT_LIVE"
+colnames(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)[9] <- "E3_PERCENT_LIVE"
+colnames(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)[10] <- "E1_Arcsine_LIVE"
+colnames(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)[10] <- "E3_Arcsine_LIVE"
+
+#Separate E3 data into two separate data frames and then merge
+VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated <- VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(GATE=="E3")
+colnames(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated)[9]<-"E3_COUNT"
+colnames(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated)[11]<-"E3_PERCENT_OF_THIS_PLOT"
+colnames(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated)[12]<-"E3_Arcsine"
+VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated_E1 <- VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(GATE=="E1")
+colnames(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated_E1)[9]<-"E1_COUNT"
+colnames(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated_E1)[11]<-"E1_PERCENT_OF_THIS_PLOT"
+colnames(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated_E1)[12]<-"E1_Arcsine"
+
+VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_merged <- merge(VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated, VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_separated_E1, by = c("SAMPLE_ID","FAMILY","FLOW_CODE","ASSAY","GROUP", "OYSTER_ID","PLOT","COUNT_THIS_PLOT"))
+
+colnames(VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED)[8] <- "E1_LIVE_COUNT_THIS_PLOT"
+colnames(VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED)[8] <- "E3_LIVE_COUNT_THIS_PLOT"
+colnames(VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED)[10] <- "E1_PERCENT_LIVE"
+colnames(VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED)[10] <- "E3_PERCENT_LIVE"
+colnames(VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED )[11] <- "E1_Arcsine_LIVE"
+colnames(VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED)[11] <- "E3_Arcsine_LIVE"
+
+#Merge two live columns
+VI_DAY7_LIVE_combined <- merge(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED,VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED, by= c("SAMPLE_ID","FAMILY","FLOW_CODE","ASSAY","GROUP","OYSTER_ID"))
+
+VI_DAY50_LIVE_combined <-merge(VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED,VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED, by= c("SAMPLE_ID","FAMILY","FLOW_CODE","ASSAY","GROUP","OYSTER_ID"))
+
+# Merged the live columns with the total 
+VI_DAY7_LIVE_combined_merged_total <- merge(VI_DAY7_LIVE_combined, VI_PLOT4_E1_E3_GATE_BAD_REMOVED, by =c("SAMPLE_ID","FAMILY","FLOW_CODE","ASSAY","GROUP","OYSTER_ID"))
+head(VI_DAY7_LIVE_combined_merged_total)
+```
+
+    ##   SAMPLE_ID FAMILY FLOW_CODE ASSAY     GROUP OYSTER_ID      PLOT.x
+    ## 1   A-02-VI      A         2    VI treatment     A-147 PLOT9_FL3-A
+    ## 2   A-03-VI      A         3    VI treatment     A-152 PLOT9_FL3-A
+    ## 3   A-04-VI      A         4    VI treatment     A-158 PLOT9_FL3-A
+    ## 4   A-05-VI      A         5    VI treatment     A-163 PLOT9_FL3-A
+    ## 5   A-06-VI      A         6    VI treatment     A-166 PLOT9_FL3-A
+    ## 6   A-08-VI      A         8    VI treatment     A-180 PLOT9_FL3-A
+    ##   E1_LIVE_COUNT_THIS_PLOT E1_PERCENT_LIVE E1_Arcsine_LIVE       PLOT.y
+    ## 1                     138        86.79245        1.198858 PLOT10_FL3-A
+    ## 2                     100        84.74576        1.169549 PLOT10_FL3-A
+    ## 3                     128        93.43066        1.311596 PLOT10_FL3-A
+    ## 4                    2428        95.85472        1.365763 PLOT10_FL3-A
+    ## 5                     621        80.64935        1.115316 PLOT10_FL3-A
+    ## 6                     695        93.66577        1.316382 PLOT10_FL3-A
+    ##   E3_LIVE_COUNT_THIS_PLOT E3_PERCENT_LIVE E3_Arcsine_LIVE          PLOT
+    ## 1                    2189        99.81760        1.528075 PLOT4_FSC/SSC
+    ## 2                    1411        99.43622        1.495640 PLOT4_FSC/SSC
+    ## 3                     664        99.84962        1.532008 PLOT4_FSC/SSC
+    ## 4                    7461        99.81271        1.527506 PLOT4_FSC/SSC
+    ## 5                    2949        99.46037        1.497271 PLOT4_FSC/SSC
+    ## 6                    1715        99.82538        1.528996 PLOT4_FSC/SSC
+    ##   COUNT_THIS_PLOT E1_COUNT E1_PERCENT_OF_THIS_PLOT E3_COUNT
+    ## 1            2432      159                    6.54     2193
+    ## 2            1570      118                    7.52     1419
+    ## 3             825      137                   16.61      665
+    ## 4           10497     2533                   24.13     7475
+    ## 5            3920      770                   19.64     2965
+    ## 6            2583      742                   28.73     1718
+    ##   E3_PERCENT_OF_THIS_PLOT E1_Arcsine E3_Arcsine
+    ## 1                   90.17  0.2586071  1.2518899
+    ## 2                   90.38  0.2777849  1.2554337
+    ## 3                   80.61  0.4197736  1.1148181
+    ## 4                   71.21  0.5134932  1.0044373
+    ## 5                   75.64  0.4591323  1.0546197
+    ## 6                   66.51  0.5656963  0.9536559
+
+``` r
+VI_DAY50_LIVE_combined_merged_total <- merge(VI_DAY50_LIVE_combined, VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED_merged, by =c("SAMPLE_ID","FAMILY","FLOW_CODE","ASSAY","GROUP","OYSTER_ID"))
+head(VI_DAY50_LIVE_combined_merged_total)
+```
+
+    ##   SAMPLE_ID FAMILY FLOW_CODE ASSAY     GROUP OYSTER_ID      PLOT.x
+    ## 1  A-148-VI      A       A05    VI treatment     A-148 PLOT9_FL3-A
+    ## 2  A-149-VI      A       A06    VI treatment     A-149 PLOT9_FL3-A
+    ## 3  A-151-VI      A       A07    VI treatment     A-151 PLOT9_FL3-A
+    ## 4   A-16-VI      A       A01    VI   control      A-16 PLOT9_FL3-A
+    ## 5  A-162-VI      A       A08    VI treatment     A-162 PLOT9_FL3-A
+    ## 6  A-164-VI      A       A09    VI treatment     A-164 PLOT9_FL3-A
+    ##   E1_LIVE_COUNT_THIS_PLOT PERCENT_OF_THIS_PLOT.x E1_PERCENT_LIVE
+    ## 1                    1138                100.00%        86.27748
+    ## 2                    1805                100.00%        96.06173
+    ## 3                    1411                100.00%        98.53352
+    ## 4                     881                100.00%        80.45662
+    ## 5                    1312                100.00%        95.90643
+    ## 6                    3562                100.00%        99.22006
+    ##   E1_Arcsine_LIVE GATE.x.x       PLOT.y E3_LIVE_COUNT_THIS_PLOT
+    ## 1        1.191315 granular PLOT10_FL3-A                    3545
+    ## 2        1.371019 granular PLOT10_FL3-A                    2866
+    ## 3        1.449400 granular PLOT10_FL3-A                    3421
+    ## 4        1.112881 granular PLOT10_FL3-A                    3998
+    ## 5        1.367064 granular PLOT10_FL3-A                    3945
+    ## 6        1.482367 granular PLOT10_FL3-A                    1740
+    ##   PERCENT_OF_THIS_PLOT.y E3_PERCENT_LIVE E3_Arcsine_LIVE  GATE.y.x
+    ## 1                100.00%        99.60663        1.508036 agranular
+    ## 2                100.00%        99.89543        1.538454 agranular
+    ## 3                100.00%        99.97078        1.553701 agranular
+    ## 4                100.00%        99.50224        1.500186 agranular
+    ## 5                100.00%        99.92401        1.543227 agranular
+    ## 6                100.00%        99.82788        1.529297 agranular
+    ##                PLOT COUNT_THIS_PLOT E3_COUNT GATE.x.y
+    ## 1 PLOT4_FSC-H/SSC-H            4876     3559       E3
+    ## 2 PLOT4_FSC-H/SSC-H            4731     2869       E3
+    ## 3 PLOT4_FSC-H/SSC-H            4869     3422       E3
+    ## 4 PLOT4_FSC-H/SSC-H            5116     4018       E3
+    ## 5 PLOT4_FSC-H/SSC-H            5290     3948       E3
+    ## 6 PLOT4_FSC-H/SSC-H            5321     1743       E3
+    ##   E3_PERCENT_OF_THIS_PLOT E3_Arcsine E1_COUNT GATE.y.y
+    ## 1                   72.99  1.0242831     1319       E1
+    ## 2                   60.64  0.8926180     1879       E1
+    ## 3                   70.28  0.9942157     1432       E1
+    ## 4                   78.54  1.0891381     1095       E1
+    ## 5                   74.63  1.0429356     1368       E1
+    ## 6                   32.76  0.6093853     3590       E1
+    ##   E1_PERCENT_OF_THIS_PLOT E1_Arcsine
+    ## 1                   27.05  0.5469635
+    ## 2                   39.72  0.6818598
+    ## 3                   29.41  0.5731839
+    ## 4                   21.40  0.4809271
+    ## 5                   25.86  0.5334735
+    ## 6                   67.47  0.9638635
+
+``` r
+# Substract E1 (granular) live from E1 total Day 7
+VI_DAY7_LIVE_combined_merged_total$Dead_granular <- (VI_DAY7_LIVE_combined_merged_total$E1_COUNT - VI_DAY7_LIVE_combined_merged_total$E1_LIVE_COUNT_THIS_PLOT) 
+
+VI_DAY50_LIVE_combined_merged_total$Dead_granular <- (VI_DAY50_LIVE_combined_merged_total$E1_COUNT - VI_DAY50_LIVE_combined_merged_total$E1_LIVE_COUNT_THIS_PLOT) 
+
+# Subtract E3 (agranular) live from E3 total Day 7
+VI_DAY7_LIVE_combined_merged_total$Dead_agranular <- (VI_DAY7_LIVE_combined_merged_total$E3_COUNT - VI_DAY7_LIVE_combined_merged_total$E3_LIVE_COUNT_THIS_PLOT)
+
+VI_DAY50_LIVE_combined_merged_total$Dead_agranular <- (VI_DAY50_LIVE_combined_merged_total$E3_COUNT - VI_DAY50_LIVE_combined_merged_total$E3_LIVE_COUNT_THIS_PLOT) 
+
+# Create ratio of dead granular
+VI_DAY7_LIVE_combined_merged_total$Dead_granular_ratio <- (VI_DAY7_LIVE_combined_merged_total$Dead_granular/VI_DAY7_LIVE_combined_merged_total$E1_COUNT)
+
+VI_DAY50_LIVE_combined_merged_total$Dead_granular_ratio <- (VI_DAY50_LIVE_combined_merged_total$Dead_granular/VI_DAY50_LIVE_combined_merged_total$E1_COUNT)
+
+# Create ratio of dead agranular 
+VI_DAY7_LIVE_combined_merged_total$Dead_agranular_ratio <- (VI_DAY7_LIVE_combined_merged_total$Dead_agranular/VI_DAY7_LIVE_combined_merged_total$E3_COUNT)
+
+VI_DAY50_LIVE_combined_merged_total$Dead_agranular_ratio <- (VI_DAY50_LIVE_combined_merged_total$Dead_agranular/VI_DAY50_LIVE_combined_merged_total$E3_COUNT)
+
+
+# Create ratio of live granular
+VI_DAY7_LIVE_combined_merged_total$Live_granular_ratio <- (VI_DAY7_LIVE_combined_merged_total$E1_LIVE_COUNT_THIS_PLOT/VI_DAY7_LIVE_combined_merged_total$E1_COUNT)
+
+VI_DAY50_LIVE_combined_merged_total$Live_granular_ratio <- (VI_DAY50_LIVE_combined_merged_total$E1_LIVE_COUNT_THIS_PLOT/VI_DAY50_LIVE_combined_merged_total$E1_COUNT)
+
+# Create ratio of live agranular
+VI_DAY7_LIVE_combined_merged_total$Live_agranular_ratio <- (VI_DAY7_LIVE_combined_merged_total$E3_LIVE_COUNT_THIS_PLOT/VI_DAY7_LIVE_combined_merged_total$E3_COUNT)
+
+VI_DAY50_LIVE_combined_merged_total$Live_agranular_ratio <- (VI_DAY50_LIVE_combined_merged_total$E3_LIVE_COUNT_THIS_PLOT/VI_DAY50_LIVE_combined_merged_total$E3_COUNT)
+
+#check that they all add up to 2.0, one for agranular and one for granular!
+VI_DAY7_LIVE_combined_merged_total$Ratios_added <- (VI_DAY7_LIVE_combined_merged_total$Dead_agranular_ratio + VI_DAY7_LIVE_combined_merged_total$Dead_granular_ratio + VI_DAY7_LIVE_combined_merged_total$Live_agranular_ratio + VI_DAY7_LIVE_combined_merged_total$Live_granular_ratio)
+
+VI_DAY50_LIVE_combined_merged_total$Ratios_added <- (VI_DAY50_LIVE_combined_merged_total$Dead_agranular_ratio + VI_DAY50_LIVE_combined_merged_total$Dead_granular_ratio + VI_DAY50_LIVE_combined_merged_total$Live_agranular_ratio + VI_DAY50_LIVE_combined_merged_total$Live_granular_ratio)
+
+# Make one combined data frame across days by using rbind!
+# Need to make a new data frame with this info in 
+VI_DAY7_LIVE_combined_merged_total["DAY"] <- "7"
+VI_DAY50_LIVE_combined_merged_total["DAY"] <- "50"
+
+VI_DAY7_subset_for_merge <- VI_DAY7_LIVE_combined_merged_total[,c(1:6,23,24,25,26,27,28,30)]
+VI_DAY50_subset_for_merge <- VI_DAY50_LIVE_combined_merged_total[,c(1:6,29:34,36)]
+VI_DAY7_DAY50_LIVE_combined_merged_total <-rbind(VI_DAY7_subset_for_merge,VI_DAY50_subset_for_merge)
+```
+
+### Beta Regression
+
+See the following website for reference: <http://rcompanion.org/handbook/J_02.html>
+
+``` r
+#install.packages("betareg")
+library(betareg)
+```
+
+    ## Warning: package 'betareg' was built under R version 3.4.4
+
+``` r
+#install.packages("emmeans")
+library(emmeans)
+```
+
+    ## Warning: package 'emmeans' was built under R version 3.4.4
+
+    ## 
+    ## Attaching package: 'emmeans'
+
+    ## The following objects are masked from 'package:lsmeans':
+    ## 
+    ##     .all.vars, .aovlist.dffun, .diag, .get.offset, .my.vcov,
+    ##     add_grouping, as.glht, cld, contrast, get.lsm.option, lsm,
+    ##     lsm.options, lsmeans, lsmip, lsmobj, lstrends, make.tran, pmm,
+    ##     pmmeans, pmmip, pmmobj, pmtrends, regrid, test
+
+``` r
+#install.packages("lmtest")
+library(lmtest)
+```
+
+    ## Warning: package 'lmtest' was built under R version 3.4.4
+
+    ## Loading required package: zoo
+
+    ## Warning: package 'zoo' was built under R version 3.4.3
+
+    ## 
+    ## Attaching package: 'zoo'
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     as.Date, as.Date.numeric
+
+``` r
+# The summary function in betareg produces a pseudo R-squared value for the model, and the recommended test for the p-value for the model is the lrtest function in the lmtest package.
+
+modelbeta= betareg(Live_granular_ratio ~ FAMILY + DAY + GROUP, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
+
+
+model= lm(Live_granular_ratio ~ FAMILY + GROUP + FAMILY:GROUP + DAY, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
+
+model2= lm(Live_granular_ratio ~ DAY, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
+
+model3= lm(Live_granular_ratio ~ FAMILY, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
+
+#run joint test on model
+joint_tests(model)
+```
+
+    ##  model term   df1 df2 F.ratio p.value
+    ##  FAMILY         5 114   1.630  0.1577
+    ##  GROUP          1 114   1.209  0.2739
+    ##  DAY            1 114  54.685  <.0001
+    ##  FAMILY:GROUP   5 114   0.639  0.6701
+
+``` r
+#likelihood ratio test
+lrtest(modelbeta)
+```
+
+    ## Likelihood ratio test
+    ## 
+    ## Model 1: Live_granular_ratio ~ FAMILY + DAY + GROUP
+    ## Model 2: Live_granular_ratio ~ 1
+    ##   #Df LogLik Df  Chisq Pr(>Chisq)    
+    ## 1   9 173.05                         
+    ## 2   2 141.52 -7 63.052  3.699e-11 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+# summary
+summary(modelbeta)
+```
+
+    ## 
+    ## Call:
+    ## betareg(formula = Live_granular_ratio ~ FAMILY + DAY + GROUP, data = VI_DAY7_DAY50_LIVE_combined_merged_total)
+    ## 
+    ## Standardized weighted residuals 2:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -2.8484 -0.6193 -0.0631  0.6826  2.3828 
+    ## 
+    ## Coefficients (mean model with logit link):
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)     3.00423    0.20828  14.424  < 2e-16 ***
+    ## FAMILYB        -0.32252    0.22668  -1.423 0.154800    
+    ## FAMILYD        -0.79310    0.21157  -3.749 0.000178 ***
+    ## FAMILYE         0.02743    0.23619   0.116 0.907547    
+    ## FAMILYJ        -0.51179    0.21314  -2.401 0.016342 *  
+    ## FAMILYL        -0.02913    0.23097  -0.126 0.899650    
+    ## DAY7           -1.12707    0.13376  -8.426  < 2e-16 ***
+    ## GROUPtreatment -0.16290    0.15095  -1.079 0.280503    
+    ## 
+    ## Phi coefficients (precision model with identity link):
+    ##       Estimate Std. Error z value Pr(>|z|)    
+    ## (phi)   14.181      1.855   7.644  2.1e-14 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+    ## 
+    ## Type of estimator: ML (maximum likelihood)
+    ## Log-likelihood:   173 on 9 Df
+    ## Pseudo R-squared: 0.3987
+    ## Number of iterations: 18 (BFGS) + 2 (Fisher scoring)
+
+``` r
+# plot the model fit
+plot(fitted(model),residuals(model))
+```
+
+![](Dermo_Viability_Assay_Data_analysis_files/figure-markdown_github/logistic_regression-1.png)
