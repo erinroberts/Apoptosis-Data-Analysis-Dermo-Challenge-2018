@@ -10,6 +10,7 @@ library(lmtest)
 library(dplyr)
 library(DirechletReg)
 library(tidyr)
+library(Rmisc)
 
 ################### Loading in data ##############################################
 
@@ -29,7 +30,7 @@ FamCodes <- c("A","B","D","E","J","L")
 Master_Data_Assay_Subset <- Master_Data %>% filter(FamCode %in% FamCodes)
 MortDataQAed_Assay_Subset <- MortDataQAed %>% filter(Fam.Code %in% FamCodes)
 PreExperimentData_Assay_Subset <- PreExperimentData_FamCode %>% filter(FamCode %in% FamCodes)
-QPCRDataQAed_Assay_Subset <- QPCRDataQAed_edited %>% filter(FamCode %in% FamCodes) %>% filter(Dose %in% c("10^7","CNTRLS")) %>% filter(FED_INJECTED %in% c("INJ", "CNTRLS"))
+QPCRDataQAed_Assay_Subset <- QPCRDataQAed_edited %>% filter(FamCode %in% FamCodes) %>% filter(Dose %in% c("10^7","0","CNTRLS")) 
 
 
 ## qPCR Data Summary Statistics 
@@ -198,6 +199,11 @@ head(VI_DAY7_DAY50_LIVE_combined_merged_total)
 # Perform left join with qPCR data
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR <- VI_DAY7_DAY50_LIVE_combined_merged_total %>% 
   left_join(QPCRDataQAed_Assay_Subset_PCA_format_combined_final, by = "OYSTER_ID")
+  # L-13 sample was mislabeled, can be removed 
 
 # 3. Put data for each apoptosis Phenotype in its own column with ratios rather than percentages, keep day 7 and 50 together
+
+head(all_granular_agranular_DAY7_DAY50)
+unique(all_granular_agranular_DAY7_DAY50$GATE)
+# Unique column headers Q2_UL Q2_UR Q2_LL Q2_LR Q1_UL Q1_UR Q1_LL Q1_LR
 
