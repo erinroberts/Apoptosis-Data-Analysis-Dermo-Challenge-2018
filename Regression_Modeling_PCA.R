@@ -199,11 +199,111 @@ head(VI_DAY7_DAY50_LIVE_combined_merged_total)
 # Perform left join with qPCR data
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR <- VI_DAY7_DAY50_LIVE_combined_merged_total %>% 
   left_join(QPCRDataQAed_Assay_Subset_PCA_format_combined_final, by = "OYSTER_ID")
+
   # L-13 sample was mislabeled, can be removed 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(!OYSTER_ID == "L-13") 
 
 # 3. Put data for each apoptosis Phenotype in its own column with ratios rather than percentages, keep day 7 and 50 together
 
-head(all_granular_agranular_DAY7_DAY50)
-unique(all_granular_agranular_DAY7_DAY50$GATE)
-# Unique column headers Q2_UL Q2_UR Q2_LL Q2_LR Q1_UL Q1_UR Q1_LL Q1_LR
+# need to make the Day 7 Sample ID be the oyster ID so that it will merge correctly 
+  # went back to the Apoptosis Assay data frame used to combine the data
+  # APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED, APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED
+
+APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table <- APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED[,c("SAMPLE_ID","OYTER_ID")]
+APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table <- APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED[,c("SAMPLE_ID","OYTER_ID")]
+APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table <- as.data.frame(  APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table)
+
+#compare to make sure the lists are the same
+all_equal(APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table,APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table )
+
+# Use lookup table to change all SAMPLE_ID's for day 7 to their oyster ID
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_7 <- all_granular_agranular_DAY7_DAY50 %>% filter(DAY== "07") #separate out the day 7 values first
+
+# perform left join
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_joined <- left_join(x=all_granular_agranular_DAY7_DAY50_OYSTER_ID_7, y=APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table, by = "SAMPLE_ID")
+
+#Only remove entirely duplicated rows, should have duplicate oyster ID's 
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups <-all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_joined[!duplicated(all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_joined),]
+
+#Correct column name of OYSTER ID
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups$OYTER_ID
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups)[11] <- "OYSTER_ID"
+
+# Make OYSTER_ID column for DAY 50 data with -A removed, then rejoin Day7 and Day50
+all_granular_agranular_DAY7_DAY50_day50 <- all_granular_agranular_DAY7_DAY50 %>% filter(DAY =="50")
+all_granular_agranular_DAY7_DAY50_day50["OYSTER_ID"] <- gsub("-A","" ,all_granular_agranular_DAY7_DAY50_day50$SAMPLE_ID)
+
+# create combined data frame with fixed OYSTER_ID so data frame can be merged with qPCR data above 
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed <- rbind(all_granular_agranular_DAY7_DAY50_day50, all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups)
+
+# Remove SAMPLE_ID column because the difference between Day7 and Day50 is really confusing! Just look at the OysterID
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed
+
+# Find unique phenotype headers 
+head(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed)
+unique(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed$GATE)
+
+#Create unique columns for each phenotype with the Percent of this plot values
+##### KEY ######
+# Q2_UL: Granular Necrotic
+# Q2_UR: Granular Dead Apoptotic
+# Q2_LL: Granular Live
+# Q2_LR: Granular Live Apoptotic
+# Q1_UL: Agranular Necrotic
+# Q1_UR: Agranular Dead Apoptotic
+# Q1_LL: Agranular Live
+# Q1_LR: Agranular Live Apoptotic
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_UL <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q2_UL")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_UL)[4] <- "Q2_UL_Granular_Necrotic"
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_UR <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q2_UR")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_UR)[4] <- "Q2_UR_Granular_Dead_Apoptotic"
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_LL <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q2_LL")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_LL)[4] <- "Q2_LL_Granular_Live" 
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_LR <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q2_LR")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_LR)[4] <- "Q2_LR_Granular_Live_Apoptotic" 
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_UL <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q1_UL")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_UL)[4] <- "Q1_UL_Agranular_Necrotic"
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_UR <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q1_UR")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_UR)[4] <- "Q1_UR_Agranular_Dead_Apoptotic"
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_LL <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q1_LL")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_LL)[4] <- "Q1_LL_Agranular_Live" 
+
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_LR <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed %>% filter(GATE == "Q1_LR")
+colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_LR)[4] <- "Q1_LR_Agranular_Live_Apoptotic" 
+
+# Left join the new data, but for each cell type separately 
+
+# Granular cells 
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_1 <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_UL, all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_UR, 
+                                        by =c("FAMILY","GROUP","DAY","CELL","OYSTER_ID", "ASSAY","PLOT","SAMPLE_ID"))
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_2 <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_1, all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_LL, 
+                                                                    by =c("FAMILY","GROUP","DAY","CELL","OYSTER_ID", "ASSAY","PLOT","SAMPLE_ID"))
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_3 <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_2, all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q2_LR, 
+                                                                    by =c("FAMILY","GROUP","DAY","CELL","OYSTER_ID", "ASSAY","PLOT","SAMPLE_ID"))
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_3_trimmed <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_3[,c("FAMILY","GROUP","DAY","CELL","OYSTER_ID","ASSAY","Q2_UL_Granular_Necrotic","Q2_UR_Granular_Dead_Apoptotic", "Q2_LL_Granular_Live","Q2_LR_Granular_Live_Apoptotic")]
+
+# Agranular cells 
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_4 <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_UL, all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_UR, 
+                                                                    by =c("FAMILY","GROUP","DAY","CELL","OYSTER_ID", "ASSAY","PLOT","SAMPLE_ID"))
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_5 <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_4, all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_LL, 
+                                                                    by =c("FAMILY","GROUP","DAY","CELL","OYSTER_ID", "ASSAY","PLOT","SAMPLE_ID"))
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6 <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_5, all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_Q1_LR, 
+                                                                    by =c("FAMILY","GROUP","DAY","CELL","OYSTER_ID", "ASSAY","PLOT","SAMPLE_ID"))
+all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6_trimmed <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6[,c("FAMILY","GROUP","DAY","CELL","OYSTER_ID","ASSAY","Q1_UL_Agranular_Necrotic","Q1_UR_Agranular_Dead_Apoptotic", "Q1_LL_Agranular_Live","Q1_LR_Agranular_Live_Apoptotic")]
+
+# Combine the granular and the agranular cells after checking the data frames over 
+
+# Check that nrows here matches original total number of apoptosis assay samples
+nrow(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_1)
+nrow(all_granular_agranular_DAY7_DAY50) # 1056/8 = 132, they match!
+
+
+
 
