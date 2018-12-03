@@ -9,7 +9,7 @@ library(emmeans)
 library(lmtest)
 library(dplyr)
 library(DirechletReg)
-library(tidyr)
+library(tidyverse)
 library(Rmisc)
 
 ################### Loading in data ##############################################
@@ -298,12 +298,65 @@ all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6 <- merge(all_granular
                                                                     by =c("FAMILY","GROUP","DAY","CELL","OYSTER_ID", "ASSAY","PLOT","SAMPLE_ID"))
 all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6_trimmed <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6[,c("FAMILY","GROUP","DAY","CELL","OYSTER_ID","ASSAY","Q1_UL_Agranular_Necrotic","Q1_UR_Agranular_Dead_Apoptotic", "Q1_LL_Agranular_Live","Q1_LR_Agranular_Live_Apoptotic")]
 
-# Combine the granular and the agranular cells after checking the data frames over 
+# Combine the granular and the agranular cells after checking the data frames over, not merging by the cell so they can be added side by side 
+Apop_all_phenotypes_combined <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_3_trimmed,all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6_trimmed, by = c("FAMILY","GROUP","DAY","OYSTER_ID", "ASSAY"))
+Apop_all_phenotypes_combined_trimmed <- Apop_all_phenotypes_combined[-c(6,11)]
 
 # Check that nrows here matches original total number of apoptosis assay samples
-nrow(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_1)
+nrow(Apop_all_phenotypes_combined_trimmed)
 nrow(all_granular_agranular_DAY7_DAY50) # 1056/8 = 132, they match!
 
+# Combine Apoptosis Plot with the Viability Assay Data and qPCR data
+
+# Compare the data frames so they can be merged correctly
+View(Apop_all_phenotypes_combined_trimmed)
+View(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
+
+# Change Day column in VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR to have 07 for Day
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(DAY=="7") %>% mutate(DAY="07")
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_DAY50 <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(DAY=="50")
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed <- rbind(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_DAY50 )
+
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP <- merge(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed, Apop_all_phenotypes_combined_trimmed, 
+                                                                            by= c("FAMILY","GROUP","DAY","OYSTER_ID"))
+
+# Remove Assay.x and Assay.y, and FLOW CODE from the data frame
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP[-c(6,7,15)]
+
+################ Format Caspase Assay Data to be merged with VIA,APOP, qPCR data ##########################
+
+## CASPASE ASSAY KEY 
+#Q3_LR = granular live apoptotic
+#Q4-LR = agranular live apoptotic
 
 
+head(all_caspase_granular_agranular_DAY7_DAY50)
+head(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP)
 
+unique(all_caspase_granular_agranular_DAY7_DAY50$GATE)
+
+# remove Day.1 column that existed in the dataframe and add back the oyster_id column 
+all_caspase_granular_agranular_DAY7_DAY50 <- all_caspase_granular_agranular_DAY7_DAY50[,-9]
+all_caspase_granular_agranular_DAY7_DAY50_Q3_LR <- all_caspase_granular_agranular_DAY7_DAY50 %>% filter(GATE=="Q3_LR") 
+all_caspase_granular_agranular_DAY7_DAY50_Q4_LR <- all_caspase_granular_agranular_DAY7_DAY50 %>% filter(GATE=="Q4_LR") 
+colnames(all_caspase_granular_agranular_DAY7_DAY50_Q3_LR)[3] <- "Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic" 
+colnames(all_caspase_granular_agranular_DAY7_DAY50_Q4_LR)[3] <- "Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic" 
+
+# Had to remove PLOT as an aspect of the merge for this to work 
+all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR <- merge(all_caspase_granular_agranular_DAY7_DAY50_Q3_LR,all_caspase_granular_agranular_DAY7_DAY50_Q4_LR,
+                                                               by = c("FAMILY","GROUP","DAY","OYSTER_ID", "SAMPLE_ID"))
+# Remove unwanted columns
+all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR <- all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR[-c(7:9, 11:13)]
+
+# Fix the 7's to be 07
+all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted <- all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR %>% filter(DAY=="7") %>% mutate(DAY="07")
+all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_DAY50 <- all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR %>% filter(DAY=="50")
+all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted_fixed <- rbind(all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted, all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_DAY50)
+
+
+# Merge this with the big other spreadsheet 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE <- merge(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP,all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted_fixed ,
+                                                                                    by = c("FAMILY","GROUP","DAY","OYSTER_ID"))
+# Remove Sample_ID columns after checking to make sure that they match 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE[-c(5,21)]
+ 
