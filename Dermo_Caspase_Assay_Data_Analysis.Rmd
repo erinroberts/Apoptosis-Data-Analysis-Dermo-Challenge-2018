@@ -2,7 +2,7 @@
 title: "Dermo Challenge Caspase Assay Data Analysis"
 author: "Erin Roberts"
 date: "8/14/2018"
-output: html_document
+output: github_document
 ---
 
 ## Load Packages
@@ -104,18 +104,20 @@ CAS_PLOT7_agranular_quad_plot_GATE_ADDED$Arcsine <- transf.arcsin(CAS_PLOT7_agra
 ## Basic plots showing the data across families
 
 # LIVE Apoptotic Granular hemocytes compared to Live and Necrotic hemocytes
-```{r apoptosis_granular_compared, echo=TRUE}
+```{r apoptosis_granular_compared_1, echo=TRUE}
 
-ggplot(CAS_PLOT4_granular_quad_plot_GATE_ADDED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular Caspase-dependent Apoptotic, \n Necrotic, and Live Hemocytes") + ylab("Percent of Granular Hemocyte Events") + scale_fill_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q3_LL"="#738488","Q3_LR"="#8f50ab","Q3_UL"="#99c161", "Q3_UR"="#b65a49")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+CAS_PLOT4_granular_quad_plot_GATE_ADDED_plot <- ggplot(CAS_PLOT4_granular_quad_plot_GATE_ADDED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular Caspase-dependent Apoptotic, \n Necrotic, and Live Hemocytes") + ylab("Percent of Granular Hemocyte Events") + scale_fill_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q3_LL"="#738488","Q3_LR"="#8f50ab","Q3_UL"="#99c161", "Q3_UR"="#b65a49")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+ggsave("./Figures/CAS_PLOT4_granular_quad_plot_GATE_ADDED_plot.png", plot=CAS_PLOT4_granular_quad_plot_GATE_ADDED_plot)
 ```
-
+![CAS_PLOT4_granular_quad_plot_GATE_ADDED_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/CAS_PLOT4_granular_quad_plot_GATE_ADDED_plot.png)
 
 # LIVE Apoptotic Agranular hemocytes compared to Live and Necrotic hemocytes
 ```{r apoptosis_granular_compared, echo=TRUE}
 
-ggplot(CAS_PLOT7_agranular_quad_plot_GATE_ADDED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Agranular Caspase-dependent Apoptotic, \n Necrotic, and Live Hemocytes") + ylab("Percent of Agranular Hemocyte Events") + scale_fill_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q4_LL"="#738488","Q4_LR"="#8f50ab","Q4_UL"="#99c161", "Q4_UR"="#b65a49")) + facet_grid(.~FAMILY+GROUP, scales="free") 
-
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED_plot <- ggplot(CAS_PLOT7_agranular_quad_plot_GATE_ADDED, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Agranular Caspase-dependent Apoptotic, \n Necrotic, and Live Hemocytes") + ylab("Percent of Agranular Hemocyte Events") + scale_fill_manual(name="Hemocyte Status", labels=c("Live Non-Apoptotic", "Live Caspase-dependent Apoptotic", "Dead", "Necrotic"), values=c("Q4_LL"="#738488","Q4_LR"="#8f50ab","Q4_UL"="#99c161", "Q4_UR"="#b65a49")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+ggsave("./Figures/CAS_PLOT7_agranular_quad_plot_GATE_ADDED_plot.png", plot=CAS_PLOT7_agranular_quad_plot_GATE_ADDED_plot)
 ```
+![CAS_PLOT7_agranular_quad_plot_GATE_ADDED_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/CAS_PLOT7_agranular_quad_plot_GATE_ADDED_plot.png)
 
 # Comparing Live apoptotic cells following treatment between granular and agranular
 
@@ -124,9 +126,11 @@ CAS_live_apoptotic_granular <- CAS_PLOT4_granular_quad_plot_GATE_ADDED %>% filte
 CAS_live_apoptotic_agranular <- CAS_PLOT7_agranular_quad_plot_GATE_ADDED %>% filter(GATE=="Q4_LR")
 CAS_live_apoptotic_granular_agranular <- rbind(CAS_live_apoptotic_granular,CAS_live_apoptotic_agranular)
 
-ggplot(CAS_live_apoptotic_granular_agranular, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Caspase-dependent Apoptotic Hemocytes") + ylab("Percent of Hemocyte Events in each respective quad plot")+ scale_fill_manual(name="Hemocyte Type", labels=c("Live Caspase-dependent Apoptotic Granular", "Live Caspase-dependent Apoptotic Agranular"), values=c("Q3_LR"="#96568b","Q4_LR"="#99a666")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+CAS_live_apoptotic_granular_agranular_plot <- ggplot(CAS_live_apoptotic_granular_agranular, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT,fill=GATE)) + geom_boxplot() + ggtitle("Percent of Granular and Agranular Caspase-dependent Apoptotic Hemocytes") + ylab("Percent of Hemocyte Events in each respective quad plot")+ scale_fill_manual(name="Hemocyte Type", labels=c("Live Caspase-dependent Apoptotic Granular", "Live Caspase-dependent Apoptotic Agranular"), values=c("Q3_LR"="#96568b","Q4_LR"="#99a666")) + facet_grid(.~FAMILY+GROUP, scales="free") 
+ggsave("./Figures/CAS_live_apoptotic_granular_agranular_plot.png", plot=CAS_live_apoptotic_granular_agranular_plot)
 
 ```
+![CAS_live_apoptotic_granular_agranular_plot](https://github.com/erinroberts/Apoptosis-Data-Analysis-Dermo-Challenge-2018/tree/master/Figures/CAS_live_apoptotic_granular_agranular_plot.png)
 
 ## Percent LIVE Apoptotic Granular Hemocytes out of all granular hemocytes
 ```{r CAS_live_apoptotic_granular, echo=FALSE}
@@ -197,7 +201,7 @@ summary(CAS_live_apoptotic_granular_twoway_interaction_aov)
 ```
 
 # One way ANOVA of Live Apoptotic just Challenged
-```{r live_apoptotic_challenged, echo=TRUE}
+```{r live_apoptotic_challenged_day7, echo=TRUE}
 CAS_PLOT4_granular_quad_plot_Challenge <- CAS_PLOT4_granular_quad_plot[!grepl("control", CAS_PLOT4_granular_quad_plot$GROUP),]
 
 CAS_PLOT4_granular_quad_plot_Challenge_oneway_aov <- aov(CAS_PLOT4_granular_quad_plot_Challenge$Q3.LR_Arcsine ~ CAS_PLOT4_granular_quad_plot_Challenge$FAMILY, data=CAS_PLOT4_granular_quad_plot_Challenge)
@@ -287,6 +291,21 @@ CAS_live_apoptotic_granular_agranular_twoway_aov_interaction_leastsquares <- lsm
 cld(CAS_live_apoptotic_granular_agranular_twoway_aov_interaction_leastsquares, alpha=0.05, Letters=letters)
 ```
 
+### One Way Anova CAS_live_apoptotic_granular_agranular ###
+```{r CAS_live_apoptotic_granular_agranular, echo=TRUE}
+#Family A
+
+# Family B
+
+# Family D
+
+# Family E
+
+# Family J 
+
+# F amily L
+
+```
 
 # Websites for Reference #
 http://rcompanion.org/handbook/G_09.html
@@ -299,7 +318,7 @@ http://rcompanion.org/handbook/G_09.html
 
 # Summary Statistics for Percentages 
 total_caspase_statistics <- summarySE(data=CAS_live_apoptotic_granular_agranular, "PERCENT_OF_THIS_PLOT", groupvars=c("GROUP", "GATE","FAMILY"))
-
+write.csv(file="total_caspase_statistics_day7.csv", total_caspase_statistics)
 ```
 
 #### Day 50 Caspase Assay Data ####
@@ -609,26 +628,34 @@ cld(DA50CAS_live_apoptotic_combined_twoway_aov_interaction_leastsquares, alpha=0
 
 ##### Compiled Graphing ######
 
-```{r graph,echo=TRUE}
-
+```{r compiled_graph, echo=TRUE}
 DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$DAY <-"50"
 DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$DAY <-"50"
 CAS_PLOT7_agranular_quad_plot_GATE_ADDED$DAY <- "7"
 CAS_PLOT4_granular_quad_plot_GATE_ADDED$DAY <- "7"
 
-DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
-DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
-CAS_PLOT7_agranular_quad_plot_GATE_ADDED_subset <- CAS_PLOT7_agranular_quad_plot_GATE_ADDED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
-CAS_PLOT4_granular_quad_plot_GATE_ADDED_subset <- CAS_PLOT4_granular_quad_plot_GATE_ADDED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY")]
+DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY", "OYSTER_ID")]
+DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY","OYSTER_ID")]
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED_subset <- CAS_PLOT7_agranular_quad_plot_GATE_ADDED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY","OYSTER_ID")]
+CAS_PLOT4_granular_quad_plot_GATE_ADDED_subset <- CAS_PLOT4_granular_quad_plot_GATE_ADDED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY","OYSTER_ID")]
 
 
 all_caspase_granular_agranular_DAY7_DAY50 <-rbind(CAS_PLOT7_agranular_quad_plot_GATE_ADDED_subset,CAS_PLOT4_granular_quad_plot_GATE_ADDED_subset,DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED_subset,DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED_subset)
 write.csv(file="all_caspase_granular_agranular_DAY7_DAY50.csv",all_caspase_granular_agranular_DAY7_DAY50)
 all_caspase_granular_agranular_DAY7_DAY50 <- read.csv(file="all_caspase_granular_agranular_DAY7_DAY50.csv",header=TRUE)
+
 #BEST PLOT 
   ggplot(all_caspase_granular_agranular_DAY7_DAY50, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + 
   geom_col(position=position_fill()) + 
-  ggtitle("Percent of Granular and Agranular Hemocytes from Challenged Oysters \n on Day 7 and Day 50 in Caspase Assay(low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
-  facet_grid(DAY~PLOT+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Aranular","Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular", "Live Non-Apoptotic Granular", "Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular"), values=c("Q4_LL"="#7d7f77","Q4_LR"="#33362f", "Q4_UL"="#d1c9b8","Q4_UR"="#accccf","Q3_LL"="#488772", "Q3_LR"="#52d79b","Q3_UL"="#a5d4c1","Q3_UR"="#62dccc"))  
+  ggtitle("Percent of Granular and Agranular Hemocytes from Challenged Oysters \n on Day 7 and Day 50 in Caspase Assay(low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") +
+  facet_grid(DAY~PLOT+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Aranular","Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular", "Live Non-Apoptotic Granular", "Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular"), values=c("Q4_LL"="#7d7f77","Q4_LR"="#33362f", "Q4_UL"="#d1c9b8","Q4_UR"="#accccf","Q3_LL"="#488772", "Q3_LR"="#52d79b","Q3_UL"="#a5d4c1","Q3_UR"="#62dccc")) + theme(text=element_text(size=20))+ theme(legend.text = element_text(size=20)) + theme(axis.text.x = element_text(hjust=0.5,angle = 45))
  
+```
+
+#### Calculate Summary Statistics Day 50 ####
+```{r summary_stats, echo=TRUE}
+
+# Summary Statistics for Percentages 
+total_caspase_statistics_day50 <- summarySE(data=DAY50_CAS_live_apoptotic_combined, "PERCENT_OF_THIS_PLOT", groupvars=c("GROUP", "GATE","FAMILY"))
+write.csv(file="total_caspase_statistics_day50.csv", total_caspase_statistics_day50)
 ```
