@@ -11,6 +11,10 @@ library(dplyr)
 library(DirechletReg)
 library(tidyverse)
 library(Rmisc)
+install.packages("devtools")
+library(devtools)
+install_github("vqv/ggbiplot")
+library(ggbiplot)
 
 ################### Loading in data ##############################################
 
@@ -37,9 +41,9 @@ QPCRDataQAed_Assay_Subset <- QPCRDataQAed_edited %>% filter(FamCode %in% FamCode
 # Need to convert the ave.log.pconc column into a numeric value but not mess with the other columns, do this with transform 
 QPCRDataQAed_Assay_Subset2 <- transform(QPCRDataQAed_Assay_Subset, ave.log.pconc = as.numeric(ave.log.pconc))
 QPCRDataQAed_Assay_Subset_summary <- summarySE(data=QPCRDataQAed_Assay_Subset2, "ave.log.pconc", groupvars=c("FamCode","Plate_Condition","Dose"), conf.interval = 0.95)
-```
 
-################### Assemble Regression modeling Data Frame for Viability Assay Data #######################
+
+################### Assemble Data Frame for Viability Assay Data #######################
 
 # Variables of interest: Family, Live, Dead
 # Regression Analysis
@@ -146,6 +150,8 @@ VI_DAY7_subset_for_merge <- VI_DAY7_LIVE_combined_merged_total[,c(1:6,23,24,25,2
 VI_DAY50_subset_for_merge <- VI_DAY50_LIVE_combined_merged_total[,c(1:6,29:34,36)]
 VI_DAY7_DAY50_LIVE_combined_merged_total <-rbind(VI_DAY7_subset_for_merge,VI_DAY50_subset_for_merge)
 
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total) # 127
+
 ########################### Beta Regression for VIABIILITY ASSAY ################################################
 # See the following website for reference: http://rcompanion.org/handbook/J_02.html
 # The summary function in betareg produces a pseudo R-squared value for the model, and the recommended test for the p-value for the model is the lrtest function in the lmtest package.
@@ -202,6 +208,8 @@ VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR <- VI_DAY7_DAY50_LIVE_combined_mer
 
   # L-13 sample was mislabeled, can be removed 
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(!OYSTER_ID == "L-13") 
+
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
 
 # 3. Put data for each apoptosis Phenotype in its own column with ratios rather than percentages, keep day 7 and 50 together
 
@@ -311,6 +319,7 @@ nrow(all_granular_agranular_DAY7_DAY50) # 1056/8 = 132, they match!
 # Compare the data frames so they can be merged correctly
 View(Apop_all_phenotypes_combined_trimmed)
 View(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
 
 # Change Day column in VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR to have 07 for Day
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(DAY=="7") %>% mutate(DAY="07")
@@ -323,9 +332,13 @@ VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP <- merge(VI_D
 # Remove Assay.x and Assay.y, and FLOW CODE from the data frame
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP[-c(6,7,15)]
 
+# check number of rows still 126
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP)
+#125
+
 ################ Format Caspase Assay Data to be merged with VIA,APOP, qPCR data ##########################
 
-## CASPASE ASSAY KEY 
+##### CASPASE ASSAY KEY ######
 #Q3_LR = granular live apoptotic
 #Q4-LR = agranular live apoptotic
 
@@ -353,10 +366,46 @@ all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted <- all_caspase_g
 all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_DAY50 <- all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR %>% filter(DAY=="50")
 all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted_fixed <- rbind(all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted, all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_DAY50)
 
-
 # Merge this with the big other spreadsheet 
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE <- merge(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP,all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted_fixed ,
                                                                                     by = c("FAMILY","GROUP","DAY","OYSTER_ID"))
 # Remove Sample_ID columns after checking to make sure that they match 
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE[-c(5,21)]
- 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE[-c(5,21)]
+
+# Use Lapply to make only the number columns numeric 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)], as.numeric)
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_numeric_matrix)
+# Went down to only 90 samples because many fewer had Caspase Assay Samples
+
+############################# PCA ANALYSIS FOR FULL PHENOTYPE  #######################################
+
+# perform simple PCA on only the numeric values 
+full_phenotype_data_set_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)], center=TRUE, scale=TRUE)
+
+summary(full_phenotype_data_set_PCA)
+
+# Use ggbiplot to plot the PCA
+
+ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$FAMILY)
+ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$GROUP)
+ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$DAY)
+
+
+############################# PCA ANALYSIS FOR APOPTOSIS and VIABILITY PHENOTYPE  #######################################
+
+# Make numeric
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix[,c(6:20)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP[,c(6:20)], as.numeric)
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_numeric_matrix)
+#125 beecause more samples were preserved 
+
+# perform simple PCA on only the numeric values 
+APOP_VIA_phenotype_data_set_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix[,c(6:20)], center=TRUE, scale=TRUE)
+
+summary(APOP_VIA_phenotype_data_set_PCA)
+
+# Use ggbiplot to plot the PCA
+ggbiplot(APOP_VIA_phenotype_data_set_PCA,ellipse=TRUE, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$FAMILY)
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$GROUP)
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$DAY)
+
