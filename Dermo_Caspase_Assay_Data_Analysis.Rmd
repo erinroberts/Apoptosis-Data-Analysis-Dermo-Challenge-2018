@@ -335,6 +335,23 @@ DAY50_CAS_PLOT7_agranular_quad_plot <- read.csv(file="../ANALYSIS_CSVs/CASPASE_A
 DAY50_CAS_PLOT8_granular_agranular <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/PLOT8.csv", header=TRUE)
 DAY50_CAS_PLOT10_live_dead <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/PLOT10.csv", header=TRUE)
 
+# Substitute Sample_ID E-187-A and Sample_ID E-187
+DAY50_CAS_P1_hemocytes$SAMPLE_ID <- gsub("E-187-C", "E-189-C", DAY50_CAS_P1_hemocytes$SAMPLE_ID)
+DAY50_CAS_P1_hemocytes$OYSTER_ID <- gsub("E-187", "E-189", DAY50_CAS_P1_hemocytes$OYSTER_ID)
+
+DAY50_CAS_PLOT4_granular_quad_plot$SAMPLE_ID <- gsub("E-187-C", "E-189-C", DAY50_CAS_PLOT4_granular_quad_plot$SAMPLE_ID)
+DAY50_CAS_PLOT4_granular_quad_plot$OYSTER_ID <- gsub("E-187", "E-189", DAY50_CAS_PLOT4_granular_quad_plot$OYSTER_ID)
+
+DAY50_CAS_PLOT7_agranular_quad_plot$SAMPLE_ID <-  gsub("E-187-C", "E-189-C", DAY50_CAS_PLOT7_agranular_quad_plot$SAMPLE_ID)
+DAY50_CAS_PLOT7_agranular_quad_plot$OYSTER_ID <- gsub("E-187", "E-189",DAY50_CAS_PLOT7_agranular_quad_plot$OYSTER_ID)
+
+DAY50_CAS_PLOT8_granular_agranular$SAMPLE_ID <- gsub("E-187-C", "E-189-C", DAY50_CAS_PLOT8_granular_agranular$SAMPLE_ID)
+DAY50_CAS_PLOT8_granular_agranular$OYSTER_ID <- gsub("E-187", "E-189", DAY50_CAS_PLOT8_granular_agranular$OYSTER_ID)
+
+DAY50_CAS_PLOT10_live_dead$SAMPLE_ID <- gsub("E-187-C", "E-189-C", DAY50_CAS_PLOT10_live_dead$SAMPLE_ID)
+DAY50_CAS_PLOT10_live_dead$OYSTER_ID <- gsub("E-187", "E-189", DAY50_CAS_PLOT10_live_dead$OYSTER_ID)
+
+
 # Remove rows with na's with the remove.na function from rgr
 DAY50_CAS_P1_hemocytes <- na.omit(DAY50_CAS_P1_hemocytes)
 DAY50_CAS_PLOT4_granular_quad_plot <-na.omit(DAY50_CAS_PLOT4_granular_quad_plot)
@@ -352,6 +369,7 @@ DAY50_CAS_PLOT10_live_dead$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", DA
 # Removing Samples that were removed for the other data
 # Load in Data for the samples to remove 
 Caspase_assay_Samples_Remove_day50 <- read.csv(file="../ANALYSIS_CSVs/CASPASE_ASSAY/DAY50/Caspase_assay_remove.csv", header=TRUE)
+Caspase_assay_Samples_Remove_day50$SAMPLE_ID <- gsub("E-36-C", "E-30-C", APOPTOSIS_Samples_Remove_day50$SAMPLE_ID)
 
 # Data Frame with bad samples removed
 DAY50_CAS_P1_hemocytes_BAD_REMOVED <- DAY50_CAS_P1_hemocytes[!DAY50_CAS_P1_hemocytes$SAMPLE_ID %in% Caspase_assay_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]

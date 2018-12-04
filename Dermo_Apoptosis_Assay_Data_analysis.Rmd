@@ -18,6 +18,7 @@ library(rgr)
 library(multcompView)
 library(Rmisc)
 library(ggpubr)
+library(RColorBrewer)
 ```
 
 
@@ -1262,6 +1263,7 @@ summary(live_granular_agranular_combined_L_AOV)
 full_combined <- rbind(APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED, APOP_PLOT7_AGRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED)
 
 full_statistics <- summarySE(data=full_combined, "PERCENT_OF_THIS_PLOT", groupvars=c("GATE", "GROUP", "cell","FAMILY"), conf.interval= 0.95)
+write.csv(file="Apoptosis_Assay_Day7_summarystatistics.csv", full_statistics)
 ```
 
 
@@ -1293,9 +1295,26 @@ DAY50_APOP_PLOT8_GRANULAR_AGRANULAR$P4_PERCENT_OF_THIS_PLOT<- as.numeric(gsub("\
 DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT$PERCENT_OF_THIS_PLOT))
 
 DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT$PERCENT_OF_THIS_PLOT <- as.numeric(gsub("\\%", "", DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT$PERCENT_OF_THIS_PLOT))
+nrow(DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT) #324
+
+# Substitute Sample_ID E-187-A and Sample_ID E-187
+DAY50_APOP_PLOT3_P1_GATE$SAMPLE_ID <- gsub("E-187-A", "E-189-A", DAY50_APOP_PLOT3_P1_GATE$SAMPLE_ID)
+DAY50_APOP_PLOT3_P1_GATE$OYSTER_ID <- gsub("E-187", "E-189", DAY50_APOP_PLOT3_P1_GATE$OYSTER_ID)
+
+DAY50_APOP_PLOT8_GRANULAR_AGRANULAR$SAMPLE_ID <- gsub("E-187-A", "E-189-A", DAY50_APOP_PLOT8_GRANULAR_AGRANULAR$SAMPLE_ID)
+DAY50_APOP_PLOT8_GRANULAR_AGRANULAR$OYSTER_ID <- gsub("E-187", "E-189", DAY50_APOP_PLOT8_GRANULAR_AGRANULAR$OYSTER_ID)
+
+DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT$SAMPLE_ID <-  gsub("E-187-A", "E-189-A", DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT$SAMPLE_ID)
+DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT$OYSTER_ID <- gsub("E-187", "E-189",DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT$OYSTER_ID)
+
+DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT$SAMPLE_ID <- gsub("E-187-A", "E-189-A", DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT$SAMPLE_ID)
+DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT$OYSTER_ID <- gsub("E-187", "E-189", DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT$OYSTER_ID)
+
+nrow(DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT) #324
 
 # Load in Data for the samples to remove 
 APOPTOSIS_Samples_Remove_day50 <- read.csv(file="../ANALYSIS_CSVs/APOPTOSIS_ASSAY/DAY50/Apoptosis_assay_remove.csv", header=TRUE)
+APOPTOSIS_Samples_Remove_day50$SAMPLE_ID <- gsub("E-36-A", "E-30-A", APOPTOSIS_Samples_Remove_day50$SAMPLE_ID)
 
 # Data Frame with bad samples removed
 DAY50_APOP_PLOT3_P1_GATE_BAD_REMOVED <- DAY50_APOP_PLOT3_P1_GATE[!DAY50_APOP_PLOT3_P1_GATE$SAMPLE_ID %in% APOPTOSIS_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
@@ -1305,6 +1324,8 @@ DAY50_APOP_PLOT8_GRANULAR_AGRANULAR_BAD_REMOVED <- DAY50_APOP_PLOT8_GRANULAR_AGR
 DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT_BAD_REMOVED <- DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT[!DAY50_APOP_PLOT4_GRANULAR_QUAD_PLOT$SAMPLE_ID %in% APOPTOSIS_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
 
 DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED <- DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT[!DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT$SAMPLE_ID %in% APOPTOSIS_Samples_Remove_day50$SAMPLE_ID, , drop=FALSE]
+
+nrow(DAY50_APOP_PLOT7_AGRANULAR_QUAD_PLOT_BAD_REMOVED) # 296
 
 ```
 
@@ -2346,13 +2367,13 @@ all_granular_agranular_DAY7_DAY50_challenge <- all_granular_agranular_DAY7_DAY50
   control_and_challenge <- ggplot(all_granular_agranular_DAY7_DAY50, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + 
   geom_col(position=position_fill()) + 
   ggtitle("Percent of Granular and Agranular Hemocytes \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
-  facet_grid(DAY~CELL+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Granular","Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular", "Live Non-Apoptotic Agranular", "Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular"), values=c("Q2_LL"="#7d7f77","Q2_LR"="#33362f", "Q2_UL"="#d1c9b8","Q2_UR"="#accccf","Q1_LL"="#488772", "Q1_LR"="#52d79b","Q1_UL"="#a5d4c1","Q1_UR"="#62dccc")) 
+  facet_grid(DAY~CELL+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Granular","Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular", "Live Non-Apoptotic Agranular", "Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular"), values=c("Q2_LL"="#7d7f77","Q2_LR"="#33362f", "Q2_UL"="#d1c9b8","Q2_UR"="#accccf","Q1_LL"="#488772", "Q1_LR"="#52d79b","Q1_UL"="#a5d4c1","Q1_UR"="#62dccc")) + theme(text=element_text(size=20))+ theme(legend.text = element_text(size=20)) + theme(axis.text.x = element_text(hjust=0.5,angle = 45))
 
-#just_challenge<-
+just_challenge<-
   ggplot(all_granular_agranular_DAY7_DAY50_challenge, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + 
   geom_col(position=position_fill()) + 
   ggtitle("Percent of Granular and Agranular Hemocytes from Challenged Oysters \n on Day 7 and Day 50 (low quality removed)") + ylab("Percent of Hemocyte Events in each quad plot") + 
-  facet_grid(DAY~CELL+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Granular","Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular", "Live Non-Apoptotic Agranular", "Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular"), values=c("Q2_LL"="#7d7f77","Q2_LR"="#33362f", "Q2_UL"="#d1c9b8","Q2_UR"="#accccf","Q1_LL"="#488772", "Q1_LR"="#52d79b","Q1_UL"="#a5d4c1","Q1_UR"="#62dccc")) 
+  facet_grid(DAY~CELL+FAMILY, scales="free") + scale_fill_manual(name="Hemocyte Type", labels=c("Live Non-Apoptotic Granular","Live Apoptotic Granular", "Dead Apoptotic Granular", "Necrotic Granular", "Live Non-Apoptotic Agranular", "Live Apoptotic Agranular", "Dead Apoptotic Agranular", "Necrotic Agranular"), values=c("Q2_LL"="#7d7f77","Q2_LR"="#33362f", "Q2_UL"="#d1c9b8","Q2_UR"="#accccf","Q1_LL"="#488772", "Q1_LR"="#52d79b","Q1_UL"="#a5d4c1","Q1_UR"="#62dccc"))+ theme(text=element_text(size=20))+ theme(legend.text = element_text(size=20)) + theme(axis.text.x = element_text(hjust=0.5,angle = 45))
   
 ```
 
@@ -2361,6 +2382,13 @@ all_granular_agranular_DAY7_DAY50_challenge <- all_granular_agranular_DAY7_DAY50
 
 all_granular_agranular_DAY7_DAY50_lm <- lm(all_granular_agranular_DAY7_DAY50$Arcsine ~ all_granular_agranular_DAY7_DAY50$GATE + all_granular_agranular_DAY7_DAY50$DAY + all_granular_agranular_DAY7_DAY50$GATE:all_granular_agranular_DAY7_DAY50$DAY, data=all_granular_agranular_DAY7_DAY50)
 Anova(all_granular_agranular_DAY7_DAY50_lm, type="II")
+summary(all_granular_agranular_DAY7_DAY50_lm)
+
+all_granular_agranular_DAY7_DAY50_lm_leastsquares <- lsmeans(all_granular_agranular_DAY7_DAY50_lm, "all_granular_agranular_DAY7_DAY50$GATE", adjust="tukey")
+cld(all_granular_agranular_DAY7_DAY50_lm_leastsquares, alpha=0.05, Letters=letters) # the means of the two groups not different
+
+
+
 ```
 
 ### Summary Statistics Day 50 ###
@@ -2370,10 +2398,117 @@ Anova(all_granular_agranular_DAY7_DAY50_lm, type="II")
 # Summary Statistics for Percentages 
 total_apoptosis_statistics_day50 <- summarySE(data=all_granular_agranular_DAY7_DAY50, "PERCENT_OF_THIS_PLOT", groupvars=c("GROUP", "GATE","FAMILY"))
 total_apoptosis_statistics_day50 
+write.csv(file="total_apoptosis_statistics_day50.csv", total_apoptosis_statistics_day50)
 ```
 
+# Heatmap Analysis with Apoptosis phenotype at Day 7 and Day 50
 
-### Modeling with Dirichlet Multinomial Regression 
+```{r heatmap_analysis, echo= true}
+# Create Day7 and Day 50 data frame with all phenotypes as a column across the top
 
-# Have to wait until I have the load data and the survival data over time
+all_granular_agranular_DAY7_DAY50
+write.csv(file="APOP_all_granular_agranular_DAY7_DAY50.csv", all_granular_agranular_DAY7_DAY50)
+
+# find what all the levels are called
+unique(all_granular_agranular_DAY7_DAY50$GATE)
+
+#Make new column where sample name and treatment are combined
+all_granular_agranular_DAY7_DAY50_group_combined<- unite(all_granular_agranular_DAY7_DAY50, Sample_ID_treatment, c(SAMPLE_ID,GROUP,DAY), remove=FALSE)
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed <- all_granular_agranular_DAY7_DAY50_group_combined[,c(1,5,6)]
+
+# Make new column for each phenotype
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_UL <- all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q2_UL") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_UL)[2] <- "Q2_UL"
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_UR <-
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q2_UR") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_UR)[2] <- "Q2_UR"
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_LL <-
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q2_LL") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_LL)[2] <- "Q2_LL"
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_LR <-all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q2_LR") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_LR)[2] <- "Q2_LR"
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_UL<-
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q1_UL") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_UL)[2] <- "Q1_UL"
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_UR<-
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q1_UR") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_UR)[2] <- "Q1_UR"
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_LL<-
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q1_LL") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_LL)[2] <- "Q1_LL"
+
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_LR<-
+all_granular_agranular_DAY7_DAY50_group_combined_trimmed %>% filter(GATE=="Q1_LR") 
+colnames(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_LR)[2] <- "Q1_LR"
+
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed <- cbind(all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_UL[,c(1,2)], all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_UR[,c(1,2)], all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_LL[,c(1,2)], all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q2_LR[,c(1,2)], all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_UL[,c(1,2)], all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_UR[,c(1,2)], all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_LL[,c(1,2)], all_granular_agranular_DAY7_DAY50_group_combined_trimmed_Q1_LR[,c(1,2)])
+
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed[,c(1,2,4,6,8,10,12,14,16)]
+
+# Separate into Day 50 and Day 7 as well as a full one
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final[grepl("07",ignore.case=TRUE, Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final$Sample_ID_treatment),]
+
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final[grepl("50",ignore.case=TRUE, Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final$Sample_ID_treatment),]
+
+# Set rownames
+row.names(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final) <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final$Sample_ID_treatment
+
+row.names(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep) <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep$Sample_ID_treatment
+
+row.names(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep) <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep$Sample_ID_treatment
+
+# don't need first column anymore
+  #all
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final[,2:9]
+
+  #day 7
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep[,2:9]
+
+  # day 50
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep <- Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep[,2:9]
+
+# Prepare data frame as a data matrix
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_matrix <- data.matrix(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final)
+
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep_matrix <- data.matrix(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep)
+
+Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep_matrix <- data.matrix(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep)
+
+# Make a heatmap
+#install.packages("gplots")
+library(gplots)
+
+# set up function so that both the column and rows are automatically reordered
+APOP_Data_heatmap <- heatmap(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_matrix, col=brewer.pal(11, "RdBu"), scale = "column", margins = c(5,15), keep.dendro = FALSE)
+
+# Bad heatmap 
+#APOP_Data_heatmap_day7 <- heatmap(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep_matrix, col=brewer.pal(11, "RdBu"), scale = "column", margins = c(7,10), keep.dendro = FALSE, xlab = "Cell type", ylab="Sample ID ", main="Heatmap of Apoptosis Phenotype Ratios at Day 7")
+
+# Heatmap2 improved, separated heatmaps 
+APOP_Data_heatmap_day7_heatmap2 <- heatmap.2(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day7_sep_matrix, density.info= "none", trace = "none", col=brewer.pal(11, "RdBu"), margins=c(7,13), scale = "column", xlab = "Cell type", ylab="Sample ID", cexRow = 1.1)
+
+APOP_Data_heatmap_day50_heatmap2 <- heatmap.2(Reformatted_all_granular_agranular_DAY7_DAY50_group_combined_trimmed_final_Day50_sep_matrix, density.info= "none", trace = "none", col=brewer.pal(11, "RdBu"), margins=c(7,13), scale = "column", xlab = "Cell type", ylab="Sample ID", cexRow = 1.0)
+
+```
+
+### Challenge vs. control for all Gates
+
+```{r challenge vs. control, echo = TRUE}
+
+all_granular_agranular_DAY7_DAY50_control <- all_granular_agranular_DAY7_DAY50 %>% filter(GROUP=="control")
+all_granular_agranular_DAY7_DAY50_challenged <- all_granular_agranular_DAY7_DAY50 %>% filter(GROUP=="treatment")
+
+all_control_vs_challenge<- aov(all_granular_agranular_DAY7_DAY50$Arcsine ~ all_granular_agranular_DAY7_DAY50$GROUP, data=all_granular_agranular_DAY7_DAY50)
+summary(all_control_vs_challenge)
+
+all_granular_agranular_DAY7_DAY50_challenged_lm <- aov(all_granular_agranular_DAY7_DAY50_challenged$Arcsine ~ all_granular_agranular_DAY7_DAY50_challenged$FAMILY, data=all_granular_agranular_DAY7_DAY50_challenged)
+summary(all_granular_agranular_DAY7_DAY50_challenged_lm)
+```
 

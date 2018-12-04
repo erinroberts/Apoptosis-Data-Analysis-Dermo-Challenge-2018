@@ -63,15 +63,15 @@ QPCRDataQAed_Assay_Subset_summary <- summarySE(data=QPCRDataQAed_Assay_Subset2, 
 # LIVE Agranular Cells = PLOT10 
 
 # Check that number of rows are compatible
-nrow(VI_PLOT4_E1_E3_GATE_BAD_REMOVED)
+nrow(VI_PLOT4_E1_E3_GATE_BAD_REMOVED) # 53
 nrow(VI_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
 nrow(VI_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
 E1_plot4_count_day50 <- VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(GATE=="E1") 
-nrow(E1_plot4_count_day50)
+nrow(E1_plot4_count_day50) # 74
 E3_plot4_count_day50 <- VI_DAY50_PLOT4_E1_E3_GATE_BAD_REMOVED %>% filter(GATE=="E3") 
-nrow(E3_plot4_count_day50)
-nrow(VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED)
-nrow(VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED)
+nrow(E3_plot4_count_day50) # 74
+nrow(VI_DAY50_PLOT10_E3_MINUS_V1R_BAD_REMOVED) #74 
+nrow(VI_DAY50_PLOT9_E1_MINUS_V1R_BAD_REMOVED) # 74
 
 # Merge data frames Subtract # live from total number to get number of dead cells
 # first change colnames so that they can be merged with new column but same sample IDs
@@ -143,7 +143,7 @@ VI_DAY50_LIVE_combined_merged_total$Ratios_added <- (VI_DAY50_LIVE_combined_merg
 
 # Make one combined data frame across days by using rbind!
 # Need to make a new data frame with this info in 
-VI_DAY7_LIVE_combined_merged_total["DAY"] <- "7"
+VI_DAY7_LIVE_combined_merged_total["DAY"] <- "07"
 VI_DAY50_LIVE_combined_merged_total["DAY"] <- "50"
 
 VI_DAY7_subset_for_merge <- VI_DAY7_LIVE_combined_merged_total[,c(1:6,23,24,25,26,27,28,30)]
@@ -151,6 +151,7 @@ VI_DAY50_subset_for_merge <- VI_DAY50_LIVE_combined_merged_total[,c(1:6,29:34,36
 VI_DAY7_DAY50_LIVE_combined_merged_total <-rbind(VI_DAY7_subset_for_merge,VI_DAY50_subset_for_merge)
 
 nrow(VI_DAY7_DAY50_LIVE_combined_merged_total) # 127
+View(VI_DAY7_DAY50_LIVE_combined_merged_total)
 
 ########################### Beta Regression for VIABIILITY ASSAY ################################################
 # See the following website for reference: http://rcompanion.org/handbook/J_02.html
@@ -209,7 +210,7 @@ VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR <- VI_DAY7_DAY50_LIVE_combined_mer
   # L-13 sample was mislabeled, can be removed 
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(!OYSTER_ID == "L-13") 
 
-nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR) # 126 
 
 # 3. Put data for each apoptosis Phenotype in its own column with ratios rather than percentages, keep day 7 and 50 together
 
@@ -226,15 +227,16 @@ all_equal(APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table,APOP
 
 # Use lookup table to change all SAMPLE_ID's for day 7 to their oyster ID
 all_granular_agranular_DAY7_DAY50_OYSTER_ID_7 <- all_granular_agranular_DAY7_DAY50 %>% filter(DAY== "07") #separate out the day 7 values first
+nrow(all_granular_agranular_DAY7_DAY50_OYSTER_ID_7)
 
 # perform left join
 all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_joined <- left_join(x=all_granular_agranular_DAY7_DAY50_OYSTER_ID_7, y=APOP_PLOT4_GRANULAR_QUAD_PLOT_GATE_ADDED_BAD_REMOVED_lookup_table, by = "SAMPLE_ID")
 
 #Only remove entirely duplicated rows, should have duplicate oyster ID's 
 all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups <-all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_joined[!duplicated(all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_joined),]
+nrow(all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups) #456
 
 #Correct column name of OYSTER ID
-all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups <- all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups$OYTER_ID
 colnames(all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups)[11] <- "OYSTER_ID"
 
 # Make OYSTER_ID column for DAY 50 data with -A removed, then rejoin Day7 and Day50
@@ -243,12 +245,11 @@ all_granular_agranular_DAY7_DAY50_day50["OYSTER_ID"] <- gsub("-A","" ,all_granul
 
 # create combined data frame with fixed OYSTER_ID so data frame can be merged with qPCR data above 
 all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed <- rbind(all_granular_agranular_DAY7_DAY50_day50, all_granular_agranular_DAY7_DAY50_OYSTER_ID_7_no_dups)
-
-# Remove SAMPLE_ID column because the difference between Day7 and Day50 is really confusing! Just look at the OysterID
-all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed
+nrow(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed) #1048
 
 # Find unique phenotype headers 
 head(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed)
+nrow(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed) #1048
 unique(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed$GATE)
 
 #Create unique columns for each phenotype with the Percent of this plot values
@@ -309,22 +310,18 @@ all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6_trimmed <- all_granul
 # Combine the granular and the agranular cells after checking the data frames over, not merging by the cell so they can be added side by side 
 Apop_all_phenotypes_combined <- merge(all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_3_trimmed,all_granular_agranular_DAY7_DAY50_OYSTER_ID_fixed_merged_6_trimmed, by = c("FAMILY","GROUP","DAY","OYSTER_ID", "ASSAY"))
 Apop_all_phenotypes_combined_trimmed <- Apop_all_phenotypes_combined[-c(6,11)]
+nrow(Apop_all_phenotypes_combined_trimmed) #131
 
 # Check that nrows here matches original total number of apoptosis assay samples
-nrow(Apop_all_phenotypes_combined_trimmed)
-nrow(all_granular_agranular_DAY7_DAY50) # 1056/8 = 132, they match!
+nrow(Apop_all_phenotypes_combined_trimmed) #131
+nrow(all_granular_agranular_DAY7_DAY50) # 1048/8 = 131, they match!
 
 # Combine Apoptosis Plot with the Viability Assay Data and qPCR data
 
 # Compare the data frames so they can be merged correctly
-View(Apop_all_phenotypes_combined_trimmed)
-View(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
-nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
-
-# Change Day column in VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR to have 07 for Day
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(DAY=="7") %>% mutate(DAY="07")
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_DAY50 <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR %>% filter(DAY=="50")
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed <- rbind(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_DAY50 )
+head(Apop_all_phenotypes_combined_trimmed)
+head(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR)
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR) #126 
 
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP <- merge(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed, Apop_all_phenotypes_combined_trimmed, 
                                                                             by= c("FAMILY","GROUP","DAY","OYSTER_ID"))
@@ -380,6 +377,7 @@ nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_
 ############################# PCA ANALYSIS FOR FULL PHENOTYPE  #######################################
 
 # perform simple PCA on only the numeric values 
+rownames(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset) <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$OYSTER_ID
 full_phenotype_data_set_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)], center=TRUE, scale=TRUE)
 
 summary(full_phenotype_data_set_PCA)
@@ -390,11 +388,62 @@ ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_
 ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$GROUP)
 ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$DAY)
 
+# Scree plot of Eigenvalues 
+#(see helpful tutorial for the code below: https://www.analyticsvidhya.com/blog/2016/03/practical-guide-principal-component-analysis-python/)
+# Compute the standard deviation of each principal component
+std_dev_full <- full_phenotype_data_set_PCA$sdev
+# compute variance
+pr_var_full <- std_dev_full^2
+
+# proportion of variance explained
+prop_varex_full <- pr_var_full/sum(pr_var_full)
+prop_varex_full
+
+plot(prop_varex_full, xlab= "Principal Component ",
+     ylab="Proportion of Variance Explained", type="b")
+
+#cumulative scree plot
+plot(cumsum(prop_varex_full), xlab = "Principal Component",
+       ylab = "Cumulative Proportion of Variance Explained",
+       type = "b")
+
+# ~ 13 components explains 98% of the variability of the data
+
+######## Additional types of PCA plots in R ###########
+# http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/118-principal-component-analysis-in-r-prcomp-vs-princomp/#compute-pca-in-r-using-prcomp 
+# Use factoextra to plot
+#install.packages("factoextra")
+library(factoextra)
+
+# plot scree plot with fviz
+fviz_eig(full_phenotype_data_set_PCA)
+
+# Graph of Individuals
+fviz_pca_ind(full_phenotype_data_set_PCA,
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)
+
+# Graph of variables, positively correlated ones point to the same side of the plot
+fviz_pca_var(full_phenotype_data_set_PCA,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)
+
+# Biplot of individuals and variables
+fviz_pca_biplot(full_phenotype_data_set_PCA, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+)
 
 ############################# PCA ANALYSIS FOR APOPTOSIS and VIABILITY PHENOTYPE  #######################################
 
 # Make numeric
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP
+rownames(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix) <-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$OYSTER_ID
+
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix[,c(6:20)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP[,c(6:20)], as.numeric)
 nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_numeric_matrix)
 #125 beecause more samples were preserved 
@@ -404,8 +453,40 @@ APOP_VIA_phenotype_data_set_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_tot
 
 summary(APOP_VIA_phenotype_data_set_PCA)
 
-# Use ggbiplot to plot the PCA
-ggbiplot(APOP_VIA_phenotype_data_set_PCA,ellipse=TRUE, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$FAMILY)
-ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$GROUP)
-ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$DAY)
+# Use ggbiplot to plot the PCA, and then plot PC1 and PC3, setting scale = True normalizes the variables to have a standard deviation equal to 1 
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$FAMILY)
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, choices = c(1,3), labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$FAMILY)
 
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$GROUP)
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, choices = c(1,3), labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$GROUP)
+
+
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$DAY)
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, choices = c(1,3),labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$DAY)
+
+
+ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$ave.log.pconc)
+ggbiplot(APOP_VIA_phenotype_data_set_PCA,choices = c(1,3), labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$ave.log.pconc)
+
+# # plot scree plot with fviz
+fviz_eig(APOP_VIA_phenotype_data_set_PCA)
+
+# Graph of Individuals
+fviz_pca_ind(APOP_VIA_phenotype_data_set_PCA,
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)
+
+# Graph of variables, positively correlated ones point to the same side of the plot
+fviz_pca_var(APOP_VIA_phenotype_data_set_PCA,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)
+
+# Biplot of individuals and variables
+fviz_pca_biplot(APOP_VIA_phenotype_data_set_PCA, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+)
