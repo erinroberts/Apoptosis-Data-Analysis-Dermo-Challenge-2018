@@ -649,8 +649,8 @@ cld(DA50CAS_live_apoptotic_combined_twoway_aov_interaction_leastsquares, alpha=0
 ```{r compiled_graph, echo=TRUE}
 DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED$DAY <-"50"
 DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED$DAY <-"50"
-CAS_PLOT7_agranular_quad_plot_GATE_ADDED$DAY <- "7"
-CAS_PLOT4_granular_quad_plot_GATE_ADDED$DAY <- "7"
+CAS_PLOT7_agranular_quad_plot_GATE_ADDED$DAY <- "07"
+CAS_PLOT4_granular_quad_plot_GATE_ADDED$DAY <- "07"
 
 DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY", "OYSTER_ID")]
 DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED_subset <- DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED[,c("SAMPLE_ID", "FAMILY","PERCENT_OF_THIS_PLOT", "GATE","DAY","GROUP", "PLOT","Arcsine","DAY","OYSTER_ID")]
@@ -659,8 +659,6 @@ CAS_PLOT4_granular_quad_plot_GATE_ADDED_subset <- CAS_PLOT4_granular_quad_plot_G
 
 
 all_caspase_granular_agranular_DAY7_DAY50 <-rbind(CAS_PLOT7_agranular_quad_plot_GATE_ADDED_subset,CAS_PLOT4_granular_quad_plot_GATE_ADDED_subset,DAY50_CAS_PLOT7_agranular_quad_plot_BAD_REMOVED_subset,DAY50_CAS_PLOT4_granular_quad_plot_BAD_REMOVED_subset)
-write.csv(file="all_caspase_granular_agranular_DAY7_DAY50.csv",all_caspase_granular_agranular_DAY7_DAY50)
-all_caspase_granular_agranular_DAY7_DAY50 <- read.csv(file="all_caspase_granular_agranular_DAY7_DAY50.csv",header=TRUE)
 
 #BEST PLOT 
   ggplot(all_caspase_granular_agranular_DAY7_DAY50, aes(x=GROUP, y=PERCENT_OF_THIS_PLOT, fill=GATE)) + 

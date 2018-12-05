@@ -345,7 +345,7 @@ head(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP)
 
 unique(all_caspase_granular_agranular_DAY7_DAY50$GATE)
 
-# remove Day.1 column that existed in the dataframe and add back the oyster_id column 
+# remove Day.1 column and X column that existed in the dataframe and add back the oyster_id column 
 all_caspase_granular_agranular_DAY7_DAY50 <- all_caspase_granular_agranular_DAY7_DAY50[,-9]
 all_caspase_granular_agranular_DAY7_DAY50_Q3_LR <- all_caspase_granular_agranular_DAY7_DAY50 %>% filter(GATE=="Q3_LR") 
 all_caspase_granular_agranular_DAY7_DAY50_Q4_LR <- all_caspase_granular_agranular_DAY7_DAY50 %>% filter(GATE=="Q4_LR") 
@@ -357,21 +357,26 @@ all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR <- merge(all_caspase_granu
                                                                by = c("FAMILY","GROUP","DAY","OYSTER_ID", "SAMPLE_ID"))
 # Remove unwanted columns
 all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR <- all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR[-c(7:9, 11:13)]
+nrow(all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR) #115 
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP) #125 rows, should only go down to 115
 
-# Fix the 7's to be 07
-all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted <- all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR %>% filter(DAY=="7") %>% mutate(DAY="07")
-all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_DAY50 <- all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR %>% filter(DAY=="50")
-all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted_fixed <- rbind(all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted, all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_DAY50)
 
-# Merge this with the big other spreadsheet 
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE <- merge(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP,all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR_formatted_fixed ,
-                                                                                    by = c("FAMILY","GROUP","DAY","OYSTER_ID"))
+# Merge Capase data with VI and APOP data, do left join to see which were the samples being dropped 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE <- merge(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP,all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR,
+                                                                                    by = c("OYSTER_ID"))
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_left_join <- left_join(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP,all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR,
+                                                                                    by = c("OYSTER_ID"))
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_left_join) # 125
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE)
+#90 
+
 # Remove Sample_ID columns after checking to make sure that they match 
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE[-c(5,21)]
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset) #90
 
 # Use Lapply to make only the number columns numeric 
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)], as.numeric)
-nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_numeric_matrix)
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:20)], as.numeric)
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset)
 # Went down to only 90 samples because many fewer had Caspase Assay Samples
 
 ############################# PCA ANALYSIS FOR FULL PHENOTYPE  #######################################
@@ -409,7 +414,7 @@ plot(cumsum(prop_varex_full), xlab = "Principal Component",
 
 # ~ 13 components explains 98% of the variability of the data
 
-######## Additional types of PCA plots in R ###########
+# Additional types of PCA plots in R #
 # http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/118-principal-component-analysis-in-r-prcomp-vs-princomp/#compute-pca-in-r-using-prcomp 
 # Use factoextra to plot
 #install.packages("factoextra")
@@ -417,6 +422,7 @@ library(factoextra)
 
 # plot scree plot with fviz
 fviz_eig(full_phenotype_data_set_PCA)
+# PCA might not be the best way to describe this dataset, need most of the PC's to explain the data
 
 # Graph of Individuals
 fviz_pca_ind(full_phenotype_data_set_PCA,
@@ -432,11 +438,14 @@ fviz_pca_var(full_phenotype_data_set_PCA,
              repel = TRUE     # Avoid text overlapping
 )
 
+# Draw ellipses around the data using Euclidean distance 
+fviz_ellipses(full_phenotype_data_set_PCA,VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, 1:2, geom="point", ellipse.type = "euclid")
+
 # Biplot of individuals and variables
 fviz_pca_biplot(full_phenotype_data_set_PCA, repel = TRUE,
                 col.var = "#2E9FDF", # Variables color
-                col.ind = "#696969"  # Individuals color
-)
+                col.ind = "#696969",  # Individuals color
+                )
 
 ############################# PCA ANALYSIS FOR APOPTOSIS and VIABILITY PHENOTYPE  #######################################
 
@@ -460,16 +469,15 @@ ggbiplot(APOP_VIA_phenotype_data_set_PCA, choices = c(1,3), labels=VI_DAY7_DAY50
 ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$GROUP)
 ggbiplot(APOP_VIA_phenotype_data_set_PCA, choices = c(1,3), labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$GROUP)
 
-
 ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$DAY)
 ggbiplot(APOP_VIA_phenotype_data_set_PCA, choices = c(1,3),labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$DAY)
-
 
 ggbiplot(APOP_VIA_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$ave.log.pconc)
 ggbiplot(APOP_VIA_phenotype_data_set_PCA,choices = c(1,3), labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$ave.log.pconc)
 
 # # plot scree plot with fviz
 fviz_eig(APOP_VIA_phenotype_data_set_PCA)
+# the first 6 PC's describe most of the variation
 
 # Graph of Individuals
 fviz_pca_ind(APOP_VIA_phenotype_data_set_PCA,
@@ -490,3 +498,12 @@ fviz_pca_biplot(APOP_VIA_phenotype_data_set_PCA, repel = TRUE,
                 col.var = "#2E9FDF", # Variables color
                 col.ind = "#696969"  # Individuals color
 )
+
+# Plot elipses around the points 
+fviz_ellipses(APOP_VIA_phenotype_data_set_PCA,VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix, 1:2, geom="point", ellipse.type = "euclid")
+
+
+####### Modeling the full apoptosis phenotype ###########
+
+
+
