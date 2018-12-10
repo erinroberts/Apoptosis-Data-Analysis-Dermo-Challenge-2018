@@ -15,6 +15,12 @@ install.packages("devtools")
 library(devtools)
 install_github("vqv/ggbiplot")
 library(ggbiplot)
+library(factoextra)
+install.packages("coefplot")
+library(coefplot)
+library(lsmeans)
+library(rgr)
+library(metafor)
 
 ################### Loading in data ##############################################
 
@@ -153,29 +159,6 @@ VI_DAY7_DAY50_LIVE_combined_merged_total <-rbind(VI_DAY7_subset_for_merge,VI_DAY
 nrow(VI_DAY7_DAY50_LIVE_combined_merged_total) # 127
 View(VI_DAY7_DAY50_LIVE_combined_merged_total)
 
-########################### Beta Regression for VIABIILITY ASSAY ################################################
-# See the following website for reference: http://rcompanion.org/handbook/J_02.html
-# The summary function in betareg produces a pseudo R-squared value for the model, and the recommended test for the p-value for the model is the lrtest function in the lmtest package.
-
-modelbeta= betareg(Live_granular_ratio ~ FAMILY + DAY + GROUP, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
-
-model= lm(Live_granular_ratio ~ FAMILY + GROUP + FAMILY:GROUP + DAY, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
-
-model2= lm(Live_granular_ratio ~ DAY, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
-
-model3= lm(Live_granular_ratio ~ FAMILY, data=VI_DAY7_DAY50_LIVE_combined_merged_total)
-
-#run joint test on model
-joint_tests(model)
-
-#likelihood ratio test
-lrtest(modelbeta)
-
-# summary
-summary(modelbeta)
-
-# plot the model fit
-plot(fitted(model),residuals(model))
 
 ############################# FORMAT APOPTOSIS ASSAY DATA FOR PCA #################################
 # GOAL: generate a table that integrates the Viability Assay Data, the qPCR data for Day7 and Day 50, Apoptosis Assay Phenotypes, 
@@ -363,19 +346,18 @@ nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP) #125 ro
 
 # Merge Capase data with VI and APOP data, do left join to see which were the samples being dropped 
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE <- merge(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP,all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR,
-                                                                                    by = c("OYSTER_ID"))
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_left_join <- left_join(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP,all_caspase_granular_agranular_DAY7_DAY50_Q3_LR_Q4_LR,
-                                                                                    by = c("OYSTER_ID"))
-nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_left_join) # 125
+                                                                                    by = c("OYSTER_ID","GROUP","FAMILY","DAY"))
 nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE)
 #90 
-
+colnames(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE)
 # Remove Sample_ID columns after checking to make sure that they match 
 VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE[-c(5,21)]
 nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset) #90
 
-# Use Lapply to make only the number columns numeric 
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:20)], as.numeric)
+# Use Lapply to make only the number columns numeric, omitting the log pconc column because it screwed with the ratios  
+# need to make ave.log.pconc a character first before as.numeric 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,11] <- as.character(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,11])
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset[,c(5:21)], as.numeric)
 nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset)
 # Went down to only 90 samples because many fewer had Caspase Assay Samples
 
@@ -390,6 +372,10 @@ summary(full_phenotype_data_set_PCA)
 # Use ggbiplot to plot the PCA
 
 ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$FAMILY)
+
+# add color coding by labels
+#full_phenotype_data_set_PCA_plot_sample_id + scale_fill_discrete(scale=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset)
+
 ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$GROUP)
 ggbiplot(full_phenotype_data_set_PCA, labels=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$DAY)
 
@@ -450,15 +436,16 @@ fviz_pca_biplot(full_phenotype_data_set_PCA, repel = TRUE,
 ############################# PCA ANALYSIS FOR APOPTOSIS and VIABILITY PHENOTYPE  #######################################
 
 # Make numeric
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP
-rownames(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix) <-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix$OYSTER_ID
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP
+rownames(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix) <-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$OYSTER_ID
 
-VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix[,c(6:20)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP[,c(6:20)], as.numeric)
-nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_numeric_matrix)
-#125 beecause more samples were preserved 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix[,12] <- as.character(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix[,12])
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix[,c(6:20)] <- lapply(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix[,c(6:20)], as.numeric)
+nrow(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix)
+#125 because more samples were preserved 
 
 # perform simple PCA on only the numeric values 
-APOP_VIA_phenotype_data_set_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix[,c(6:20)], center=TRUE, scale=TRUE)
+APOP_VIA_phenotype_data_set_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix[,c(6:20)], center=TRUE, scale=TRUE)
 
 summary(APOP_VIA_phenotype_data_set_PCA)
 
@@ -500,10 +487,353 @@ fviz_pca_biplot(APOP_VIA_phenotype_data_set_PCA, repel = TRUE,
 )
 
 # Plot elipses around the points 
-fviz_ellipses(APOP_VIA_phenotype_data_set_PCA,VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix, 1:2, geom="point", ellipse.type = "euclid")
+fviz_ellipses(APOP_VIA_phenotype_data_set_PCA,VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_matrix, 1:2, geom="confidence", ellipse.type = "euclid")
 
 
-####### Modeling the full apoptosis phenotype ###########
+###### Correlation Plotting with survival, perkinsus, and Beta (possibly) #########
+
+# PHENOTYPE vs. Ave log pconc
+
+# Ave log pconc and Granular Necrotic 
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q2_UL_Granular_Necrotic, 
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc,
+     main = "Correlation betwen Granular Necrotic Cells and Ave. Log. Pconc", xlab = "ave.log.pconc", ylab = "Q2_UL_Granular_Necrotic")
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q2_UL_Granular_Necrotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q2_UL_Granular_Necrotic, 
+y=ave.log.pconc, label=DAY, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q2_UL_Granular_Necrotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID)) + facet_grid(FAMILY~GROUP+DAY)
+
+  # Same plotting but with data frame without the Caspase Data
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q2_UL_Granular_Necrotic, 
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$ave.log.pconc,
+     main = "Correlation betwen Granular Necrotic Cells and Ave. Log. Pconc", xlab = "ave.log.pconc", ylab = "Q2_UL_Granular_Necrotic")
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix, aes(x=Q2_UL_Granular_Necrotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix, aes(x=Q2_UL_Granular_Necrotic, 
+y=ave.log.pconc, label=DAY, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix, aes(x=Q2_UL_Granular_Necrotic, 
+y=ave.log.pconc, color=FAMILY)) + geom_point() + facet_grid(FAMILY~GROUP+DAY)
+
+  # trying to add trend line to the plotting: https://stackoverflow.com/questions/33971927/using-functions-from-dplyr-package-to-add-equation-to-qqplot-with-facets?noredirect=1&lq=1
+eqlabels <- function(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix){
+  m <- lm(Q2_UL_Granular_Necrotic ~ ave.log.pconc, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix);
+  eq <- substitute(italic(y) == a + b * italic(x) * "," ~~ italic(r) ^ 2 ~ "=" ~ r2, 
+                   list(a = format(coef(m)[1], digits = 3),
+                        b = format(coef(m)[2], digits = 3),
+                        r2 = format(summary(m)$r.squared, digits = 2)))
+  as.character(as.expression(eq));
+}
+labelsP3 <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix %>% group_by(FAMILY, GROUP,DAY) %>% do(as.data.frame(eqlabels(.)))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix, aes(x=Q2_UL_Granular_Necrotic, 
+y=ave.log.pconc, color=FAMILY)) + geom_point() + facet_grid(FAMILY~GROUP + DAY) + stat_smooth(method = lm) + 
+  geom_text(data=labelsP3, aes(label=`eqlabels(.)`, x=7, y=2), parse=TRUE)
+
+# Ave. log pconc and Agranular Necrotic
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q1_UL_Agranular_Necrotic, 
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc,
+     main = "Correlation betwen Agranular Necrotic Cells and Ave. Log. Pconc", xlab = "ave.log.pconc", ylab = "Q1_UL_Agranular_Necrotic")
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q1_UL_Agranular_Necrotic, 
+ y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q1_UL_Agranular_Necrotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix, aes(x=Q1_UL_Agranular_Necrotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+#Ave. log pconc and Dead agranular May be something here, but R squared very low
+dead_agranular_pconc <- plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Dead_agranular_ratio, 
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc,
+     main = "Correlation betwen Dead Agranular Cells and Ave. Log. Pconc", xlab = "Dead_agranular_ratio" , ylab = "ave.log.pconc", text(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Dead_agranular_ratio,
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc, labels = VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$SAMPLE_ID))
+
+  # explore relationships by family
+  ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Dead_agranular_ratio, 
+  y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+  ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Dead_agranular_ratio, 
+  y=ave.log.pconc, label=OYSTER_ID, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+
+  # Calculate R squared
+  dead_agranular_pconc_lm <- lm(ave.log.pconc~Dead_agranular_ratio, data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset)
+  summary(dead_agranular_pconc_lm)
+# R squared is 0.04 (BAD), with a significant P value
+
+# May be something here
+ plot(ave.log.pconc~Dead_granular_ratio,
+     main = "Correlation betwen Dead Granular Cells and Ave. Log. Pconc", 
+     xlab = "Dead_granular_ratio" , 
+     ylab = "ave.log.pconc", data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset) 
+ 
+    ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Dead_granular_ratio, 
+    y=ave.log.pconc, label=OYSTER_ID, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+ 
+    ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Dead_granular_ratio, 
+     y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+     
+dead_granular_pconc_pconc_lm <- lm(ave.log.pconc~Dead_granular_ratio, data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset)
+summary(dead_granular_pconc_pconc_lm)
+# R squared= 0.04, p= 0.03
+
+# Ave. log pconc and Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic, 
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc,
+     main = "Correlation betwen Granular Live Caspase Apoptotic Cells and Ave. Log. Pconc", xlab = "ave.log.pconc", ylab = "Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic")
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic, 
+y=ave.log.pconc, label=DAY, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+
+# Ave log pconc and Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic, 
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc,
+     main = "Correlation betwen Agranular Live Caspase Apoptotic Cells and Ave. Log. Pconc", xlab = "ave.log.pconc", ylab = "Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic")
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic, 
+y=ave.log.pconc, label=DAY, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+
+# Ave log pconc and Live Granular Apoptotic
+
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q2_LR_Granular_Live_Apoptotic, 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc,
+main = "Correlation betwen Live Granular Apoptotic Cells and Ave. Log. Pconc", 
+xlab = "ave.log.pconc", ylab = "Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic")
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q2_LR_Granular_Live_Apoptotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q2_LR_Granular_Live_Apoptotic, 
+y=ave.log.pconc, label=DAY, color=DAY)) + geom_point() + geom_text(aes(label=DAY))
+
+# Ave log pconc and Live Agranular Apoptotic
+
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q1_LR_Agranular_Live_Apoptotic, 
+     VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$ave.log.pconc,
+     main = "Correlation betwen Live Granular Apoptotic Cells and Ave. Log. Pconc", 
+     xlab = "ave.log.pconc", ylab = "Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic")
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q1_LR_Agranular_Live_Apoptotic, 
+y=ave.log.pconc, label=OYSTER_ID, color=FAMILY)) + geom_point() + geom_text(aes(label=OYSTER_ID))
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset, aes(x=Q1_LR_Agranular_Live_Apoptotic, 
+y=ave.log.pconc, label=DAY, color=DAY)) + geom_point() + geom_text(aes(label=DAY)) + facet_grid(FAMILY~GROUP+DAY)
+  # no real trend
+
+### Plotting with arcsine transformed percentage values instead of non transformed 
+
+# Assess distribution of all variables
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Dead_agranular_ratio)
+  # Non normal, perhaps lognormal
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Dead_granular_ratio)
+  # non normal, perhaps gamma
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$ Live_granular_ratio)
+  # not normal, perhaps uniform
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$ Live_agranular_ratio)
+  # not normal, perhaps uniform
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$ave.log.pconc)
+  # not normally distributed 
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q2_UL_Granular_Necrotic)
+  # not normally distributed
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q1_UL_Agranular_Necrotic)
+  # not normally distributed...
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q2_UR_Granular_Dead_Apoptotic)
+  # not normal
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q2_LL_Granular_Live)
+  # not normally distributed 
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q1_LR_Agranular_Live_Apoptotic)
+  # seems to be inverse of exponential...perhaps a beta!
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q1_UR_Agranular_Dead_Apoptotic)
+  # no distribution
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q1_LL_Agranular_Live)
+  # no distribution 
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$SAMPLE_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix$Q1_LR_Agranular_Live_Apoptotic)
+  # perhaps a beta distribution
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$OYSTER_ID, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic) 
+  # perhaps normally distributed? won't let me plot the individual oyster ID's
+plot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$FAMILY, VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset$Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic)
+
+# try arcsine transforming all of the objects that are percentage values
+# for things that already percentages need to multiple by 0.01 to make it a ratio, if its a ratio don't need to multiple by anything
+CAS_PLOT4_granular_quad_plot$Q3.UL_Arcsine<- transf.arcsin(CAS_PLOT4_granular_quad_plot$Q3.UL_Percent_of_this_plot*0.01)
+
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Dead_granular_ratio_arcsine <- transf.arcsin(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Dead_granular_ratio)
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Dead_agranular_ratio_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Live_granular_ratio_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Live_agranular_ratio_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q2_UL_Granular_Necrotic_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q2_UR_Granular_Dead_Apoptotic_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q2_LL_Granular_Live_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q2_LR_Granular_Live_Apoptotic_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q1_UL_Agranular_Necrotic_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q1_UR_Agranular_Dead_Apoptotic_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q1_LL_Agranular_Live_arcsine
+  VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_arcsine$Q1_LR_Agranular_Live_Apoptotic_arcsine 
+
+# Check the distribution of these variables now 
+  
+##### Relationship between tolerance ranking and apoptosis phenotype parameters #########
+
+tolerance_first_cut <- read.csv("../ANALYSIS_CSVs/MASTER_DATA/tolerance.med.95HDI.csv", header=TRUE)
+class(tolerance_first_cut)
+# change col name FAMILY to match the phenotype table so they can be merged 
+colnames(tolerance_first_cut)[1] <- "FAMILY"
+
+# these tolerance values are all for the treated groups
+
+# make data frame that includes the tolerance values calculated for each family on Day 7! 
+# because only averages were given, each family only has one value
+
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7 <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset %>% filter(DAY=="07")
+
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance <- left_join(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7, tolerance_first_cut, by = "FAMILY")
+
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7 <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix %>% filter(DAY=="07")
+
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance <-  left_join(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7,tolerance_first_cut, by ="FAMILY") 
+
+
+#### Plotting PCA with the posterior median ###
+# The posterior median is the mean of beta’s posterior distributions for each family (this is the value you will use for most of your analyses)
+#create new PCA object with the tolerance values
+full_phenotype_plus_tolerance_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance[,c(5:22)], center=TRUE, scale=TRUE)
+summary(full_phenotype_plus_tolerance_PCA)
+
+APOP_VIA_phenotype_tolerance_PCA <- prcomp(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance[,c(6:21)], center=TRUE, scale=TRUE)
+summary(APOP_VIA_phenotype_tolerance_PCA)
+
+# Biplot of individuals and variables
+fviz_pca_biplot(full_phenotype_plus_tolerance_PCA, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+)
+
+# Biplot of individuals and variables
+fviz_pca_biplot(APOP_VIA_phenotype_tolerance_PCA, repel = TRUE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+)
+
+
+# plotting posterior median vs parameters doesn't tell us much (doesnt tell us much), the tolerance is good for a general look
+
+ggplot(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance, aes(x=Q1_LR_Agranular_Live_Apoptotic, 
+y=ave.log.pconc)) + geom_point()  + facet_grid(FAMILY~GROUP+DAY)
+
+####### Modeling the full apoptosis phenotype with the tolerance data ###########
+
+library(DirichletReg)
+library(emdbook)
+library(bbmle)
+library(lme4)
+library(lattice)
+
+# compare residuals of the models, check to see that they are normally distributed 
+# helpful tutorial https://feliperego.github.io/blog/2015/10/23/Interpreting-Model-Output-In-R
+# we want low standard error, a t value far away from 0, residual standard error is a measure of the quality of the linear regression fit
+# when looking at a number of variables, look at the adjusted R squared rather than the multiple R2, the multiple goes up with more variables
+# F statistic is another measure of model fit, should be closer to 1 than 0 
+
+# modeling with correlated things from full_phenotype_data_set_PCA, using ave.log pconc as response variable is all modeling for resistance 
+
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance_treatment <- VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance %>% filter(GROUP=="treatment")
+
+# so few controls in this set 
+VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance_treatment_lm <- 
+  lm(ave.log.pconc ~ Q2_UR_Granular_Dead_Apoptotic + Q2_LR_Granular_Live_Apoptotic +  Q1_LR_Agranular_Live_Apoptotic+
+       Q1_UR_Agranular_Dead_Apoptotic,
+data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance_treatment)
+summary(VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance_treatment_lm)
+
+lm2 <- lm(ave.log.pconc ~ Q3_LR_Granular_Live_Caspase_Dependent_Apoptotic + tolerance_first_cut + FAMILY+ Q4_LR_Agranular_Live_Caspase_Dependent_Apoptotic, data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance_treatment)
+summary(lm2)
+
+lm3 <- lm(ave.log.pconc ~ Dead_agranular_ratio + Dead_granular_ratio, 
+          data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance_treatment)
+summary(lm3)
+
+lm4 <- lm(ave.log.pconc ~ Q2_UR_Granular_Dead_Apoptotic + Q1_UR_Agranular_Dead_Apoptotic + FAMILY, 
+          data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_CASPASE_subset_day_7_tolerance_treatment)
+summary(lm4)
+
+lm5 <- lm(ave.log.pconc ~ Dead_agranular_ratio + Dead_granular_ratio + FAMILY, 
+data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance)
+summary(lm5)
+
+# this version works pretty well
+lm6 <- lm(ave.log.pconc ~ Dead_agranular_ratio + Dead_granular_ratio + FAMILY*GROUP, 
+          data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance)
+summary(lm6)
+coefplot(lm6) # run coefplot to show significance with the coefficients
+multiplot(lm3, lm5, lm6)  # to compare different models
+
+lm7 <- lm(ave.log.pconc ~ Dead_agranular + Dead_granular + FAMILY*GROUP + Q2_UL_Granular_Necrotic + Q1_UL_Agranular_Necrotic, 
+          data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance)
+summary(lm7)
+
+#this model works well for Day 7 
+lm8 <- lm(ave.log.pconc ~ Q2_UL_Granular_Necrotic + Q1_UL_Agranular_Necrotic + FAMILY*GROUP, 
+          data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance)
+summary(lm8)
+
+# better model than lm8 
+lm9 <- lm(ave.log.pconc ~ Q2_UR_Granular_Dead_Apoptotic + Q2_LR_Granular_Live_Apoptotic +  Q1_LR_Agranular_Live_Apoptotic+
+            Q1_UR_Agranular_Dead_Apoptotic + FAMILY*GROUP, 
+          data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance)
+summary(lm9)
+
+# not as good as model 9 
+lm10 <- lm(ave.log.pconc ~ Q2_UR_Granular_Dead_Apoptotic + Q2_LR_Granular_Live_Apoptotic +  Q1_LR_Agranular_Live_Apoptotic+
+            Q1_UR_Agranular_Dead_Apoptotic + Dead_agranular_ratio + Dead_granular_ratio + FAMILY*GROUP, 
+          data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance)
+summary(lm10)
+
+
+multiplot(lm8, lm9, lm10)
+
+AIC(lm8)
+
+# test lm9 for Day 7 and Day 50 for resistance
+
+# Should I transform any data variables? 
+
+
+
+########################### Beta Regression ################################################
+# See the following website for reference: http://rcompanion.org/handbook/J_02.html
+# The summary function in betareg produces a pseudo R-squared value for the model, and the recommended test for the p-value for the model is the lrtest function in the lmtest package.
+
+modelbeta= betareg(ave.log.pconc ~ Q2_UR_Granular_Dead_Apoptotic + Q2_LR_Granular_Live_Apoptotic +  Q1_LR_Agranular_Live_Apoptotic+
+                     Q1_UR_Agranular_Dead_Apoptotic,
+                   data=VI_DAY7_DAY50_LIVE_combined_merged_total_QPCR_formatted_fixed_APOP_matrix_day_7_tolerance)
+summary(modelbeta)
+
+#run joint test on model
+joint_tests(model)
+
+#likelihood ratio test
+lrtest(modelbeta)
+
+# summary
+summary(modelbeta)
+
+# plot the model fit
+plot(fitted(model),residuals(model))
 
 
 
